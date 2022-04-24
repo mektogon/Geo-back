@@ -22,7 +22,7 @@ public class Locality {
 
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Region region;
 
     @ManyToMany(cascade = CascadeType.ALL)

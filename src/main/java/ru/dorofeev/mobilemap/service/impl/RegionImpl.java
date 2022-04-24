@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 public class RegionImpl implements RegionService {
-    RegionRepository regionRepository;
+    private final RegionRepository regionRepository;
 
     public RegionImpl(RegionRepository regionRepository) {
         this.regionRepository = regionRepository;
@@ -18,26 +18,26 @@ public class RegionImpl implements RegionService {
 
     @Override
     public List<Region> findALl() {
-        return null;
+        return regionRepository.findAll();
     }
 
     @Override
     public Optional<Region> findById(Long id) {
-        return Optional.empty();
+        return regionRepository.findById(id);
     }
 
     @Override
     public Optional<Region> save(Region region) {
-        return Optional.empty();
+        return Optional.of(regionRepository.save(region));
     }
 
     @Override
-    public void delete(Region region) {
-
+    public Optional<Region> update(Region region) {
+        return Optional.of(regionRepository.save(region));
     }
 
     @Override
-    public void deleteById(Region region) {
-
+    public void deleteById(Long id) {
+        regionRepository.deleteById(id);
     }
 }

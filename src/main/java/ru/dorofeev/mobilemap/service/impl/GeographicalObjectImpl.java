@@ -1,17 +1,17 @@
 package ru.dorofeev.mobilemap.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
-import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
+import ru.dorofeev.mobilemap.service.interf.ObjectService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GeographicalObjectImpl implements GeographicalObjectService{
-    GeographicalObjectRepository geographicalObjectRepository;
+public class GeographicalObjectImpl implements ObjectService {
+    private final GeographicalObjectRepository geographicalObjectRepository;
 
     public GeographicalObjectImpl(GeographicalObjectRepository geographicalObjectRepository) {
         this.geographicalObjectRepository = geographicalObjectRepository;
@@ -24,27 +24,30 @@ public class GeographicalObjectImpl implements GeographicalObjectService{
 
     @Override
     public Optional<GeographicalObject> findById(Long id) {
-        return Optional.empty();
+        return geographicalObjectRepository.findById(id);
+    }
+
+    @Override
+    public List<GeographicalObject> findAllByName(String name) {
+        if (name == null) {
+            return Collections.emptyList();
+        }
+
+        return geographicalObjectRepository.findAllByName(name);
     }
 
     @Override
     public Optional<GeographicalObject> save(GeographicalObject geographicalObject) {
-        return Optional.empty();
+        return Optional.of(geographicalObjectRepository.save(geographicalObject));
     }
 
     @Override
-    public void delete(GeographicalObject geographicalObject) {
-
+    public Optional<GeographicalObject> update(GeographicalObject geographicalObject) {
+        return Optional.of(geographicalObjectRepository.save(geographicalObject));
     }
 
     @Override
-    public void deleteById(GeographicalObject geographicalObject) {
-
+    public void deleteById(Long id) {
+        geographicalObjectRepository.deleteById(id);
     }
-
-    @Override
-    public Optional<GeographicalObject> findAllByName(String name) {
-        return Optional.empty();
-    }
-
 }

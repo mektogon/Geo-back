@@ -17,10 +17,10 @@ public class Address {
     @SequenceGenerator(name = "address_generator", sequenceName = "address_seq")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Locality locality;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Street street;
 
     private String houseNumber;

@@ -5,12 +5,13 @@ import ru.dorofeev.mobilemap.model.entity.TypeObject;
 import ru.dorofeev.mobilemap.repository.TypeObjectRepository;
 import ru.dorofeev.mobilemap.service.interf.TypeObjectService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TypeObjectImpl implements TypeObjectService {
-    TypeObjectRepository typeObjectRepository;
+    private final TypeObjectRepository typeObjectRepository;
 
     public TypeObjectImpl(TypeObjectRepository typeObjectRepository) {
         this.typeObjectRepository = typeObjectRepository;
@@ -18,26 +19,37 @@ public class TypeObjectImpl implements TypeObjectService {
 
     @Override
     public List<TypeObject> findALl() {
-        return null;
+        return typeObjectRepository.findAll();
     }
 
     @Override
     public Optional<TypeObject> findById(Long id) {
-        return Optional.empty();
+        return typeObjectRepository.findById(id);
+    }
+
+    @Override
+    public List<TypeObject> findAllByName(String name) {
+        if (name == null) {
+            return Collections.emptyList();
+        }
+
+        return typeObjectRepository.findAllByName(name);
     }
 
     @Override
     public Optional<TypeObject> save(TypeObject typeObject) {
-        return Optional.empty();
+        return Optional.of(typeObjectRepository.save(typeObject));
     }
 
     @Override
-    public void delete(TypeObject typeObject) {
-
+    public Optional<TypeObject> update(TypeObject typeObject) {
+        return Optional.of(typeObjectRepository.save(typeObject));
     }
 
     @Override
-    public void deleteById(TypeObject typeObject) {
-
+    public void deleteById(Long id) {
+        typeObjectRepository.deleteById(id);
     }
+
+
 }

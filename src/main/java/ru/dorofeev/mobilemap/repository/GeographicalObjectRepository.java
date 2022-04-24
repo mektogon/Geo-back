@@ -4,6 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
 
+import java.util.List;
+
 @Repository
 public interface GeographicalObjectRepository extends JpaRepository<GeographicalObject, Long> {
+    List<GeographicalObject> findAllByName(String name);
 }

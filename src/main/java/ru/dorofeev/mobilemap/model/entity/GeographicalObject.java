@@ -18,6 +18,7 @@ public class GeographicalObject {
     @SequenceGenerator(name = "geographical_object_generator", sequenceName = "geographical_object_seq")
     private Long id;
 
+    private String name;
 
     @ManyToOne
     private TypeObject type;
@@ -28,10 +29,10 @@ public class GeographicalObject {
 
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Locality locality;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Street street;
 
     private String houseNumber;

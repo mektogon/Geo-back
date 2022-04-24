@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 public class AddressImpl implements AddressService {
-    AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
 
     public AddressImpl(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
@@ -18,26 +18,26 @@ public class AddressImpl implements AddressService {
 
     @Override
     public List<Address> findALl() {
-        return null;
+        return addressRepository.findAll();
     }
 
     @Override
     public Optional<Address> findById(Long id) {
-        return Optional.empty();
+        return addressRepository.findById(id);
     }
 
     @Override
     public Optional<Address> save(Address address) {
-        return Optional.empty();
+        return Optional.of(addressRepository.save(address));
     }
 
     @Override
-    public void delete(Address address) {
-
+    public Optional<Address> update(Address address) {
+        return Optional.of(addressRepository.save(address));
     }
 
     @Override
-    public void deleteById(Address address) {
-
+    public void deleteById(Long id) {
+        addressRepository.deleteById(id);
     }
 }

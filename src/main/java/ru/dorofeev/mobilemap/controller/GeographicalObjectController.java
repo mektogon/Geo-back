@@ -3,14 +3,14 @@ package ru.dorofeev.mobilemap.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
+import ru.dorofeev.mobilemap.service.interf.ObjectService;
 
 @RestController
 public class GeographicalObjectController {
-    GeographicalObjectService geographicalObjectService;
+    ObjectService geographicalObjectService;
 
     @Autowired
-    public GeographicalObjectController(GeographicalObjectService geographicalObjectService) {
+    public GeographicalObjectController(ObjectService geographicalObjectService) {
         this.geographicalObjectService = geographicalObjectService;
     }
 

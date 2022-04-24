@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 public class LocalityImpl implements LocalityService {
-    LocalityRepository localityRepository;
+    private final LocalityRepository localityRepository;
 
     public LocalityImpl(LocalityRepository localityRepository) {
         this.localityRepository = localityRepository;
@@ -18,26 +18,26 @@ public class LocalityImpl implements LocalityService {
 
     @Override
     public List<Locality> findALl() {
-        return null;
+        return localityRepository.findAll();
     }
 
     @Override
     public Optional<Locality> findById(Long id) {
-        return Optional.empty();
+        return localityRepository.findById(id);
     }
 
     @Override
     public Optional<Locality> save(Locality locality) {
-        return Optional.empty();
+        return Optional.of(localityRepository.save(locality));
     }
 
     @Override
-    public void delete(Locality locality) {
-
+    public Optional<Locality> update(Locality locality) {
+        return Optional.of(localityRepository.save(locality));
     }
 
     @Override
-    public void deleteById(Locality locality) {
-
+    public void deleteById(Long id) {
+        localityRepository.deleteById(id);
     }
 }
