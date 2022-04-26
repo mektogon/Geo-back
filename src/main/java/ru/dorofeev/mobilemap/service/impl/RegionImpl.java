@@ -32,8 +32,8 @@ public class RegionImpl implements RegionService {
     }
 
     @Override
-    public Optional<Region> update(Region region) {
-        return Optional.of(regionRepository.save(region));
+    public void update(Region region) {
+        regionRepository.save(region);
     }
 
     @Override

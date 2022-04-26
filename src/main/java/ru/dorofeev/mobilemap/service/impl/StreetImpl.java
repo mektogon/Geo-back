@@ -32,8 +32,8 @@ public class StreetImpl implements StreetService {
     }
 
     @Override
-    public Optional<Street> update(Street street) {
-        return Optional.of(streetRepository.save(street));
+    public void update(Street street) {
+        streetRepository.save(street);
     }
 
     @Override

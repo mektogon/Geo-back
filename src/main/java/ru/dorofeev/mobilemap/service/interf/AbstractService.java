@@ -7,6 +7,6 @@ public interface AbstractService<T> {
     List<T> findALl();
     Optional<T> findById(Long id);
     Optional<T> save(T t);
-    Optional<T> update(T t);
+    void update(T t);
     void deleteById(Long id);
 }

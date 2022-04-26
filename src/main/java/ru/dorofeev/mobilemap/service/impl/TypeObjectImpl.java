@@ -1,6 +1,7 @@
 package ru.dorofeev.mobilemap.service.impl;
 
 import org.springframework.stereotype.Service;
+import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
 import ru.dorofeev.mobilemap.model.entity.TypeObject;
 import ru.dorofeev.mobilemap.repository.TypeObjectRepository;
 import ru.dorofeev.mobilemap.service.interf.TypeObjectService;
@@ -32,7 +33,6 @@ public class TypeObjectImpl implements TypeObjectService {
         if (name == null) {
             return Collections.emptyList();
         }
-
         return typeObjectRepository.findAllByName(name);
     }
 
@@ -42,8 +42,8 @@ public class TypeObjectImpl implements TypeObjectService {
     }
 
     @Override
-    public Optional<TypeObject> update(TypeObject typeObject) {
-        return Optional.of(typeObjectRepository.save(typeObject));
+    public void update(TypeObject typeObject) {
+        typeObjectRepository.save(typeObject);
     }
 
     @Override

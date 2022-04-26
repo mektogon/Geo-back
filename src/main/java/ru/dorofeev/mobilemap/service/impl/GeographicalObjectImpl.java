@@ -3,14 +3,14 @@ package ru.dorofeev.mobilemap.service.impl;
 import org.springframework.stereotype.Service;
 import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
-import ru.dorofeev.mobilemap.service.interf.ObjectService;
+import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GeographicalObjectImpl implements ObjectService {
+public class GeographicalObjectImpl implements GeographicalObjectService {
     private final GeographicalObjectRepository geographicalObjectRepository;
 
     public GeographicalObjectImpl(GeographicalObjectRepository geographicalObjectRepository) {
@@ -42,8 +42,12 @@ public class GeographicalObjectImpl implements ObjectService {
     }
 
     @Override
-    public Optional<GeographicalObject> update(GeographicalObject geographicalObject) {
-        return Optional.of(geographicalObjectRepository.save(geographicalObject));
+    public void update(GeographicalObject geographicalObject) {
+        Optional<GeographicalObject> row = geographicalObjectRepository.findById(geographicalObject.getId());
+
+        if (row.isPresent()){
+            geographicalObjectRepository.save(geographicalObject);
+        }
     }
 
     @Override

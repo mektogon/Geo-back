@@ -32,8 +32,8 @@ public class LocalityImpl implements LocalityService {
     }
 
     @Override
-    public Optional<Locality> update(Locality locality) {
-        return Optional.of(localityRepository.save(locality));
+    public void update(Locality locality) {
+        localityRepository.save(locality);
     }
 
     @Override
