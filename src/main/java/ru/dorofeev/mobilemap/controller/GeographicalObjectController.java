@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("v1/geo")
-public class GeographicalObjectController {
+public class GeographicalObjectController implements AbstractObjectDataController<GeographicalObject>{
     GeographicalObjectService geographicalObjectService;
 
     @Autowired
@@ -19,32 +19,38 @@ public class GeographicalObjectController {
     }
 
     @GetMapping("list")
-    public List<GeographicalObject> getAllGeographicalObject() {
+    @Override
+    public List<GeographicalObject> getAll() {
         return geographicalObjectService.findALl();
     }
 
     @GetMapping("find/{id}")
-    public Optional<GeographicalObject> getByIdGeographicalObject(@PathVariable Long id) {
+    @Override
+    public Optional<GeographicalObject> getById(@PathVariable Long id) {
         return geographicalObjectService.findById(id);
     }
 
     @GetMapping("find_by_name/{name}")
-    public List<GeographicalObject> getByIdGeographicalObject(@PathVariable String name) {
+    @Override
+    public List<GeographicalObject> getById(@PathVariable String name) {
         return geographicalObjectService.findAllByName(name);
     }
 
     @PostMapping("add")
-    public void addGeographicalObject(@RequestBody GeographicalObject geographicalObject) {
-        geographicalObjectService.save(geographicalObject);
+    @Override
+    public void add(@RequestBody GeographicalObject object) {
+        geographicalObjectService.save(object);
     }
 
     @DeleteMapping("delete/{id}")
-    public void deleteGeographicalObject(@PathVariable Long id) {
+    @Override
+    public void delete(@PathVariable Long id) {
         geographicalObjectService.deleteById(id);
     }
 
     @PutMapping("update")
-    public void updateGeographicalObject(@RequestBody GeographicalObject geographicalObject) {
-        geographicalObjectService.update(geographicalObject);
+    @Override
+    public void update(@RequestBody GeographicalObject object) {
+        geographicalObjectService.update(object);
     }
 }
