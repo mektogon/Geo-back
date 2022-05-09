@@ -45,7 +45,7 @@ public class GeographicalObjectImpl implements GeographicalObjectService {
     public void update(GeographicalObject geographicalObject) {
         Optional<GeographicalObject> row = geographicalObjectRepository.findById(geographicalObject.getId());
 
-        if (row.isPresent()){
+        if (row.isPresent()) {
             geographicalObjectRepository.save(geographicalObject);
         }
     }

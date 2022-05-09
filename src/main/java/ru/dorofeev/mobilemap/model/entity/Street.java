@@ -3,6 +3,7 @@ package ru.dorofeev.mobilemap.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
 
@@ -18,6 +19,8 @@ public class Street {
     @SequenceGenerator(name = "street_generator", sequenceName = "street_seq")
     private Long id;
 
+    @NotBlank(message = "The field should not be empty!")
+    @Column(unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "streets")

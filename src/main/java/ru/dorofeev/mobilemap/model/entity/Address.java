@@ -11,6 +11,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"locality_id", "street_id", "houseNumber"})
+})
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_generator")
@@ -24,5 +27,4 @@ public class Address {
     private Street street;
 
     private String houseNumber;
-
 }

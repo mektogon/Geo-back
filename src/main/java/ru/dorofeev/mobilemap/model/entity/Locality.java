@@ -2,10 +2,7 @@ package ru.dorofeev.mobilemap.model.entity;
 
 
 import lombok.*;
-
 import javax.persistence.*;
-
-
 import java.util.Collection;
 
 @Entity
@@ -14,6 +11,9 @@ import java.util.Collection;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name", "region_id"})
+})
 public class Locality {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "locality_generator")

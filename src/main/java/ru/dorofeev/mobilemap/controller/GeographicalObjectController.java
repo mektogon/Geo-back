@@ -1,10 +1,12 @@
 package ru.dorofeev.mobilemap.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,7 @@ public class GeographicalObjectController implements AbstractObjectDataControlle
 
     @PostMapping("add")
     @Override
-    public void add(@RequestBody GeographicalObject object) {
+    public void add(@Valid @RequestBody GeographicalObject object) {
         geographicalObjectService.save(object);
     }
 

@@ -34,9 +34,9 @@ public class TypeObjectController implements AbstractObjectDataController<TypeOb
         return typeObjectService.findAllByName(name);
     }
 
-    @PostMapping("add")
+    @PostMapping("/add")
     @Override
-    public void add(TypeObject object) {
+    public void add(@RequestBody TypeObject object) {
         typeObjectService.save(object);
     }
 
