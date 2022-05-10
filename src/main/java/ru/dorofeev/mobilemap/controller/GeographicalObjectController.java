@@ -1,7 +1,6 @@
 package ru.dorofeev.mobilemap.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;

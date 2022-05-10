@@ -1,7 +1,6 @@
 package ru.dorofeev.mobilemap.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.dorofeev.mobilemap.model.entity.Region;
 import ru.dorofeev.mobilemap.model.entity.Street;
 import ru.dorofeev.mobilemap.service.interf.StreetService;
 

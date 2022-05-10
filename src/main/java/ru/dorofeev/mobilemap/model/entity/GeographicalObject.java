@@ -37,11 +37,11 @@ public class GeographicalObject{
     private TypeObject type;
 
     @NotBlank(message = "The field should not be empty!")
-    @Pattern(regexp = regexLatitude)
+    @Pattern(regexp = regexLatitude, message = "Must match a regular expression!")
     private String latitude;
 
     @NotBlank(message = "The field should not be empty!")
-    @Pattern(regexp = regexLongitude)
+    @Pattern(regexp = regexLongitude, message = "Must match a regular expression!")
     private String longitude;
 
     private String description;

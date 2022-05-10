@@ -2,7 +2,6 @@ package ru.dorofeev.mobilemap.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.dorofeev.mobilemap.model.entity.Address;
 import ru.dorofeev.mobilemap.model.entity.Locality;
 import ru.dorofeev.mobilemap.service.interf.LocalityService;
 

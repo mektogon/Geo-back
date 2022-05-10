@@ -1,9 +1,5 @@
 package ru.dorofeev.mobilemap.controller;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
-
 import java.util.List;
 import java.util.Optional;
 
