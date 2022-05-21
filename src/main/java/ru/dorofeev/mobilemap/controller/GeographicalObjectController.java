@@ -1,8 +1,9 @@
 package ru.dorofeev.mobilemap.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
+import ru.dorofeev.mobilemap.model.base.GeographicalObject;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 
 import javax.validation.Valid;
@@ -10,46 +11,42 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("v1/geo")
-public class GeographicalObjectController implements AbstractObjectDataController<GeographicalObject>{
-    GeographicalObjectService geographicalObjectService;
+@RequestMapping("/api/v1/geo")
+@RequiredArgsConstructor
+public class GeographicalObjectController implements AbstractObjectDataController<GeographicalObject> {
+    private final GeographicalObjectService geographicalObjectService;
 
-    @Autowired
-    public GeographicalObjectController(GeographicalObjectService geographicalObjectService) {
-        this.geographicalObjectService = geographicalObjectService;
-    }
-
-    @GetMapping("list")
+    @GetMapping()
     @Override
     public List<GeographicalObject> getAll() {
         return geographicalObjectService.findALl();
     }
 
-    @GetMapping("find/{id}")
+    @GetMapping("/{id}")
     @Override
     public Optional<GeographicalObject> getById(@PathVariable Long id) {
         return geographicalObjectService.findById(id);
     }
 
-    @GetMapping("find_by_name/{name}")
+    @GetMapping("/name/{name}")
     @Override
-    public List<GeographicalObject> getById(@PathVariable String name) {
+    public List<GeographicalObject> getByName(@PathVariable String name) {
         return geographicalObjectService.findAllByName(name);
     }
 
-    @PostMapping("add")
+    @PostMapping()
     @Override
-    public void add(@Valid @RequestBody GeographicalObject object) {
+    public void save(@Valid @RequestBody GeographicalObject object) {
         geographicalObjectService.save(object);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
     @Override
     public void delete(@PathVariable Long id) {
         geographicalObjectService.deleteById(id);
     }
 
-    @PutMapping("update")
+    @PutMapping()
     @Override
     public void update(@RequestBody GeographicalObject object) {
         geographicalObjectService.update(object);

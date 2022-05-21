@@ -1,52 +1,51 @@
 package ru.dorofeev.mobilemap.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.dorofeev.mobilemap.model.entity.TypeObject;
+import ru.dorofeev.mobilemap.model.base.TypeObject;
 import ru.dorofeev.mobilemap.service.interf.TypeObjectService;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("v1/type")
-public class TypeObjectController implements AbstractObjectDataController<TypeObject>{
-    TypeObjectService typeObjectService;
+@RequestMapping("/api/v1/type")
+@RequiredArgsConstructor
+public class TypeObjectController implements AbstractObjectDataController<TypeObject> {
+    private final TypeObjectService typeObjectService;
 
-    public TypeObjectController(TypeObjectService typeObjectService) {
-        this.typeObjectService = typeObjectService;
-    }
-
-    @GetMapping("list")
+    @GetMapping()
     @Override
     public List<TypeObject> getAll() {
         return typeObjectService.findALl();
     }
 
-    @GetMapping("find/{id}")
+    @GetMapping("/{id}")
     @Override
     public Optional<TypeObject> getById(@PathVariable Long id) {
         return typeObjectService.findById(id);
     }
 
-    @GetMapping("find_by_name/{name}")
+    @GetMapping("/name/{name}")
     @Override
-    public List<TypeObject> getById(@PathVariable String name) {
+    public List<TypeObject> getByName(@PathVariable String name) {
         return typeObjectService.findAllByName(name);
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     @Override
-    public void add(@RequestBody TypeObject object) {
+    public void save(@RequestBody TypeObject object) {
         typeObjectService.save(object);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
     @Override
     public void delete(@PathVariable Long id) {
         typeObjectService.deleteById(id);
     }
 
-    @PutMapping("update")
+    @PutMapping()
     @Override
     public void update(@RequestBody TypeObject object) {
         typeObjectService.update(object);

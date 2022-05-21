@@ -1,7 +1,8 @@
 package ru.dorofeev.mobilemap.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.dorofeev.mobilemap.model.entity.Region;
+import ru.dorofeev.mobilemap.model.base.Region;
 import ru.dorofeev.mobilemap.repository.RegionRepository;
 import ru.dorofeev.mobilemap.service.interf.RegionService;
 
@@ -9,12 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RegionImpl implements RegionService {
+@RequiredArgsConstructor
+public class RegionServiceImpl implements RegionService {
     private final RegionRepository regionRepository;
-
-    public RegionImpl(RegionRepository regionRepository) {
-        this.regionRepository = regionRepository;
-    }
 
     @Override
     public List<Region> findALl() {

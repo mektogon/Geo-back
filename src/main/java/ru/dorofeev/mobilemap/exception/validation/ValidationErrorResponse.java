@@ -1,4 +1,4 @@
-package ru.dorofeev.mobilemap.response;
+package ru.dorofeev.mobilemap.exception.validation;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,8 @@
 package ru.dorofeev.mobilemap.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.dorofeev.mobilemap.model.entity.GeographicalObject;
+import ru.dorofeev.mobilemap.model.base.GeographicalObject;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 
@@ -10,12 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GeographicalObjectImpl implements GeographicalObjectService {
+@RequiredArgsConstructor
+public class GeographicalObjectServiceImpl implements GeographicalObjectService {
     private final GeographicalObjectRepository geographicalObjectRepository;
-
-    public GeographicalObjectImpl(GeographicalObjectRepository geographicalObjectRepository) {
-        this.geographicalObjectRepository = geographicalObjectRepository;
-    }
 
     @Override
     public List<GeographicalObject> findALl() {

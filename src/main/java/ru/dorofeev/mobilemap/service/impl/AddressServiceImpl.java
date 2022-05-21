@@ -1,7 +1,8 @@
 package ru.dorofeev.mobilemap.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.dorofeev.mobilemap.model.entity.Address;
+import ru.dorofeev.mobilemap.model.base.Address;
 import ru.dorofeev.mobilemap.repository.AddressRepository;
 import ru.dorofeev.mobilemap.service.interf.AddressService;
 
@@ -9,13 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AddressImpl implements AddressService {
+@RequiredArgsConstructor
+public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
-
-    public AddressImpl(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
-
     @Override
     public List<Address> findALl() {
         return addressRepository.findAll();

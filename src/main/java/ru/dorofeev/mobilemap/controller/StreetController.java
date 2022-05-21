@@ -1,46 +1,45 @@
 package ru.dorofeev.mobilemap.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.dorofeev.mobilemap.model.entity.Street;
+import ru.dorofeev.mobilemap.model.base.Street;
 import ru.dorofeev.mobilemap.service.interf.StreetService;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("v1/street")
-public class StreetController implements AbstractController<Street>{
-    StreetService streetService;
+@RequestMapping("/api/v1/street")
+@RequiredArgsConstructor
+public class StreetController implements AbstractController<Street> {
+    private final StreetService streetService;
 
-    public StreetController(StreetService streetService) {
-        this.streetService = streetService;
-    }
-
-    @GetMapping("list")
+    @GetMapping()
     @Override
     public List<Street> getAll() {
         return streetService.findALl();
     }
 
-    @GetMapping("find/{id}")
+    @GetMapping("/{id}")
     @Override
     public Optional<Street> getById(@PathVariable Long id) {
         return streetService.findById(id);
     }
 
-    @PostMapping("add")
+    @PostMapping()
     @Override
-    public void add(@RequestBody Street object) {
+    public void save(@RequestBody Street object) {
         streetService.save(object);
     }
 
-    @DeleteMapping("delete")
+    @DeleteMapping("/{id}")
     @Override
     public void delete(@PathVariable Long id) {
         streetService.deleteById(id);
     }
 
-    @PutMapping("update")
+    @PutMapping()
     @Override
     public void update(@PathVariable Street object) {
         streetService.update(object);
