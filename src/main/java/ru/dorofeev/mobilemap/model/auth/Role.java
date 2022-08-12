@@ -3,6 +3,7 @@ package ru.dorofeev.mobilemap.model.auth;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,5 +25,6 @@ public class Role {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
+    @Column(unique = true)
     private String name;
 }

@@ -8,24 +8,25 @@ import ru.dorofeev.mobilemap.service.interf.AddressService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
     @Override
-    public List<Address> findALl() {
+    public List<Address> getAll() {
         return addressRepository.findAll();
     }
 
     @Override
-    public Optional<Address> findById(Long id) {
+    public Optional<Address> findById(UUID id) {
         return addressRepository.findById(id);
     }
 
     @Override
-    public Optional<Address> save(Address address) {
-        return Optional.of(addressRepository.save(address));
+    public void save(Address address) {
+        addressRepository.save(address);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         addressRepository.deleteById(id);
     }
 }

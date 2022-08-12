@@ -1,5 +1,6 @@
 package ru.dorofeev.mobilemap.model.base;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,7 +31,4 @@ public class Street implements Serializable {
     @NotBlank(message = "The field should not be empty!")
     @Column(unique = true)
     private String name;
-
-    @ManyToMany(mappedBy = "streets")
-    private Collection<Locality> localities;
 }

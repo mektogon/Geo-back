@@ -3,10 +3,9 @@ package ru.dorofeev.mobilemap.model.base;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -25,6 +24,11 @@ public class Photo implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @ManyToOne
+    @NotNull(message = "The field should not be null!")
+    @NotBlank(message = "The field should not be empty!")
+    @Column(unique = true)
+    private String url;
+
+    @ManyToOne(optional = false)
     private GeographicalObject geographicalObject;
 }

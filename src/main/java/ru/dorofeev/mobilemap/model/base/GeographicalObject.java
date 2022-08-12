@@ -20,9 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @ToString
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "type_id", "latitude", "longitude"}),
-        @UniqueConstraint(columnNames = {"name", "type_id", "latitude", "longitude", "locality_id", "street_id", "houseNumber"}),
-        @UniqueConstraint(columnNames = {"name", "type_id", "latitude", "longitude", "description", "locality_id", "street_id", "houseNumber"})
+        @UniqueConstraint(columnNames = {"name", "type_id", "latitude", "longitude"})
 })
 public class GeographicalObject implements Serializable {
 
@@ -42,7 +40,7 @@ public class GeographicalObject implements Serializable {
     @NotNull(message = "The field should not be null!")
     @NotBlank(message = "The field should not be empty!")
     private String name;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private TypeObject type;
 
     @NotNull(message = "The field should not be null!")
@@ -57,16 +55,11 @@ public class GeographicalObject implements Serializable {
 
     private String description;
 
-    @ManyToOne
-    private Locality locality;
-
-    @ManyToOne
-    private Street street;
-
-    private String houseNumber;
-
     private String note;
 
-    @OneToOne
+    @ManyToOne
+    private Address address;
+
+    @ManyToOne(optional = false)
     private Designation designation;
 }

@@ -8,6 +8,7 @@ import ru.dorofeev.mobilemap.service.interf.StreetService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/street")
@@ -18,12 +19,12 @@ public class StreetController implements AbstractController<Street> {
     @GetMapping()
     @Override
     public List<Street> getAll() {
-        return streetService.findALl();
+        return streetService.getAll();
     }
 
     @GetMapping("/{id}")
     @Override
-    public Optional<Street> getById(@PathVariable Long id) {
+    public Optional<Street> getById(@PathVariable UUID id) {
         return streetService.findById(id);
     }
 
@@ -35,7 +36,7 @@ public class StreetController implements AbstractController<Street> {
 
     @DeleteMapping("/{id}")
     @Override
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         streetService.deleteById(id);
     }
 

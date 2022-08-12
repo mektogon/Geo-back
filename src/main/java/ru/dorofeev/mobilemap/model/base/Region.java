@@ -17,8 +17,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 public class Region implements Serializable {
 
     private static final long serialVersionUID = 1L;

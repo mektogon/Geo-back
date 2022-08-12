@@ -8,6 +8,7 @@ import ru.dorofeev.mobilemap.service.interf.StreetService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -15,18 +16,18 @@ public class StreetServiceImpl implements StreetService {
     private final StreetRepository streetRepository;
 
     @Override
-    public List<Street> findALl() {
+    public List<Street> getAll() {
         return streetRepository.findAll();
     }
 
     @Override
-    public Optional<Street> findById(Long id) {
+    public Optional<Street> findById(UUID id) {
         return streetRepository.findById(id);
     }
 
     @Override
-    public Optional<Street> save(Street street) {
-        return Optional.of(streetRepository.save(street));
+    public void save(Street street) {
+        streetRepository.save(street);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class StreetServiceImpl implements StreetService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         streetRepository.deleteById(id);
     }
 }

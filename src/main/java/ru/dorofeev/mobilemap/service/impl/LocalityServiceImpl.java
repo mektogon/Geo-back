@@ -8,6 +8,7 @@ import ru.dorofeev.mobilemap.service.interf.LocalityService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -15,18 +16,18 @@ public class LocalityServiceImpl implements LocalityService {
     private final LocalityRepository localityRepository;
 
     @Override
-    public List<Locality> findALl() {
+    public List<Locality> getAll() {
         return localityRepository.findAll();
     }
 
     @Override
-    public Optional<Locality> findById(Long id) {
+    public Optional<Locality> findById(UUID id) {
         return localityRepository.findById(id);
     }
 
     @Override
-    public Optional<Locality> save(Locality locality) {
-        return Optional.of(localityRepository.save(locality));
+    public void save(Locality locality) {
+        localityRepository.save(locality);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class LocalityServiceImpl implements LocalityService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         localityRepository.deleteById(id);
     }
 }

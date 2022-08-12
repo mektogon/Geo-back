@@ -15,7 +15,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @ToString
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"locality_id", "street_id", "houseNumber"})
+        @UniqueConstraint(columnNames = {"region_id", "type_locality_id", "district_id", "locality_id", "street_id", "houseNumber"}),
+        @UniqueConstraint(columnNames = {"region_id", "type_locality_id", "locality_id", "street_id", "houseNumber"}),
+        @UniqueConstraint(columnNames = {"region_id", "type_locality_id", "district_id", "locality_id"}),
+        @UniqueConstraint(columnNames = {"region_id", "type_locality_id", "locality_id"})
 })
 public class Address implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -25,11 +28,20 @@ public class Address implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    private Region region;
+
+    @ManyToOne(optional = false)
+    private TypeLocality typeLocality;
+
+    @ManyToOne(optional = false)
     private Locality locality;
 
     @ManyToOne
     private Street street;
+
+    @ManyToOne
+    private District district;
 
     private String houseNumber;
 }

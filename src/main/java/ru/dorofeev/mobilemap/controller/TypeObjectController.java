@@ -8,6 +8,7 @@ import ru.dorofeev.mobilemap.service.interf.TypeObjectService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/type")
@@ -18,12 +19,12 @@ public class TypeObjectController implements AbstractObjectDataController<TypeOb
     @GetMapping()
     @Override
     public List<TypeObject> getAll() {
-        return typeObjectService.findALl();
+        return typeObjectService.getAll();
     }
 
     @GetMapping("/{id}")
     @Override
-    public Optional<TypeObject> getById(@PathVariable Long id) {
+    public Optional<TypeObject> getById(@PathVariable UUID id) {
         return typeObjectService.findById(id);
     }
 
@@ -41,7 +42,7 @@ public class TypeObjectController implements AbstractObjectDataController<TypeOb
 
     @DeleteMapping("/{id}")
     @Override
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         typeObjectService.deleteById(id);
     }
 

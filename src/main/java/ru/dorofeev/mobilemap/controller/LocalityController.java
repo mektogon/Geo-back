@@ -8,6 +8,7 @@ import ru.dorofeev.mobilemap.service.interf.LocalityService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/locality")
@@ -18,12 +19,12 @@ public class LocalityController implements AbstractController<Locality> {
     @GetMapping()
     @Override
     public List<Locality> getAll() {
-        return localityService.findALl();
+        return localityService.getAll();
     }
 
     @GetMapping("/{id}")
     @Override
-    public Optional<Locality> getById(@PathVariable Long id) {
+    public Optional<Locality> getById(@PathVariable UUID id) {
         return localityService.findById(id);
     }
 
@@ -35,7 +36,7 @@ public class LocalityController implements AbstractController<Locality> {
 
     @DeleteMapping("/{id}")
     @Override
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         localityService.deleteById(id);
     }
 

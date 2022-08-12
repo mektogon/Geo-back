@@ -3,6 +3,7 @@ package ru.dorofeev.mobilemap.model.base;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -29,5 +30,6 @@ public class District implements Serializable {
 
     @NotNull(message = "The field should not be null!")
     @NotBlank(message = "The field should not be empty!")
+    @Column(unique = true)
     private String name;
 }

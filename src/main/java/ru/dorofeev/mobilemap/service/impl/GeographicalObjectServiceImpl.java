@@ -9,6 +9,7 @@ import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +17,12 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     private final GeographicalObjectRepository geographicalObjectRepository;
 
     @Override
-    public List<GeographicalObject> findALl() {
+    public List<GeographicalObject> getAll() {
         return geographicalObjectRepository.findAll();
     }
 
     @Override
-    public Optional<GeographicalObject> findById(Long id) {
+    public Optional<GeographicalObject> findById(UUID id) {
         return geographicalObjectRepository.findById(id);
     }
 
@@ -35,8 +36,8 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     }
 
     @Override
-    public Optional<GeographicalObject> save(GeographicalObject geographicalObject) {
-        return Optional.of(geographicalObjectRepository.save(geographicalObject));
+    public void save(GeographicalObject geographicalObject) {
+        geographicalObjectRepository.save(geographicalObject);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         geographicalObjectRepository.deleteById(id);
     }
 }

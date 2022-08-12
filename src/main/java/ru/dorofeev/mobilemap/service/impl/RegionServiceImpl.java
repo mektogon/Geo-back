@@ -8,6 +8,7 @@ import ru.dorofeev.mobilemap.service.interf.RegionService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -15,18 +16,18 @@ public class RegionServiceImpl implements RegionService {
     private final RegionRepository regionRepository;
 
     @Override
-    public List<Region> findALl() {
+    public List<Region> getAll() {
         return regionRepository.findAll();
     }
 
     @Override
-    public Optional<Region> findById(Long id) {
+    public Optional<Region> findById(UUID id) {
         return regionRepository.findById(id);
     }
 
     @Override
-    public Optional<Region> save(Region region) {
-        return Optional.of(regionRepository.save(region));
+    public void save(Region region) {
+        regionRepository.save(region);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         regionRepository.deleteById(id);
     }
 }

@@ -8,6 +8,7 @@ import ru.dorofeev.mobilemap.service.interf.RegionService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/region")
@@ -18,12 +19,12 @@ public class RegionController implements AbstractController<Region> {
     @GetMapping()
     @Override
     public List<Region> getAll() {
-        return regionService.findALl();
+        return regionService.getAll();
     }
 
     @GetMapping("/{id}")
     @Override
-    public Optional<Region> getById(@PathVariable Long id) {
+    public Optional<Region> getById(@PathVariable UUID id) {
         return regionService.findById(id);
     }
 
@@ -35,7 +36,7 @@ public class RegionController implements AbstractController<Region> {
 
     @DeleteMapping("/{id}")
     @Override
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         regionService.deleteById(id);
     }
 

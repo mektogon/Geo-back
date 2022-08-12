@@ -1,6 +1,7 @@
 package ru.dorofeev.mobilemap.model.base;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -17,9 +18,6 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "region_id"})
-})
 public class Locality implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -30,15 +28,7 @@ public class Locality implements Serializable {
 
     @NotNull(message = "The field should not be null!")
     @NotBlank(message = "The field should not be empty!")
+    @Column(unique = true)
     private String name;
 
-    @ManyToOne
-    private Region region;
-
-    @ManyToMany
-    @JoinTable(
-            name = "locality_street",
-            joinColumns = @JoinColumn(name = "locality_id"),
-            inverseJoinColumns = @JoinColumn(name = "street_id"))
-    private Collection<Street> streets;
 }
