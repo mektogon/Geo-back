@@ -1,4 +1,6 @@
 package ru.dorofeev.mobilemap.service.interf;
 
-public interface VideoService {
+import ru.dorofeev.mobilemap.model.base.Video;
+
+public interface VideoService extends AbstractDataFileService<Video> {
 }

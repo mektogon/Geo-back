@@ -9,6 +9,8 @@ public interface AbstractServiceDto<T> {
 
     Optional<T> findById(UUID id);
 
+    List<T> getByName(String name);
+
     void save(T t);
 
     void update(T t);

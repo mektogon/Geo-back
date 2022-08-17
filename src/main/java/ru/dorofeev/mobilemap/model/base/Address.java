@@ -1,9 +1,17 @@
 package ru.dorofeev.mobilemap.model.base;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -14,12 +22,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"region_id", "type_locality_id", "district_id", "locality_id", "street_id", "houseNumber"}),
-        @UniqueConstraint(columnNames = {"region_id", "type_locality_id", "locality_id", "street_id", "houseNumber"}),
-        @UniqueConstraint(columnNames = {"region_id", "type_locality_id", "district_id", "locality_id"}),
-        @UniqueConstraint(columnNames = {"region_id", "type_locality_id", "locality_id"})
-})
 public class Address implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -14,4 +14,6 @@ public interface AbstractService<T> {
     void update(T t);
 
     void deleteById(UUID id);
+
+    void deleteByName(String name);
 }

@@ -10,4 +10,9 @@ import java.util.UUID;
 @Repository
 public interface GeographicalObjectRepository extends JpaRepository<GeographicalObject, UUID> {
     List<GeographicalObject> findAllByName(String name);
+
+    void deleteByName(String name);
+
+    @Override
+    <S extends GeographicalObject> S save(S entity);
 }

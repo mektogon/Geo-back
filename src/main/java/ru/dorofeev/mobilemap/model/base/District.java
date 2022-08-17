@@ -1,6 +1,11 @@
 package ru.dorofeev.mobilemap.model.base;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -28,8 +33,8 @@ public class District implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @NotNull(message = "The field should not be null!")
-    @NotBlank(message = "The field should not be empty!")
+    @NotNull(message = "Поле не должно быть равно null!")
+    @NotBlank(message = "Поле не должно быть пустое!")
     @Column(unique = true)
     private String name;
 }

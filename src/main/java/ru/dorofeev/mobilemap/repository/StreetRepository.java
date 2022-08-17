@@ -8,4 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface StreetRepository extends JpaRepository<Street, UUID> {
+    Street findByName(String name);
+
+    void deleteByName(String name);
 }

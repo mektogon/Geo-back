@@ -8,4 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface LocalityRepository extends JpaRepository<Locality, UUID> {
+    Locality findByName(String name);
+
+    void deleteByName(String name);
 }

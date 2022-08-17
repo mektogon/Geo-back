@@ -39,4 +39,9 @@ public class StreetServiceImpl implements StreetService {
     public void deleteById(UUID id) {
         streetRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteByName(String name) {
+        streetRepository.deleteByName(name);
+    }
 }

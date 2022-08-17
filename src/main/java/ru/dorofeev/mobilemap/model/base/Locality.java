@@ -1,15 +1,20 @@
 package ru.dorofeev.mobilemap.model.base;
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -19,6 +24,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Locality implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -26,8 +32,8 @@ public class Locality implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @NotNull(message = "The field should not be null!")
-    @NotBlank(message = "The field should not be empty!")
+    @NotNull(message = "Поле не должно быть равно null!")
+    @NotBlank(message = "Поле не должно быть пустое!")
     @Column(unique = true)
     private String name;
 

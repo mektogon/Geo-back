@@ -1,7 +1,6 @@
 package ru.dorofeev.mobilemap.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.dorofeev.mobilemap.model.base.TypeObject;
 import ru.dorofeev.mobilemap.service.interf.TypeObjectService;
@@ -11,9 +10,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/type")
+@RequestMapping("/api/v1/type-object")
 @RequiredArgsConstructor
-public class TypeObjectController implements AbstractObjectDataController<TypeObject> {
+public class TypeObjectController implements AbstractController<TypeObject> {
+
     private final TypeObjectService typeObjectService;
 
     @GetMapping()
@@ -22,13 +22,13 @@ public class TypeObjectController implements AbstractObjectDataController<TypeOb
         return typeObjectService.getAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     @Override
     public Optional<TypeObject> getById(@PathVariable UUID id) {
         return typeObjectService.findById(id);
     }
 
-    @GetMapping("/name/{name}")
+    @GetMapping("/{name}")
     @Override
     public List<TypeObject> getByName(@PathVariable String name) {
         return typeObjectService.findAllByName(name);
@@ -40,15 +40,25 @@ public class TypeObjectController implements AbstractObjectDataController<TypeOb
         typeObjectService.save(object);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteById/{id}")
     @Override
-    public void delete(@PathVariable UUID id) {
+    public void deleteById(@PathVariable UUID id) {
         typeObjectService.deleteById(id);
+    }
+
+    @DeleteMapping("/{name}")
+    @Override
+    public void deleteByName(@PathVariable String name) {
+        typeObjectService.deleteByName(name);
     }
 
     @PutMapping()
     @Override
     public void update(@RequestBody TypeObject object) {
-        typeObjectService.update(object);
+        Optional<TypeObject> byId = typeObjectService.findById(object.getId());
+
+        if (byId.isPresent()) {
+            typeObjectService.save(object);
+        }
     }
 }

@@ -8,4 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface RegionRepository extends JpaRepository<Region, UUID> {
+    Region findByName(String name);
+
+    void deleteByName(String name);
 }

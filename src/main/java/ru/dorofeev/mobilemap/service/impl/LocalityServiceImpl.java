@@ -39,4 +39,9 @@ public class LocalityServiceImpl implements LocalityService {
     public void deleteById(UUID id) {
         localityRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteByName(String name) {
+        localityRepository.deleteByName(name);
+    }
 }

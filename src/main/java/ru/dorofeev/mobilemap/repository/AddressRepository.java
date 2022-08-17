@@ -8,4 +8,10 @@ import java.util.UUID;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, UUID> {
+    Address getAddressByRegionNameAndDistrictNameAndTypeLocalityNameAndLocalityNameAndStreetNameAndHouseNumber(String regionName,
+                                                                                                               String districtName,
+                                                                                                               String typeLocalityName,
+                                                                                                               String localityName,
+                                                                                                               String streetName,
+                                                                                                               String houseNumber);
 }

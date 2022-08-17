@@ -10,4 +10,11 @@ import java.util.UUID;
 @Repository
 public interface TypeObjectRepository extends JpaRepository<TypeObject, UUID> {
     List<TypeObject> findAllByName(String name);
+
+    TypeObject getTypeObjectByName(String typeName);
+
+    @Override
+    <S extends TypeObject> S save(S entity);
+
+    void deleteByName(String name);
 }

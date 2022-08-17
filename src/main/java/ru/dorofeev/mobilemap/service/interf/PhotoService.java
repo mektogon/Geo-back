@@ -1,4 +1,6 @@
 package ru.dorofeev.mobilemap.service.interf;
 
-public interface PhotoService {
+import ru.dorofeev.mobilemap.model.base.Photo;
+
+public interface PhotoService extends AbstractDataFileService<Photo> {
 }

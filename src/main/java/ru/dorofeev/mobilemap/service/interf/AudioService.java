@@ -1,4 +1,6 @@
 package ru.dorofeev.mobilemap.service.interf;
 
-public interface AudioService {
+import ru.dorofeev.mobilemap.model.base.Audio;
+
+public interface AudioService extends AbstractDataFileService<Audio> {
 }

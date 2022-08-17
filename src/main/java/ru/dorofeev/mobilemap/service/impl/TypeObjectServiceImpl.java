@@ -35,8 +35,15 @@ public class TypeObjectServiceImpl implements TypeObjectService {
     }
 
     @Override
+    public UUID saveAndReturnId(TypeObject typeObject) {
+        TypeObject savedEntity = typeObjectRepository.save(typeObject);
+
+        return savedEntity.getId();
+    }
+
+    @Override
     public void save(TypeObject typeObject) {
-       typeObjectRepository.save(typeObject);
+        typeObjectRepository.save(typeObject);
     }
 
     @Override
@@ -49,5 +56,19 @@ public class TypeObjectServiceImpl implements TypeObjectService {
         typeObjectRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteByName(String name) {
+        typeObjectRepository.deleteByName(name);
+    }
 
+    @Override
+    public TypeObject getTypeObjectByName(String typeName) {
+        TypeObject typeObjectByName = typeObjectRepository.getTypeObjectByName(typeName);
+
+        if (typeObjectByName == null) {
+            return typeObjectRepository.getTypeObjectByName("Отсутствует");
+        }
+
+        return typeObjectByName;
+    }
 }
