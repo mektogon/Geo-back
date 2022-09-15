@@ -35,12 +35,12 @@ public class AudioServiceImpl implements AudioService {
     @Value("${file.storage.audio.location}")
     private String directoryToSave;
 
-    private final List<String> EXTENSIONS = List.of("mp3", "ogg", "wav", "aiff", "ape", "flac", "mpeg");
+    private final List<String> EXTENSIONS = List.of("mp3", "ogg", "wav", "aiff", "ape", "flac", "mpeg", "m4a", "mp4");
 
     @Override
     public void upload(MultipartFile[] audio, UUID id) {
         if (audio.length > 2) {
-            log.error("IN upload()");
+            log.error("IN upload() - Превышен допустимый предел загрузки ауодизаписей!");
             throw new RuntimeException("Превышен допустимый предел загрузки ауодизаписей!");
         }
 

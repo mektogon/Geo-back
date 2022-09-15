@@ -21,6 +21,7 @@ import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +66,7 @@ public class GeographicalObjectController implements AbstractController<Geograph
     }
 
 
+    @Transactional
     @PostMapping()
     public void saveEntityAndFile(
             @RequestParam("name") String name,
@@ -93,7 +95,9 @@ public class GeographicalObjectController implements AbstractController<Geograph
         entity.setNote(note);
         entity.setDesignation(designation);
 
-        if (region != null && typeLocality != null && locality != null) {
+        if (region == null && typeLocality == null && locality == null && district == null && street  == null && houseNumber == null){
+            entity.setAddressDto(null);
+        } else if (region != null && typeLocality != null && locality != null) {
             AddressDto addressDto = AddressDto.builder()
                     .region(region)
                     .district(Objects.requireNonNullElse(district, "Отсутствует"))

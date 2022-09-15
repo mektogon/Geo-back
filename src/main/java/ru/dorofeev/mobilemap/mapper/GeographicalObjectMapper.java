@@ -2,6 +2,7 @@ package ru.dorofeev.mobilemap.mapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.dorofeev.mobilemap.model.base.GeographicalObject;
 import ru.dorofeev.mobilemap.model.dto.AddressDto;
@@ -25,10 +26,13 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class GeographicalObjectMapper {
-    private final String ENDPOINT_GET_PHOTO_BY_ID = "http://localhost:8080/api/v1/photo/";
-    private final String ENDPOINT_GET_VIDEO_BY_ID = "http://localhost:8080/api/v1/video/";
-    private final String ENDPOINT_GET_AUDIO_BY_ID = "http://localhost:8080/api/v1/audio/";
-    private final String ENDPOINT_GET_DESIGNATION_BY_ID = "http://localhost:8080/api/v1/designation/";
+
+    @Value("${server.url}")
+    private String rootUrl;
+    private final String ENDPOINT_GET_PHOTO_BY_ID = "/api/v1/photo/";
+    private final String ENDPOINT_GET_VIDEO_BY_ID = "/api/v1/video/";
+    private final String ENDPOINT_GET_AUDIO_BY_ID = "/api/v1/audio/";
+    private final String ENDPOINT_GET_DESIGNATION_BY_ID = "/api/v1/designation/";
     private final PhotoService photoService;
     private final VideoService videoService;
     private final AudioService audioService;
@@ -107,7 +111,7 @@ public class GeographicalObjectMapper {
         geographicalObjectDto.setLongitude(geographicalObject.getLongitude());
         geographicalObjectDto.setDescription(geographicalObject.getDescription());
         geographicalObjectDto.setNote(geographicalObject.getNote());
-        geographicalObjectDto.setDesignation(String.format("%s%s", ENDPOINT_GET_DESIGNATION_BY_ID, geographicalObject.getDesignation().getId()));
+        geographicalObjectDto.setDesignation(String.format("%s%s%s", rootUrl, ENDPOINT_GET_DESIGNATION_BY_ID, geographicalObject.getDesignation().getId()));
 
         if (geographicalObject.getAddress() != null) {
             geographicalObjectDto.setAddressDto(AddressDto.builder()
@@ -133,17 +137,17 @@ public class GeographicalObjectMapper {
         }
         geographicalObjectDto.setPhotoList(
                 photoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
-                        .map(el -> String.format("%s%s", ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
+                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
                         .collect(Collectors.toList())
         );
         geographicalObjectDto.setVideoList(
                 videoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
-                        .map(el -> String.format("%s%s", ENDPOINT_GET_VIDEO_BY_ID, el.getId()))
+                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_VIDEO_BY_ID, el.getId()))
                         .collect(Collectors.toList())
         );
         geographicalObjectDto.setAudioList(
                 audioService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
-                        .map(el -> String.format("%s%s", ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
+                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
                         .collect(Collectors.toList())
         );
 

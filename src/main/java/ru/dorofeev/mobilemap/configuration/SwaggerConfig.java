@@ -21,8 +21,8 @@ public class SwaggerConfig {
                                 .contact(
                                         new Contact()
                                                 .email("Mektogon385@mail.ru")
-                                                .url("https://github.com/MakS2711")
-                                                .name("Dorofeev Maxim")
+                                                .url("https://github.com/mektogon")
+                                                .name("Maxim Dorofeev")
                                 )
                 );
     }

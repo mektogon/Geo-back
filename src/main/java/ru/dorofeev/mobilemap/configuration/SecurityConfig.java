@@ -1,7 +1,6 @@
 package ru.dorofeev.mobilemap.configuration;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +26,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/v1/geo/getById/{id}",
             "/api/v1/geo/{name}",
             "/api/v1/geo/",
+
+            "/api/v1/designation/{id}",
+            "/api/v1/audio/{id}",
+            "/api/v1/video/{id}",
+            "/api/v1/photo/{id}",
+
     };
     private static final String[] SWAGGER_WHITELIST = {
             "/v3/api-docs/**",

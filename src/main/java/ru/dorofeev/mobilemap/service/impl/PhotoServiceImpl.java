@@ -39,7 +39,7 @@ public class PhotoServiceImpl implements PhotoService {
     public void upload(MultipartFile[] images, UUID id) {
 
         if (images.length > 5) {
-            log.error("IN upload()");
+            log.error("IN upload() - Превышен допустимый предел загрузки изображений!");
             throw new RuntimeException("Превышен допустимый предел загрузки изображений!");
         }
 

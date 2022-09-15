@@ -38,7 +38,7 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public void upload(MultipartFile[] video, UUID id) {
         if (video.length > 2) {
-            log.error("IN upload()");
+            log.error("IN upload() - Превышен допустимый предел загрузки видеозаписей!");
             throw new RuntimeException("Превышен допустимый предел загрузки видеозаписей!");
         }
 

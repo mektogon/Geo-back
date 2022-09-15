@@ -19,8 +19,8 @@ public class AuxiliaryUtils {
         String ext = Objects.requireNonNull(file.getContentType()).split("/")[1];
 
         if (!checkExtensionFile(ext, extension)) {
-            log.error("");
-            throw new RuntimeException("Тип загружаемого файла не удовлетворяет требованиям!");
+            log.error("Тип загружаемого файла {} не удовлетворяет требованиям!", file.getName());
+            throw new RuntimeException("Тип загружаемого файла " + file.getName() + " не удовлетворяет требованиям!");
         }
 
         String name = String.format("%s%s%s", UUID.randomUUID(), ".", ext);
