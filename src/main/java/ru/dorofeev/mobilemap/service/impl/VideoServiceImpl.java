@@ -57,12 +57,16 @@ public class VideoServiceImpl implements VideoService {
 
         if (byId.isPresent()) {
             videoRepository.save(file);
+            log.error("IN update() - Видео с ID: {} обновлено!", byId.get().getId());
         }
+
+        log.error("IN update() - Видео с ID: {} не найдено!", file.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         videoRepository.deleteById(id);
+        log.error("IN deleteById() - Видео с ID: {} удалено!", id);
     }
 
     @Override
@@ -75,8 +79,10 @@ public class VideoServiceImpl implements VideoService {
         Optional<Video> byId = videoRepository.findById(id);
 
         if (byId.isPresent()) {
+            log.error("IN findById() - Видео с ID: {} найдено!", id);
             return byId;
         } else {
+            log.error("IN findById() - Видео с ID: {} не найдено!", id);
             return Optional.of(new Video());
         }
     }
@@ -92,11 +98,13 @@ public class VideoServiceImpl implements VideoService {
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
+            log.error("IN getFileById() - Видео с ID: {} найдено!", id);
             String fileExtension = file.getName().split("\\.")[1];
 
             return ResponseEntity.ok().contentType((MediaType.parseMediaType("video/" + fileExtension)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {
+            log.error("IN getFileById() - Видео с ID: {} не найдено!", id);
             return ResponseEntity.ok().body(new byte[0]);
         }
     }

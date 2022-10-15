@@ -8,17 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.model.base.Audio;
-import ru.dorofeev.mobilemap.model.base.Video;
 import ru.dorofeev.mobilemap.repository.AudioRepository;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
 import ru.dorofeev.mobilemap.service.interf.AudioService;
 import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
-import javax.activation.FileTypeMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +48,8 @@ public class AudioServiceImpl implements AudioService {
                         .geographicalObject(geographicalObjectRepository.getById(id))
                         .build())
         );
+
+        log.error("IN upload() - Аудиозапись сохранена!");
     }
 
     @Override
@@ -59,12 +58,16 @@ public class AudioServiceImpl implements AudioService {
 
         if (byId.isPresent()) {
             audioRepository.save(file);
+            log.error("IN upload() - Обновлена аудиозапись с ID: {}", byId.get().getId());
         }
+
+        log.error("IN upload() - Не найдена аудиозапись с ID: {}", file.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         audioRepository.deleteById(id);
+        log.error("IN deleteById() - Аудиозапись с ID: {} удалена!", id);
     }
 
     @Override
@@ -77,8 +80,10 @@ public class AudioServiceImpl implements AudioService {
         Optional<Audio> byId = audioRepository.findById(id);
 
         if (byId.isPresent()) {
+            log.error("IN findById() - Найдена аудиозапись с ID: {}", id);
             return byId;
         } else {
+            log.error("IN findById() - Не найдена аудиозапись с ID: {}", id);
             return Optional.of(new Audio());
         }
     }
@@ -96,9 +101,12 @@ public class AudioServiceImpl implements AudioService {
             File file = new File(foundFile.get().getUrl());
             String fileExtension = file.getName().split("\\.")[1];
 
+            log.error("IN getFileById() - Найдена аудиозапись с ID: {}", id);
+
             return ResponseEntity.ok().contentType((MediaType.parseMediaType("audio/" + fileExtension)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {
+            log.error("IN getFileById() - Не найдена аудиозапись с ID: {}", id);
             return ResponseEntity.ok().body(new byte[0]);
         }
     }

@@ -1,6 +1,7 @@
 package ru.dorofeev.mobilemap.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.dorofeev.mobilemap.model.base.Region;
 import ru.dorofeev.mobilemap.repository.RegionRepository;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RegionServiceImpl implements RegionService {
@@ -28,20 +30,24 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void save(Region region) {
         regionRepository.save(region);
+        log.error("IN save() - Регион сохранен!");
     }
 
     @Override
     public void update(Region region) {
         regionRepository.save(region);
+        log.error("IN update() - Регион с ID: {} обновлен!", region.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         regionRepository.deleteById(id);
+        log.error("IN deleteById() - Регион с ID: {} удален!", id);
     }
 
     @Override
     public void deleteByName(String name) {
         regionRepository.deleteByName(name);
+        log.error("IN deleteByName() - Регион с name: {} удален!", name);
     }
 }

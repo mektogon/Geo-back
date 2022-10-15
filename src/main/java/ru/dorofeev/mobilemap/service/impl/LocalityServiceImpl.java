@@ -1,6 +1,7 @@
 package ru.dorofeev.mobilemap.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.dorofeev.mobilemap.model.base.Locality;
 import ru.dorofeev.mobilemap.repository.LocalityRepository;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LocalityServiceImpl implements LocalityService {
@@ -28,20 +30,24 @@ public class LocalityServiceImpl implements LocalityService {
     @Override
     public void save(Locality locality) {
         localityRepository.save(locality);
+        log.error("IN save() - Местность с ID: {} сохранена", locality.getId());
     }
 
     @Override
     public void update(Locality locality) {
         localityRepository.save(locality);
+        log.error("IN update() - Местность с ID: {} обновлена", locality.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         localityRepository.deleteById(id);
+        log.error("IN deleteById() - Местность с ID: {} удалена", id);
     }
 
     @Override
     public void deleteByName(String name) {
         localityRepository.deleteByName(name);
+        log.error("IN deleteByName() - Местность с name: {} удалена", name);
     }
 }

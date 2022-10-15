@@ -19,7 +19,7 @@ public class AuxiliaryUtils {
         String ext = Objects.requireNonNull(file.getContentType()).split("/")[1];
 
         if (!checkExtensionFile(ext, extension)) {
-            log.error("Тип загружаемого файла {} не удовлетворяет требованиям!", file.getName());
+            log.error("IN SavingFile() - Тип загружаемого файла {} не удовлетворяет требованиям!", file.getName());
             throw new RuntimeException("Тип загружаемого файла " + file.getName() + " не удовлетворяет требованиям!");
         }
 
@@ -29,7 +29,7 @@ public class AuxiliaryUtils {
         try {
             Files.copy(file.getInputStream(), fullPathToSave, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            log.error("");
+            log.error("IN SavingFile() - Ошибка при сохранении файла в директорию!");
             throw new RuntimeException(e);
         }
 
@@ -39,11 +39,9 @@ public class AuxiliaryUtils {
     private static boolean checkExtensionFile(String extCurrentFile, List<String> extension) {
         for (var ext : extension) {
             if (ext.equals(extCurrentFile.toLowerCase())) {
-                log.info("");
                 return true;
             }
         }
-        log.info("");
         return false;
     }
 

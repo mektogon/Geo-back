@@ -22,17 +22,21 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public List<Users> getAll() {
         List<Users> usersList = usersRepository.findAll();
-        log.info("В getAll найдено данное количество юзеров: {} ", usersList.size());
+
+        log.info("IN getAll() - Найдено {} пользователей", usersList.size());
+
         return usersList;
     }
 
     @Override
     public Users findByLogin(String login) {
         Users result = usersRepository.findByLogin(login);
-        log.info("В findByLogin был найден пользователь с логином: {}", login);
+
         if (result != null) {
+            log.info("IN findByLogin() - Найден пользователь с логином: {}", login);
             return result;
         } else {
+            log.info("IN findByLogin() - Не найден пользователь с логином: {}", login);
             throw new UsernameNotFoundException("Пользователя с данным логином не существует.");
         }
     }
@@ -42,9 +46,12 @@ public class UsersServiceImpl implements UsersService {
         Users result = usersRepository.findById(id).orElse(null);
 
         if (result == null) {
-            throw new NoSuchElementException("Пользователя с таким id не существует.");
+            log.info("IN findById() - Пользователь с ID: {} не найден!", id);
+            throw new NoSuchElementException("Пользователь с таким ID не найден!");
         }
-        log.info("В findById был найден пользователь с id: {}", result);
+
+        log.info("IN findById() - Найден пользователь с ID: {}", result.getId());
+
         return result;
     }
 }

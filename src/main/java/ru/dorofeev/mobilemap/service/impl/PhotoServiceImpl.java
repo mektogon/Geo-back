@@ -50,6 +50,8 @@ public class PhotoServiceImpl implements PhotoService {
                         .geographicalObject(geographicalObjectRepository.getById(id))
                         .build())
         );
+
+        log.error("IN upload() - Фотографии сохранены в количестве: {} шт.", images.length);
     }
 
     @Override
@@ -58,12 +60,16 @@ public class PhotoServiceImpl implements PhotoService {
 
         if (byId.isPresent()) {
             photoRepository.save(file);
+            log.error("IN update() - Фотография с ID: {} обновлена!", byId.get().getId());
         }
+
+        log.error("IN deleteById() - Фотография с ID: {} не найдена!", file.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         photoRepository.deleteById(id);
+        log.error("IN deleteById() - Фотография с ID: {} удалена!", id);
     }
 
     @Override
@@ -76,8 +82,10 @@ public class PhotoServiceImpl implements PhotoService {
         Optional<Photo> byId = photoRepository.findById(id);
 
         if (byId.isPresent()) {
+            log.error("IN findById() - Фотография с ID: {} найдена!", id);
             return byId;
         } else {
+            log.error("IN findById() - Фотография с ID: {} не найдена!", id);
             return Optional.of(new Photo());
         }
     }
@@ -93,9 +101,11 @@ public class PhotoServiceImpl implements PhotoService {
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
+            log.error("IN getFileById() - Фотография с ID: {} найдена!", id);
             return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {
+            log.error("IN getFileById() - Фотография с ID: {} не найдена!", id);
             return ResponseEntity.ok().body(new byte[0]);
         }
     }

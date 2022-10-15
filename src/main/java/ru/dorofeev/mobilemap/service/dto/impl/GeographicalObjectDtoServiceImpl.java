@@ -27,14 +27,14 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
 
     @Override
     public List<GeographicalObjectDto> getAll() {
-        log.info("IN getAll() - Converting List<Entity> into List<DTO>.");
+        log.info("IN getAll() - Преобразование List<Entity> в List<DTO>.");
 
         return geographicalObjectMapper.toDtoList(geographicalObjectService.getAll());
     }
 
     @Override
     public Optional<GeographicalObjectDto> findById(UUID id) {
-        log.info("IN findById() - Converting entity into dto.");
+        log.info("IN findById() - Преобразование entity в dto.");
 
         return geographicalObjectService.findById(id)
                 .map(geographicalObjectMapper::toDto)
@@ -43,7 +43,7 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
 
     @Override
     public List<GeographicalObjectDto> getByName(@PathVariable String name) {
-        log.info("IN getByName() - Converting List<Entity> into List<DTO>.");
+        log.info("IN getByName() - Преобразование List<Entity> в List<DTO>.");
 
         List<GeographicalObject> allByName = geographicalObjectService.findAllByName(name);
 
@@ -62,12 +62,12 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     public void save(GeographicalObjectDto geographicalObjectDto) {
         geographicalObjectService.save(geographicalObjectMapper.toEntity(geographicalObjectDto));
 
-        log.info("IN save() - Converting dto into entity.");
+        log.info("IN save() - Преобразование dto в entity.");
     }
 
     @Override
     public UUID saveAndReturnId(GeographicalObjectDto geographicalObjectDto) {
-        log.info("IN saveAndReturnId() - Converting dto into entity.");
+        log.info("IN saveAndReturnId() - Преобразование dto в entity.");
 
         return geographicalObjectService.saveAndReturnId(geographicalObjectMapper.toEntity(geographicalObjectDto));
 
@@ -98,7 +98,7 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
 
     @Override
     public void update(GeographicalObjectDto geographicalObjectDto) {
-        log.info("IN update() - Converting dto into entity.");
+        log.info("IN update() - Преобразование dto в entity.");
 
         geographicalObjectService.update(geographicalObjectMapper.toEntity(geographicalObjectDto));
     }

@@ -36,7 +36,7 @@ public class DesignationServiceImpl implements DesignationService {
     @Override
     public void upload(MultipartFile[] designation) {
         if (designation.length > 1) {
-            log.error("IN upload()");
+            log.error("IN deleteById() - Превышен допустимый предел загрузки обозначений!");
             throw new RuntimeException("Превышен допустимый предел загрузки обозначений!");
         }
 
@@ -46,6 +46,8 @@ public class DesignationServiceImpl implements DesignationService {
                         .name(currentDesignation.getOriginalFilename())
                         .build())
         );
+
+        log.error("IN upload() - Обозначение сохранено!");
     }
 
     @Override
@@ -54,18 +56,23 @@ public class DesignationServiceImpl implements DesignationService {
 
         if (byId.isPresent()) {
             designationRepository.save(file);
+            log.error("IN upload() - Обновлено обозначение с ID: {}", byId.get().getId());
         }
+
+        log.error("IN upload() - Не найдено обозначение с ID: {}", file.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         designationRepository.deleteById(id);
+        log.error("IN deleteById() - Удалено обозначение с ID: {}", id);
     }
 
 
     @Override
     public void deleteByName(String name) {
         designationRepository.deleteByName(name);
+        log.error("IN deleteByName() - Удалено обозначение с name: {}", name);
     }
 
     @Override
@@ -78,8 +85,10 @@ public class DesignationServiceImpl implements DesignationService {
         Optional<Designation> byId = designationRepository.findById(id);
 
         if (byId.isPresent()) {
+            log.error("IN findById() - Найдено обозначение с ID: {}", id);
             return byId;
         } else {
+            log.error("IN findById() - Не найдено обозначение с ID: {}", id);
             return Optional.of(new Designation());
         }
     }
@@ -93,7 +102,10 @@ public class DesignationServiceImpl implements DesignationService {
     public Designation getDesignationByName(String name) {
         Designation designationByName = designationRepository.getDesignationByName(name);
 
+        log.error("IN getDesignationByName() - Найдено обозначение с name: {}", name);
+
         if (designationByName == null) {
+            log.error("IN getDesignationByName() - Не найдено обозначение с name: {}", name);
             return designationRepository.getDesignationByName("Отсутствует");
         }
 
@@ -106,9 +118,11 @@ public class DesignationServiceImpl implements DesignationService {
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
+            log.error("IN getFileById() - Найдено обозначение с ID: {}", id);
             return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {
+            log.error("IN getFileById() - Не найдено обозначение с ID: {}", id);
             return ResponseEntity.ok().body(new byte[0]);
         }
     }

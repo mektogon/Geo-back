@@ -1,6 +1,7 @@
 package ru.dorofeev.mobilemap.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.dorofeev.mobilemap.model.base.TypeObject;
 import ru.dorofeev.mobilemap.repository.TypeObjectRepository;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TypeObjectServiceImpl implements TypeObjectService {
@@ -37,6 +39,7 @@ public class TypeObjectServiceImpl implements TypeObjectService {
     @Override
     public UUID saveAndReturnId(TypeObject typeObject) {
         TypeObject savedEntity = typeObjectRepository.save(typeObject);
+        log.error("IN saveAndReturnId() - Тип объекта сохранен!");
 
         return savedEntity.getId();
     }
@@ -44,21 +47,25 @@ public class TypeObjectServiceImpl implements TypeObjectService {
     @Override
     public void save(TypeObject typeObject) {
         typeObjectRepository.save(typeObject);
+        log.error("IN save() - Тип объекта сохранен!");
     }
 
     @Override
     public void update(TypeObject typeObject) {
         typeObjectRepository.save(typeObject);
+        log.error("IN update() - Тип объекта с ID: {} обновлен!", typeObject.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         typeObjectRepository.deleteById(id);
+        log.error("IN deleteById() - Тип объекта с ID: {} удален!", id);
     }
 
     @Override
     public void deleteByName(String name) {
         typeObjectRepository.deleteByName(name);
+        log.error("IN deleteByName() - Тип объекта с name: {} удален!", name);
     }
 
     @Override
@@ -69,6 +76,7 @@ public class TypeObjectServiceImpl implements TypeObjectService {
             return typeObjectRepository.getTypeObjectByName("Отсутствует");
         }
 
+        log.error("IN getTypeObjectByName() - Тип объекта с name: {} найден!", typeName);
         return typeObjectByName;
     }
 }
