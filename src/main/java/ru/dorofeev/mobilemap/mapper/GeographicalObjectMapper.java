@@ -105,6 +105,7 @@ public class GeographicalObjectMapper {
         }
 
         GeographicalObjectDto geographicalObjectDto = new GeographicalObjectDto();
+        geographicalObjectDto.setId(geographicalObject.getId());
         geographicalObjectDto.setName(geographicalObject.getName());
         geographicalObjectDto.setType(geographicalObject.getType().getName());
         geographicalObjectDto.setLatitude(geographicalObject.getLatitude());
