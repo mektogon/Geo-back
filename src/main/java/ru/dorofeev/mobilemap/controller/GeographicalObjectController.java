@@ -32,9 +32,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GeographicalObjectController implements AbstractController<GeographicalObjectDto> {
     private final GeographicalObjectService geographicalObjectService;
-
     private final GeographicalObjectDtoService geographicalObjectDtoService;
-
     private final PhotoService photoService;
     private final VideoService videoService;
     private final AudioService audioService;

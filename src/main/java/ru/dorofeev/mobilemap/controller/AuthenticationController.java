@@ -30,19 +30,19 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
-            String login = requestDto.getLogin();
+            String login = requestDto.getUsername();
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, requestDto.getPassword()));
             Users user = usersService.findByLogin(login);
 
             if (user == null) {
-                throw new UsernameNotFoundException("Пользователь с логином: " + login + " не найден!");
+                throw new UsernameNotFoundException("Пользователь с username: " + login + " не найден!");
             }
 
             String token = jwtTokenProvider.createToken(login, user.getRole());
 
             Map<Object, Object> response = new HashMap<>();
-            response.put("login", login);
+            response.put("username", login);
             response.put("token", token);
 
             return ResponseEntity.ok(response);
