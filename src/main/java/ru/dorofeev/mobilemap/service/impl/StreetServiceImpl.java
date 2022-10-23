@@ -3,6 +3,7 @@ package ru.dorofeev.mobilemap.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.dorofeev.mobilemap.model.base.Region;
 import ru.dorofeev.mobilemap.model.base.Street;
 import ru.dorofeev.mobilemap.repository.StreetRepository;
 import ru.dorofeev.mobilemap.service.interf.StreetService;
@@ -35,8 +36,14 @@ public class StreetServiceImpl implements StreetService {
 
     @Override
     public void update(Street street) {
-        streetRepository.save(street);
-        log.info("IN update() - Улица с ID: {} обновлена!", street.getId());
+        Optional<Street> byId = streetRepository.findById(street.getId());
+
+        if (byId.isPresent()) {
+            streetRepository.save(street);
+            log.info("IN update() - Обновлена улица с ID: {}", byId.get().getId());
+        }
+
+        log.info("IN update() - Не удалось найти улицу с ID: {}", street.getId());
     }
 
     @Override

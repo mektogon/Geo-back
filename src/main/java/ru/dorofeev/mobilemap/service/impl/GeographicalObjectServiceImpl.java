@@ -73,11 +73,11 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
 
     @Override
     public void update(GeographicalObject geographicalObject) {
-        Optional<GeographicalObject> row = geographicalObjectRepository.findById(geographicalObject.getId());
+        Optional<GeographicalObject> byId = geographicalObjectRepository.findById(geographicalObject.getId());
 
-        if (row.isPresent()) {
+        if (byId.isPresent()) {
             geographicalObjectRepository.save(geographicalObject);
-            log.info("IN update() - Обновлен гео-объект с ID: {}", row.get().getId());
+            log.info("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
         }
 
         log.info("IN update() - Не удалось найти гео-объект с ID: {}", geographicalObject.getId());
@@ -125,7 +125,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             }
 
             if (type != null) {
-                entity.setType(typeObjectService.getTypeObjectByName(type));
+                entity.setType(typeObjectService.getByName(type));
             }
 
             if (latitude != null) {

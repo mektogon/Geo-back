@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +20,6 @@ import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,7 +28,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/geo")
 @RequiredArgsConstructor
-public class GeographicalObjectController implements AbstractController<GeographicalObjectDto> {
+public class GeographicalObjectController {
     private final GeographicalObjectService geographicalObjectService;
     private final GeographicalObjectDtoService geographicalObjectDtoService;
     private final PhotoService photoService;
@@ -38,33 +36,23 @@ public class GeographicalObjectController implements AbstractController<Geograph
     private final AudioService audioService;
 
     @GetMapping()
-    @Override
     public List<GeographicalObjectDto> getAll() {
         return geographicalObjectDtoService.getAll();
     }
 
     @GetMapping("/getById/{id}")
-    @Override
     public Optional<GeographicalObjectDto> getById(@PathVariable UUID id) {
         return geographicalObjectDtoService.findById(id);
     }
 
     @GetMapping("/{name}")
-    @Override
     public List<GeographicalObjectDto> getByName(@PathVariable String name) {
         return geographicalObjectDtoService.getByName(name);
     }
 
-    @PostMapping("/saveOnlyObject")
-    @Override
-    public void save(@Valid @RequestBody GeographicalObjectDto object) {
-        geographicalObjectDtoService.save(object);
-    }
-
-
     @Transactional
     @PostMapping()
-    public void saveEntityAndFile(
+    public void save(
             @RequestParam("name") String name,
             @RequestParam(value = "type", defaultValue = "Отсутствует") String type,
             @RequestParam("latitude") String latitude,
@@ -126,25 +114,17 @@ public class GeographicalObjectController implements AbstractController<Geograph
     }
 
     @DeleteMapping("/{name}")
-    @Override
     public void deleteByName(@PathVariable String name) {
         geographicalObjectService.deleteByName(name);
     }
 
     @DeleteMapping("/deleteById/{id}")
-    @Override
     public void deleteById(@PathVariable UUID id) {
         geographicalObjectService.deleteById(id);
     }
 
-    @PatchMapping("/updateOnlyFile")
-    @Override
-    public void update(@RequestBody GeographicalObjectDto object) {
-        geographicalObjectDtoService.update(object);
-    }
-
     @PatchMapping()
-    public void updateEntityAndFile(
+    public void update(
             @RequestParam("id") UUID id,
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "type", required = false) String type,

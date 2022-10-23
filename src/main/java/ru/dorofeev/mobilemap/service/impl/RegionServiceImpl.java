@@ -35,8 +35,14 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public void update(Region region) {
-        regionRepository.save(region);
-        log.info("IN update() - Регион с ID: {} обновлен!", region.getId());
+        Optional<Region> byId = regionRepository.findById(region.getId());
+
+        if (byId.isPresent()) {
+            regionRepository.save(region);
+            log.info("IN update() - Обновлен регион с ID: {}", byId.get().getId());
+        }
+
+        log.info("IN update() - Не удалось найти регион с ID: {}", region.getId());
     }
 
     @Override

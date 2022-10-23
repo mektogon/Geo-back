@@ -35,8 +35,14 @@ public class LocalityServiceImpl implements LocalityService {
 
     @Override
     public void update(Locality locality) {
-        localityRepository.save(locality);
-        log.info("IN update() - Местность с ID: {} обновлена", locality.getId());
+        Optional<Locality> byId = localityRepository.findById(locality.getId());
+
+        if (byId.isPresent()) {
+            localityRepository.save(locality);
+            log.info("IN update() - Обновлена местность с ID: {}", byId.get().getId());
+        }
+
+        log.info("IN update() - Не удалось найти местность с ID: {}", locality.getId());
     }
 
     @Override

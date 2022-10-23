@@ -19,7 +19,7 @@ public interface AbstractController<T> {
      * @param name имя искомого объекта.
      * @return возвращает искомый объект.
      */
-    List<T> getByName(String name);
+    T getByName(String name);
 
     /**
      * Метод осуществляет сохранение объекта.

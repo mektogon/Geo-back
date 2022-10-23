@@ -7,7 +7,6 @@ import ru.dorofeev.mobilemap.model.base.TypeObject;
 import ru.dorofeev.mobilemap.repository.TypeObjectRepository;
 import ru.dorofeev.mobilemap.service.interf.TypeObjectService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,23 +28,6 @@ public class TypeObjectServiceImpl implements TypeObjectService {
     }
 
     @Override
-    public List<TypeObject> findAllByName(String name) {
-        if (name == null) {
-            log.error("IN findAllByName() - Имя отсутствует!");
-            return Collections.emptyList();
-        }
-        return typeObjectRepository.findAllByName(name);
-    }
-
-    @Override
-    public UUID saveAndReturnId(TypeObject typeObject) {
-        TypeObject savedEntity = typeObjectRepository.save(typeObject);
-        log.info("IN saveAndReturnId() - Тип объекта сохранен!");
-
-        return savedEntity.getId();
-    }
-
-    @Override
     public void save(TypeObject typeObject) {
         typeObjectRepository.save(typeObject);
         log.info("IN save() - Тип объекта сохранен!");
@@ -53,8 +35,14 @@ public class TypeObjectServiceImpl implements TypeObjectService {
 
     @Override
     public void update(TypeObject typeObject) {
-        typeObjectRepository.save(typeObject);
-        log.info("IN update() - Тип объекта с ID: {} обновлен!", typeObject.getId());
+        Optional<TypeObject> byId = typeObjectRepository.findById(typeObject.getId());
+
+        if (byId.isPresent()) {
+            typeObjectRepository.save(typeObject);
+            log.info("IN update() - Тип объекта с ID: {} обновлен!", typeObject.getId());
+        }
+
+        log.info("IN update() - Не удалось найти тип объекта с ID: {}", typeObject.getId());
     }
 
     @Override
@@ -70,12 +58,12 @@ public class TypeObjectServiceImpl implements TypeObjectService {
     }
 
     @Override
-    public TypeObject getTypeObjectByName(String typeName) {
-        TypeObject typeObjectByName = typeObjectRepository.getTypeObjectByName(typeName);
+    public TypeObject getByName(String typeName) {
+        TypeObject typeObjectByName = typeObjectRepository.findByName(typeName);
 
         if (typeObjectByName == null) {
             log.error("IN getTypeObjectByName() - Имя отсутствует!");
-            return typeObjectRepository.getTypeObjectByName("Отсутствует");
+            return typeObjectRepository.findByName("Отсутствует");
         }
 
         log.info("IN getTypeObjectByName() - Тип объекта с name: {} найден!", typeName);

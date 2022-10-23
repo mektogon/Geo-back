@@ -52,7 +52,14 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void update(Address address) {
-        addressRepository.save(address);
+        Optional<Address> byId = addressRepository.findById(address.getId());
+
+        if (byId.isPresent()) {
+            addressRepository.save(address);
+            log.info("IN update() - Обновлен адрес с ID: {}", byId.get().getId());
+        }
+
+        log.info("IN update() - Не удалось найти адрес с ID: {}", address.getId());
     }
 
     @Override

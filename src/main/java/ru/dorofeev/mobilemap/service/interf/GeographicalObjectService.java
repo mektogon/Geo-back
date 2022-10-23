@@ -3,9 +3,13 @@ package ru.dorofeev.mobilemap.service.interf;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.model.base.GeographicalObject;
 
+import java.util.List;
 import java.util.UUID;
 
-public interface GeographicalObjectService extends AbstractDataObjectService<GeographicalObject> {
+public interface GeographicalObjectService extends AbstractService<GeographicalObject> {
+    List<GeographicalObject> findAllByName(String name);
+    UUID saveAndReturnId(GeographicalObject geographicalObject);
+
     void update(
             UUID id,
             String name,
