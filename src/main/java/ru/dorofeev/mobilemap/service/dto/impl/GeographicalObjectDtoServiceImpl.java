@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.mapper.GeographicalObjectMapper;
 import ru.dorofeev.mobilemap.model.base.GeographicalObject;
-import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDto;
+import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoMobile;
+import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoWeb;
 import ru.dorofeev.mobilemap.service.dto.interf.GeographicalObjectDtoService;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 
@@ -26,23 +27,30 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     private final GeographicalObjectService geographicalObjectService;
 
     @Override
-    public List<GeographicalObjectDto> getAll() {
+    public List<GeographicalObjectDtoMobile> getAll() {
         log.info("IN getAll() - Преобразование List<Entity> в List<DTO>.");
 
         return geographicalObjectMapper.toDtoList(geographicalObjectService.getAll());
     }
 
     @Override
-    public Optional<GeographicalObjectDto> findById(UUID id) {
-        log.info("IN findById() - Преобразование entity в dto.");
+    public List<GeographicalObjectDtoWeb> getAllForWeb() {
+        log.info("IN getAllForAdminPanel() - Преобразование List<Entity> в List<DTO>.");
 
-        return geographicalObjectService.findById(id)
-                .map(geographicalObjectMapper::toDto)
-                .or(() -> Optional.of(new GeographicalObjectDto()));
+        return geographicalObjectMapper.toDtoWebList(geographicalObjectService.getAll());
     }
 
     @Override
-    public List<GeographicalObjectDto> getByName(@PathVariable String name) {
+    public Optional<GeographicalObjectDtoMobile> findById(UUID id) {
+        log.info("IN findById() - Преобразование entity в dto.");
+
+        return geographicalObjectService.findById(id)
+                .map(geographicalObjectMapper::toDtoMobile)
+                .or(() -> Optional.of(new GeographicalObjectDtoMobile()));
+    }
+
+    @Override
+    public List<GeographicalObjectDtoMobile> getByName(@PathVariable String name) {
         log.info("IN getByName() - Преобразование List<Entity> в List<DTO>.");
 
         List<GeographicalObject> allByName = geographicalObjectService.findAllByName(name);
@@ -59,17 +67,17 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     }
 
     @Override
-    public void save(GeographicalObjectDto geographicalObjectDto) {
-        geographicalObjectService.save(geographicalObjectMapper.toEntity(geographicalObjectDto));
+    public void save(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
+        geographicalObjectService.save(geographicalObjectMapper.toEntity(geographicalObjectDtoMobile));
 
         log.info("IN save() - Преобразование dto в entity.");
     }
 
     @Override
-    public UUID saveAndReturnId(GeographicalObjectDto geographicalObjectDto) {
+    public UUID saveAndReturnId(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
         log.info("IN saveAndReturnId() - Преобразование dto в entity.");
 
-        return geographicalObjectService.saveAndReturnId(geographicalObjectMapper.toEntity(geographicalObjectDto));
+        return geographicalObjectService.saveAndReturnId(geographicalObjectMapper.toEntity(geographicalObjectDtoMobile));
 
     }
 
@@ -97,10 +105,10 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     }
 
     @Override
-    public void update(GeographicalObjectDto geographicalObjectDto) {
+    public void update(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
         log.info("IN update() - Преобразование dto в entity.");
 
-        geographicalObjectService.update(geographicalObjectMapper.toEntity(geographicalObjectDto));
+        geographicalObjectService.update(geographicalObjectMapper.toEntity(geographicalObjectDtoMobile));
     }
 
 

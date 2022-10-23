@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.exception.address.AddressFieldNotFoundException;
 import ru.dorofeev.mobilemap.model.dto.AddressDto;
-import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDto;
+import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoMobile;
+import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoWeb;
 import ru.dorofeev.mobilemap.service.dto.interf.GeographicalObjectDtoService;
 import ru.dorofeev.mobilemap.service.interf.AudioService;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
@@ -36,17 +37,22 @@ public class GeographicalObjectController {
     private final AudioService audioService;
 
     @GetMapping()
-    public List<GeographicalObjectDto> getAll() {
+    public List<GeographicalObjectDtoMobile> getAllForMobile() {
         return geographicalObjectDtoService.getAll();
     }
 
+    @GetMapping("/web")
+    public List<GeographicalObjectDtoWeb> getAllForWeb() {
+        return geographicalObjectDtoService.getAllForWeb();
+    }
+
     @GetMapping("/getById/{id}")
-    public Optional<GeographicalObjectDto> getById(@PathVariable UUID id) {
+    public Optional<GeographicalObjectDtoMobile> getById(@PathVariable UUID id) {
         return geographicalObjectDtoService.findById(id);
     }
 
     @GetMapping("/{name}")
-    public List<GeographicalObjectDto> getByName(@PathVariable String name) {
+    public List<GeographicalObjectDtoMobile> getByName(@PathVariable String name) {
         return geographicalObjectDtoService.getByName(name);
     }
 
@@ -70,7 +76,7 @@ public class GeographicalObjectController {
             @RequestParam("audio") MultipartFile[] audio,
             @RequestParam(value = "video", required = false) MultipartFile[] video
     ) {
-        GeographicalObjectDto entity = new GeographicalObjectDto();
+        GeographicalObjectDtoMobile entity = new GeographicalObjectDtoMobile();
         entity.setName(name);
         entity.setType(type);
         entity.setLatitude(latitude);
@@ -113,12 +119,12 @@ public class GeographicalObjectController {
         }
     }
 
-    @DeleteMapping("/{name}")
+    @DeleteMapping("/deleteByName/{name}")
     public void deleteByName(@PathVariable String name) {
         geographicalObjectService.deleteByName(name);
     }
 
-    @DeleteMapping("/deleteById/{id}")
+    @DeleteMapping("/{id}")
     public void deleteById(@PathVariable UUID id) {
         geographicalObjectService.deleteById(id);
     }

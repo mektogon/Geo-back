@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.dorofeev.mobilemap.model.base.GeographicalObject;
 import ru.dorofeev.mobilemap.model.dto.AddressDto;
+import ru.dorofeev.mobilemap.model.dto.FileDto;
 import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDto;
+import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoMobile;
+import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoWeb;
 import ru.dorofeev.mobilemap.service.interf.AddressService;
 import ru.dorofeev.mobilemap.service.interf.AudioService;
 import ru.dorofeev.mobilemap.service.interf.DesignationService;
@@ -41,39 +44,59 @@ public class GeographicalObjectMapper {
     private final DesignationService designationService;
 
     /**
-     * Метод преобразующий список geo-объектов в DTO
+     * Метод, преобразующий список geo-объектов в DTO-список, направленный для Mobile-версии.
      *
      * @param geographicalObjectList список geo-объектов.
      * @return список dto.
      */
-    public List<GeographicalObjectDto> toDtoList(List<GeographicalObject> geographicalObjectList) {
+    public List<GeographicalObjectDtoMobile> toDtoList(List<GeographicalObject> geographicalObjectList) {
         if (geographicalObjectList == null) {
             return Collections.emptyList();
         }
 
-        List<GeographicalObjectDto> result = new ArrayList<>(geographicalObjectList.size());
+        List<GeographicalObjectDtoMobile> result = new ArrayList<>(geographicalObjectList.size());
 
         for (var item : geographicalObjectList) {
-            result.add(toDto(item));
+            result.add(toDtoMobile(item));
         }
 
         return result;
     }
 
     /**
-     * Метод преобразующий список DTO-объектов в geo-объекты
+     * Метод, преобразующий список geo-объектов в DTO-список, направленный для Web-версии. (Панели администратора)
      *
-     * @param geographicalObjectDtoList список dto-объектов.
-     * @return список geo-объектов.
+     * @param geographicalObjectList список geo-объектов.
+     * @return список dto.
      */
-    public List<GeographicalObject> toEntityList(List<GeographicalObjectDto> geographicalObjectDtoList) {
-        if (geographicalObjectDtoList == null) {
+    public List<GeographicalObjectDtoWeb> toDtoWebList(List<GeographicalObject> geographicalObjectList) {
+        if (geographicalObjectList == null) {
             return Collections.emptyList();
         }
 
-        List<GeographicalObject> result = new ArrayList<>(geographicalObjectDtoList.size());
+        List<GeographicalObjectDtoWeb> result = new ArrayList<>(geographicalObjectList.size());
 
-        for (var item : geographicalObjectDtoList) {
+        for (var item : geographicalObjectList) {
+            result.add(toDtoWeb(item));
+        }
+
+        return result;
+    }
+
+    /**
+     * Метод, преобразующий список DTO-объектов в geo-объекты
+     *
+     * @param geographicalObjectDtoMobileList список dto-объектов.
+     * @return список geo-объектов.
+     */
+    public List<GeographicalObject> toEntityList(List<GeographicalObjectDtoMobile> geographicalObjectDtoMobileList) {
+        if (geographicalObjectDtoMobileList == null) {
+            return Collections.emptyList();
+        }
+
+        List<GeographicalObject> result = new ArrayList<>(geographicalObjectDtoMobileList.size());
+
+        for (var item : geographicalObjectDtoMobileList) {
             result.add(toEntity(item));
         }
 
@@ -81,12 +104,122 @@ public class GeographicalObjectMapper {
     }
 
     /**
-     * Метод преобразующий geo-объект в DTO
+     * Метод, преобразующий geo-объект в DTO (Mobile)
      *
      * @param geographicalObject объект, который подлежит преобразованию.
      * @return DTO-объект.
      */
-    public GeographicalObjectDto toDto(GeographicalObject geographicalObject) {
+    public GeographicalObjectDtoMobile toDtoMobile(GeographicalObject geographicalObject) {
+        GeographicalObjectDtoMobile geographicalObjectDtoMobile = new GeographicalObjectDtoMobile(getGeographicalObjectDto(geographicalObject));
+
+        geographicalObjectDtoMobile.setDesignation(String.format("%s%s%s", rootUrl, ENDPOINT_GET_DESIGNATION_BY_ID, geographicalObject.getDesignation().getId()));
+
+        geographicalObjectDtoMobile.setPhotoList(
+                photoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
+                        .collect(Collectors.toList())
+        );
+        geographicalObjectDtoMobile.setVideoList(
+                videoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_VIDEO_BY_ID, el.getId()))
+                        .collect(Collectors.toList())
+        );
+        geographicalObjectDtoMobile.setAudioList(
+                audioService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
+                        .collect(Collectors.toList())
+        );
+
+        return geographicalObjectDtoMobile;
+    }
+
+    /**
+     * Метод, преобразующий geo-объект в DTO (Web)
+     *
+     * @param geographicalObject объект, который подлежит преобразованию.
+     * @return DTO-объект.
+     */
+    public GeographicalObjectDtoWeb toDtoWeb(GeographicalObject geographicalObject) {
+        GeographicalObjectDtoWeb geographicalObjectDtoWeb = new GeographicalObjectDtoWeb(getGeographicalObjectDto(geographicalObject));
+
+        geographicalObjectDtoWeb.setDesignation(
+                FileDto.builder()
+                        .id(geographicalObject.getDesignation().getId())
+                        .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_DESIGNATION_BY_ID, geographicalObject.getDesignation().getId()))
+                        .build()
+        );
+
+        geographicalObjectDtoWeb.setPhotoList(
+                photoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                        .map(el -> FileDto.builder()
+                                .id(el.getId())
+                                .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
+                                .build())
+                        .collect(Collectors.toList())
+        );
+        geographicalObjectDtoWeb.setVideoList(
+                videoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                        .map(el -> FileDto.builder()
+                                .id(el.getId())
+                                .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_VIDEO_BY_ID, el.getId()))
+                                .build())
+                        .collect(Collectors.toList())
+        );
+        geographicalObjectDtoWeb.setAudioList(
+                audioService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                        .map(el -> FileDto.builder()
+                                .id(el.getId())
+                                .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
+                                .build())
+                        .collect(Collectors.toList())
+        );
+
+        return geographicalObjectDtoWeb;
+    }
+
+    /**
+     * Метод, преобразующий DTO-объекты (Mobile) в geo.
+     * Mobile-сущность является основной (входной).
+     *
+     * @param geographicalObjectDtoMobile объект, который подлежит преобразованию.
+     * @return geo-объект.
+     */
+    public GeographicalObject toEntity(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
+
+        GeographicalObject geographicalObject = new GeographicalObject();
+
+        geographicalObject.setType(typeObjectService.getByName(geographicalObjectDtoMobile.getType()));
+        geographicalObject.setName(geographicalObjectDtoMobile.getName());
+        geographicalObject.setLatitude(geographicalObjectDtoMobile.getLatitude());
+        geographicalObject.setLongitude(geographicalObjectDtoMobile.getLongitude());
+        geographicalObject.setDescription(geographicalObjectDtoMobile.getDescription());
+        geographicalObject.setNote(geographicalObjectDtoMobile.getNote());
+        geographicalObject.setDesignation(designationService.getDesignationByName(geographicalObjectDtoMobile.getDesignation()));
+
+        if (geographicalObjectDtoMobile.getAddressDto() == null) {
+            geographicalObject.setAddress(null);
+        } else {
+            geographicalObject.setAddress(
+                    addressService.getAddress(
+                            geographicalObjectDtoMobile.getAddressDto().getRegion(),
+                            geographicalObjectDtoMobile.getAddressDto().getDistrict(),
+                            geographicalObjectDtoMobile.getAddressDto().getTypeLocality(),
+                            geographicalObjectDtoMobile.getAddressDto().getLocality(),
+                            geographicalObjectDtoMobile.getAddressDto().getStreet(),
+                            geographicalObjectDtoMobile.getAddressDto().getHouseNumber())
+            );
+        }
+
+        return geographicalObject;
+    }
+
+    /**
+     * Метод, преобразующий geo-объект в DTO (Базовые поля).
+     *
+     * @param geographicalObject
+     * @return
+     */
+    private GeographicalObjectDto getGeographicalObjectDto(GeographicalObject geographicalObject) {
         String currentRegion = "Отсуствует";
         String currentTypeLocality = "Отсуствует";
         String currentLocality = "Отсуствует";
@@ -112,7 +245,7 @@ public class GeographicalObjectMapper {
         geographicalObjectDto.setLongitude(geographicalObject.getLongitude());
         geographicalObjectDto.setDescription(geographicalObject.getDescription());
         geographicalObjectDto.setNote(geographicalObject.getNote());
-        geographicalObjectDto.setDesignation(String.format("%s%s%s", rootUrl, ENDPOINT_GET_DESIGNATION_BY_ID, geographicalObject.getDesignation().getId()));
+
 
         if (geographicalObject.getAddress() != null) {
             geographicalObjectDto.setAddressDto(AddressDto.builder()
@@ -136,58 +269,7 @@ public class GeographicalObjectMapper {
             // или в прицнипе есть у географического объекта.
             geographicalObjectDto.setAddressDto(null);
         }
-        geographicalObjectDto.setPhotoList(
-                photoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
-                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
-                        .collect(Collectors.toList())
-        );
-        geographicalObjectDto.setVideoList(
-                videoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
-                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_VIDEO_BY_ID, el.getId()))
-                        .collect(Collectors.toList())
-        );
-        geographicalObjectDto.setAudioList(
-                audioService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
-                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
-                        .collect(Collectors.toList())
-        );
-
         return geographicalObjectDto;
-    }
-
-    /**
-     * Метод преобразующий DTO-объекты в geo.
-     *
-     * @param geographicalObjectDto объект, который подлежит преобразованию.
-     * @return geo-объект.
-     */
-    public GeographicalObject toEntity(GeographicalObjectDto geographicalObjectDto) {
-
-        GeographicalObject geographicalObject = new GeographicalObject();
-
-        geographicalObject.setType(typeObjectService.getByName(geographicalObjectDto.getType()));
-        geographicalObject.setName(geographicalObjectDto.getName());
-        geographicalObject.setLatitude(geographicalObjectDto.getLatitude());
-        geographicalObject.setLongitude(geographicalObjectDto.getLongitude());
-        geographicalObject.setDescription(geographicalObjectDto.getDescription());
-        geographicalObject.setNote(geographicalObjectDto.getNote());
-        geographicalObject.setDesignation(designationService.getDesignationByName(geographicalObjectDto.getDesignation()));
-
-        if (geographicalObjectDto.getAddressDto() == null) {
-            geographicalObject.setAddress(null);
-        } else {
-            geographicalObject.setAddress(
-                    addressService.getAddress(
-                            geographicalObjectDto.getAddressDto().getRegion(),
-                            geographicalObjectDto.getAddressDto().getDistrict(),
-                            geographicalObjectDto.getAddressDto().getTypeLocality(),
-                            geographicalObjectDto.getAddressDto().getLocality(),
-                            geographicalObjectDto.getAddressDto().getStreet(),
-                            geographicalObjectDto.getAddressDto().getHouseNumber())
-            );
-        }
-
-        return geographicalObject;
     }
 
     /**

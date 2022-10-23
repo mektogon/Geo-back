@@ -25,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] MOBILE_WHITELIST = {
             "/api/v1/geo/getById/{id}",
             "/api/v1/geo/{name}",
+            "/api/v1/geo/web",
             "/api/v1/geo/",
 
             "/api/v1/designation/{id}",
