@@ -51,6 +51,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     @Override
     public List<GeographicalObject> findAllByName(String name) {
         if (name == null) {
+            log.error("IN findAllByName() - Имя отсутствует!");
             return Collections.emptyList();
         }
 
@@ -60,13 +61,13 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     @Override
     public void save(GeographicalObject geographicalObject) {
         geographicalObjectRepository.save(geographicalObject);
-        log.error("IN save() - Сохранен гео-объект");
+        log.info("IN save() - Сохранен гео-объект");
     }
 
     @Override
     public UUID saveAndReturnId(GeographicalObject geographicalObject) {
         GeographicalObject savedEntity = geographicalObjectRepository.save(geographicalObject);
-        log.error("IN saveAndReturnId() - Сохранен гео-объект");
+        log.info("IN saveAndReturnId() - Сохранен гео-объект");
         return savedEntity.getId();
     }
 
@@ -76,22 +77,22 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
 
         if (row.isPresent()) {
             geographicalObjectRepository.save(geographicalObject);
-            log.error("IN update() - Обновлен гео-объект с ID: {}", row.get().getId());
+            log.info("IN update() - Обновлен гео-объект с ID: {}", row.get().getId());
         }
 
-        log.error("IN update() - Не удалось найти гео-объект с ID: {}", geographicalObject.getId());
+        log.info("IN update() - Не удалось найти гео-объект с ID: {}", geographicalObject.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         geographicalObjectRepository.deleteById(id);
-        log.error("IN deleteById() - Удален гео-объект с ID: {}", id);
+        log.info("IN deleteById() - Удален гео-объект с ID: {}", id);
     }
 
     @Override
     public void deleteByName(String name) {
         geographicalObjectRepository.deleteByName(name);
-        log.error("IN deleteByName() - Удален гео-объект с name: {}", name);
+        log.info("IN deleteByName() - Удален гео-объект с name: {}", name);
     }
 
     @Override
@@ -182,9 +183,9 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             }
 
             geographicalObjectRepository.save(entity);
-            log.error("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
+            log.info("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
         }
 
-        log.error("IN update() - Не удалось найти гео-объект с ID: {}", id);
+        log.info("IN update() - Не удалось найти гео-объект с ID: {}", id);
     }
 }

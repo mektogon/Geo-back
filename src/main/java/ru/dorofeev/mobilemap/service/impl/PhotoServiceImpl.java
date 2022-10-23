@@ -14,6 +14,7 @@ import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import javax.activation.FileTypeMap;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,11 +48,11 @@ public class PhotoServiceImpl implements PhotoService {
                 img -> photoRepository.save(Photo.builder()
                         .url(AuxiliaryUtils.SavingFile(directoryToSave, img, EXTENSIONS))
                         .name(img.getOriginalFilename())
-                        .geographicalObject(geographicalObjectRepository.getById(id))
+                        .geographicalObject(geographicalObjectRepository.findById(id).get())
                         .build())
         );
 
-        log.error("IN upload() - Фотографии сохранены в количестве: {} шт.", images.length);
+        log.info("IN upload() - Фотографии сохранены в количестве: {} шт.", images.length);
     }
 
     @Override
@@ -60,16 +61,21 @@ public class PhotoServiceImpl implements PhotoService {
 
         if (byId.isPresent()) {
             photoRepository.save(file);
-            log.error("IN update() - Фотография с ID: {} обновлена!", byId.get().getId());
+            log.info("IN update() - Фотография с ID: {} обновлена!", byId.get().getId());
         }
 
-        log.error("IN deleteById() - Фотография с ID: {} не найдена!", file.getId());
+        log.info("IN deleteById() - Фотография с ID: {} не найдена!", file.getId());
     }
 
+    @Transactional
     @Override
     public void deleteById(UUID id) {
+        String urlToFile = photoRepository.findById(id).get().getUrl();
+        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
+        AuxiliaryUtils.DeleteFile(directoryToDelete);
+
         photoRepository.deleteById(id);
-        log.error("IN deleteById() - Фотография с ID: {} удалена!", id);
+        log.info("IN deleteById() - Фотография с ID: {} удалена из базы данных!", id);
     }
 
     @Override
@@ -101,11 +107,11 @@ public class PhotoServiceImpl implements PhotoService {
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
-            log.error("IN getFileById() - Фотография с ID: {} найдена!", id);
+            log.info("IN getFileById() - Фотография с ID: {} найдена!", id);
             return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {
-            log.error("IN getFileById() - Фотография с ID: {} не найдена!", id);
+            log.info("IN getFileById() - Фотография с ID: {} не найдена!", id);
             return ResponseEntity.ok().body(new byte[0]);
         }
     }

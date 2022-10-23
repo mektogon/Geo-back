@@ -14,6 +14,7 @@ import ru.dorofeev.mobilemap.repository.VideoRepository;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
 import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +38,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public void upload(MultipartFile[] video, UUID id) {
-        if (video.length > 2) {
+        if (video.length > 1) {
             log.error("IN upload() - Превышен допустимый предел загрузки видеозаписей!");
             throw new RuntimeException("Превышен допустимый предел загрузки видеозаписей!");
         }
@@ -46,7 +47,7 @@ public class VideoServiceImpl implements VideoService {
                 currentVideo -> videoRepository.save(Video.builder()
                         .url(AuxiliaryUtils.SavingFile(directoryToSave, currentVideo, EXTENSIONS))
                         .name(currentVideo.getOriginalFilename())
-                        .geographicalObject(geographicalObjectRepository.getById(id))
+                        .geographicalObject(geographicalObjectRepository.findById(id).get())
                         .build())
         );
     }
@@ -57,16 +58,21 @@ public class VideoServiceImpl implements VideoService {
 
         if (byId.isPresent()) {
             videoRepository.save(file);
-            log.error("IN update() - Видео с ID: {} обновлено!", byId.get().getId());
+            log.info("IN update() - Видео с ID: {} обновлено!", byId.get().getId());
         }
 
-        log.error("IN update() - Видео с ID: {} не найдено!", file.getId());
+        log.info("IN update() - Видео с ID: {} не найдено!", file.getId());
     }
 
+    @Transactional
     @Override
     public void deleteById(UUID id) {
+        String urlToFile = videoRepository.findById(id).get().getUrl();
+        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
+        AuxiliaryUtils.DeleteFile(directoryToDelete);
+
         videoRepository.deleteById(id);
-        log.error("IN deleteById() - Видео с ID: {} удалено!", id);
+        log.info("IN deleteById() - Видео с ID: {} удалено из базы данных!", id);
     }
 
     @Override
@@ -79,10 +85,10 @@ public class VideoServiceImpl implements VideoService {
         Optional<Video> byId = videoRepository.findById(id);
 
         if (byId.isPresent()) {
-            log.error("IN findById() - Видео с ID: {} найдено!", id);
+            log.info("IN findById() - Видео с ID: {} найдено!", id);
             return byId;
         } else {
-            log.error("IN findById() - Видео с ID: {} не найдено!", id);
+            log.info("IN findById() - Видео с ID: {} не найдено!", id);
             return Optional.of(new Video());
         }
     }
@@ -98,13 +104,13 @@ public class VideoServiceImpl implements VideoService {
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
-            log.error("IN getFileById() - Видео с ID: {} найдено!", id);
+            log.info("IN getFileById() - Видео с ID: {} найдено!", id);
             String fileExtension = file.getName().split("\\.")[1];
 
             return ResponseEntity.ok().contentType((MediaType.parseMediaType("video/" + fileExtension)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {
-            log.error("IN getFileById() - Видео с ID: {} не найдено!", id);
+            log.info("IN getFileById() - Видео с ID: {} не найдено!", id);
             return ResponseEntity.ok().body(new byte[0]);
         }
     }

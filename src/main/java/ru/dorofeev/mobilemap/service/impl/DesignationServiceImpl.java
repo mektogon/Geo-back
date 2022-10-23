@@ -13,6 +13,7 @@ import ru.dorofeev.mobilemap.service.interf.DesignationService;
 import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import javax.activation.FileTypeMap;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,7 +48,7 @@ public class DesignationServiceImpl implements DesignationService {
                         .build())
         );
 
-        log.error("IN upload() - Обозначение сохранено!");
+        log.info("IN upload() - Обозначение сохранено!");
     }
 
     @Override
@@ -56,23 +57,33 @@ public class DesignationServiceImpl implements DesignationService {
 
         if (byId.isPresent()) {
             designationRepository.save(file);
-            log.error("IN upload() - Обновлено обозначение с ID: {}", byId.get().getId());
+            log.info("IN upload() - Обновлено обозначение с ID: {}", byId.get().getId());
         }
 
-        log.error("IN upload() - Не найдено обозначение с ID: {}", file.getId());
+        log.info("IN upload() - Не найдено обозначение с ID: {}", file.getId());
     }
 
+    @Transactional
     @Override
     public void deleteById(UUID id) {
+        String urlToFile = designationRepository.findById(id).get().getUrl();
+        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
+        AuxiliaryUtils.DeleteFile(directoryToDelete);
+
         designationRepository.deleteById(id);
-        log.error("IN deleteById() - Удалено обозначение с ID: {}", id);
+        log.info("IN deleteById() - Удалено обозначение с ID: {} из базы данных!", id);
     }
 
 
+    @Transactional
     @Override
     public void deleteByName(String name) {
+        String urlToFile = designationRepository.getDesignationByName(name).getUrl();
+        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
+        AuxiliaryUtils.DeleteFile(directoryToDelete);
+
         designationRepository.deleteByName(name);
-        log.error("IN deleteByName() - Удалено обозначение с name: {}", name);
+        log.info("IN deleteByName() - Удалено обозначение с name: {} из базы данных!", name);
     }
 
     @Override
@@ -85,10 +96,10 @@ public class DesignationServiceImpl implements DesignationService {
         Optional<Designation> byId = designationRepository.findById(id);
 
         if (byId.isPresent()) {
-            log.error("IN findById() - Найдено обозначение с ID: {}", id);
+            log.info("IN findById() - Найдено обозначение с ID: {}", id);
             return byId;
         } else {
-            log.error("IN findById() - Не найдено обозначение с ID: {}", id);
+            log.info("IN findById() - Не найдено обозначение с ID: {}", id);
             return Optional.of(new Designation());
         }
     }
@@ -102,10 +113,10 @@ public class DesignationServiceImpl implements DesignationService {
     public Designation getDesignationByName(String name) {
         Designation designationByName = designationRepository.getDesignationByName(name);
 
-        log.error("IN getDesignationByName() - Найдено обозначение с name: {}", name);
+        log.info("IN getDesignationByName() - Найдено обозначение с name: {}", name);
 
         if (designationByName == null) {
-            log.error("IN getDesignationByName() - Не найдено обозначение с name: {}", name);
+            log.info("IN getDesignationByName() - Не найдено обозначение с name: {}", name);
             return designationRepository.getDesignationByName("Отсутствует");
         }
 
@@ -118,11 +129,11 @@ public class DesignationServiceImpl implements DesignationService {
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
-            log.error("IN getFileById() - Найдено обозначение с ID: {}", id);
+            log.info("IN getFileById() - Найдено обозначение с ID: {}", id);
             return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {
-            log.error("IN getFileById() - Не найдено обозначение с ID: {}", id);
+            log.info("IN getFileById() - Не найдено обозначение с ID: {}", id);
             return ResponseEntity.ok().body(new byte[0]);
         }
     }

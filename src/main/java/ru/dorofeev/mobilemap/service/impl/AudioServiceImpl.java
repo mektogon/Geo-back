@@ -13,6 +13,7 @@ import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
 import ru.dorofeev.mobilemap.service.interf.AudioService;
 import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,7 +37,7 @@ public class AudioServiceImpl implements AudioService {
 
     @Override
     public void upload(MultipartFile[] audio, UUID id) {
-        if (audio.length > 2) {
+        if (audio.length > 1) {
             log.error("IN upload() - Превышен допустимый предел загрузки ауодизаписей!");
             throw new RuntimeException("Превышен допустимый предел загрузки ауодизаписей!");
         }
@@ -45,11 +46,11 @@ public class AudioServiceImpl implements AudioService {
                 currentVideo -> audioRepository.save(Audio.builder()
                         .url(AuxiliaryUtils.SavingFile(directoryToSave, currentVideo, EXTENSIONS))
                         .name(currentVideo.getOriginalFilename())
-                        .geographicalObject(geographicalObjectRepository.getById(id))
+                        .geographicalObject(geographicalObjectRepository.findById(id).get())
                         .build())
         );
 
-        log.error("IN upload() - Аудиозапись сохранена!");
+        log.info("IN upload() - Аудиозапись сохранена!");
     }
 
     @Override
@@ -58,16 +59,21 @@ public class AudioServiceImpl implements AudioService {
 
         if (byId.isPresent()) {
             audioRepository.save(file);
-            log.error("IN upload() - Обновлена аудиозапись с ID: {}", byId.get().getId());
+            log.info("IN upload() - Обновлена аудиозапись с ID: {}", byId.get().getId());
         }
 
-        log.error("IN upload() - Не найдена аудиозапись с ID: {}", file.getId());
+        log.info("IN upload() - Не найдена аудиозапись с ID: {}", file.getId());
     }
 
+    @Transactional
     @Override
     public void deleteById(UUID id) {
+        String urlToFile = audioRepository.findById(id).get().getUrl();
+        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
+        AuxiliaryUtils.DeleteFile(directoryToDelete);
+
         audioRepository.deleteById(id);
-        log.error("IN deleteById() - Аудиозапись с ID: {} удалена!", id);
+        log.info("IN deleteById() - Аудиозапись с ID: {} удалена из базы данных!", id);
     }
 
     @Override
@@ -80,10 +86,10 @@ public class AudioServiceImpl implements AudioService {
         Optional<Audio> byId = audioRepository.findById(id);
 
         if (byId.isPresent()) {
-            log.error("IN findById() - Найдена аудиозапись с ID: {}", id);
+            log.info("IN findById() - Найдена аудиозапись с ID: {}", id);
             return byId;
         } else {
-            log.error("IN findById() - Не найдена аудиозапись с ID: {}", id);
+            log.info("IN findById() - Не найдена аудиозапись с ID: {}", id);
             return Optional.of(new Audio());
         }
     }
@@ -101,12 +107,12 @@ public class AudioServiceImpl implements AudioService {
             File file = new File(foundFile.get().getUrl());
             String fileExtension = file.getName().split("\\.")[1];
 
-            log.error("IN getFileById() - Найдена аудиозапись с ID: {}", id);
+            log.info("IN getFileById() - Найдена аудиозапись с ID: {}", id);
 
             return ResponseEntity.ok().contentType((MediaType.parseMediaType("audio/" + fileExtension)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {
-            log.error("IN getFileById() - Не найдена аудиозапись с ID: {}", id);
+            log.info("IN getFileById() - Не найдена аудиозапись с ID: {}", id);
             return ResponseEntity.ok().body(new byte[0]);
         }
     }

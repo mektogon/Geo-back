@@ -30,24 +30,24 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void save(Region region) {
         regionRepository.save(region);
-        log.error("IN save() - Регион сохранен!");
+        log.info("IN save() - Регион сохранен!");
     }
 
     @Override
     public void update(Region region) {
         regionRepository.save(region);
-        log.error("IN update() - Регион с ID: {} обновлен!", region.getId());
+        log.info("IN update() - Регион с ID: {} обновлен!", region.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         regionRepository.deleteById(id);
-        log.error("IN deleteById() - Регион с ID: {} удален!", id);
+        log.info("IN deleteById() - Регион с ID: {} удален!", id);
     }
 
     @Override
     public void deleteByName(String name) {
         regionRepository.deleteByName(name);
-        log.error("IN deleteByName() - Регион с name: {} удален!", name);
+        log.info("IN deleteByName() - Регион с name: {} удален!", name);
     }
 }

@@ -30,24 +30,24 @@ public class LocalityServiceImpl implements LocalityService {
     @Override
     public void save(Locality locality) {
         localityRepository.save(locality);
-        log.error("IN save() - Местность с ID: {} сохранена", locality.getId());
+        log.info("IN save() - Местность с ID: {} сохранена", locality.getId());
     }
 
     @Override
     public void update(Locality locality) {
         localityRepository.save(locality);
-        log.error("IN update() - Местность с ID: {} обновлена", locality.getId());
+        log.info("IN update() - Местность с ID: {} обновлена", locality.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         localityRepository.deleteById(id);
-        log.error("IN deleteById() - Местность с ID: {} удалена", id);
+        log.info("IN deleteById() - Местность с ID: {} удалена", id);
     }
 
     @Override
     public void deleteByName(String name) {
         localityRepository.deleteByName(name);
-        log.error("IN deleteByName() - Местность с name: {} удалена", name);
+        log.info("IN deleteByName() - Местность с name: {} удалена", name);
     }
 }

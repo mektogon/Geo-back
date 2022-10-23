@@ -64,26 +64,26 @@ public class AddressServiceImpl implements AddressService {
     public Address getAddress(String regionName, String districtName, String typeLocalityName, String localityName, String streetName, String houseNumber) {
         //Код, на который без слез не взглянешь.
         if (regionName == null && districtName == null && typeLocalityName == null && localityName == null && streetName == null && houseNumber == null) {
-            log.error("IN getAddress() - Адрес отсутствует!");
+            log.info("IN getAddress() - Адрес отсутствует!");
             return null;
         }
 
         //Необязательное поле в адресе.
         if (districtName != null && districtName.isEmpty()) {
-            log.error("IN getAddress() - Район отсутствует!");
+            log.info("IN getAddress() - Район отсутствует!");
             districtName = "Отсутствует";
         }
 
         //Необязательное поле в адресе.
         if (streetName != null && streetName.isEmpty()) {
-            log.error("IN getAddress() - Улица отсутствует!");
+            log.info("IN getAddress() - Улица отсутствует!");
             streetName = "Отсутствует"; //Если нет улицы => не может быть и номера дома
             houseNumber = "Отсутствует";
         }
 
         //Необязательное поле в адресе.
         if (houseNumber != null && houseNumber.isEmpty() || Objects.equals(streetName, "Отсутствует")) {
-            log.error("IN getAddress() - Номер дома отсутствует!");
+            log.info("IN getAddress() - Номер дома отсутствует!");
             houseNumber = "Отсутствует";
         }
 
@@ -98,10 +98,9 @@ public class AddressServiceImpl implements AddressService {
                 houseNumber
         );
 
-        log.error("IN getAddress() - Адрес найден при первом поиске!");
 
         if (foundAddress == null) {
-            log.error("IN getAddress() - Адрес не найден!");
+            log.info("IN getAddress() - Адрес не найден!");
             Region region = regionRepository.findByName(regionName);
             District district = districtRepository.findByName(districtName);
             TypeLocality typeLocality = typeLocalityRepository.findByName(typeLocalityName);
@@ -113,7 +112,7 @@ public class AddressServiceImpl implements AddressService {
                 region.setName(regionName);
                 regionRepository.save(region);
                 region = regionRepository.findByName(regionName);
-                log.error("IN getAddress() - Регион не найден. И сохранен.");
+                log.info("IN getAddress() - Регион не найден. Создан и сохранен.");
             }
 
             if (district == null) {
@@ -121,7 +120,7 @@ public class AddressServiceImpl implements AddressService {
                 district.setName(districtName);
                 districtRepository.save(district);
                 district = districtRepository.findByName(districtName);
-                log.error("IN getAddress() - Район не найден. И сохранен.");
+                log.info("IN getAddress() - Район не найден. Создан и сохранен.");
             }
 
             if (typeLocality == null) {
@@ -129,7 +128,7 @@ public class AddressServiceImpl implements AddressService {
                 typeLocality.setName(typeLocalityName);
                 typeLocalityRepository.save(typeLocality);
                 typeLocality = typeLocalityRepository.findByName(typeLocalityName);
-                log.error("IN getAddress() - Тип местности не найден. И сохранен.");
+                log.info("IN getAddress() - Тип местности не найден. Создан и сохранен.");
             }
 
             if (locality == null) {
@@ -137,7 +136,7 @@ public class AddressServiceImpl implements AddressService {
                 locality.setName(localityName);
                 localityRepository.save(locality);
                 locality = localityRepository.findByName(localityName);
-                log.error("IN getAddress() - Местность не найдена. И сохранена.");
+                log.info("IN getAddress() - Местность не найдена. Создана и сохранена.");
             }
 
             if (street == null) {
@@ -145,7 +144,7 @@ public class AddressServiceImpl implements AddressService {
                 street.setName(streetName);
                 streetRepository.save(street);
                 street = streetRepository.findByName(streetName);
-                log.error("IN getAddress() - Улица не найдена. И сохранена.");
+                log.info("IN getAddress() - Улица не найдена. Создана и сохранена.");
             }
 
             addressRepository.save(
@@ -168,7 +167,7 @@ public class AddressServiceImpl implements AddressService {
             );
         }
 
-        log.error("IN getAddress() - Адрес сохранен!");
+        log.info("IN getAddress() - Адрес сохранен!");
         return foundAddress;
     }
 }

@@ -30,24 +30,24 @@ public class StreetServiceImpl implements StreetService {
     @Override
     public void save(Street street) {
         streetRepository.save(street);
-        log.error("IN save() - Улица сохранена!");
+        log.info("IN save() - Улица сохранена!");
     }
 
     @Override
     public void update(Street street) {
         streetRepository.save(street);
-        log.error("IN update() - Улица с ID: {} обновлена!", street.getId());
+        log.info("IN update() - Улица с ID: {} обновлена!", street.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
         streetRepository.deleteById(id);
-        log.error("IN deleteById() - Улица с ID: {} удалена!", id);
+        log.info("IN deleteById() - Улица с ID: {} удалена!", id);
     }
 
     @Override
     public void deleteByName(String name) {
         streetRepository.deleteByName(name);
-        log.error("IN deleteByName() - Улица с name: {} удалена!", name);
+        log.info("IN deleteByName() - Улица с name: {} удалена!", name);
     }
 }
