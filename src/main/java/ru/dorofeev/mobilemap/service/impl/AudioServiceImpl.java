@@ -69,8 +69,7 @@ public class AudioServiceImpl implements AudioService {
     @Override
     public void deleteById(UUID id) {
         String urlToFile = audioRepository.findById(id).get().getUrl();
-        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
-        AuxiliaryUtils.DeleteFile(directoryToDelete);
+        AuxiliaryUtils.DeleteFile(urlToFile);
 
         audioRepository.deleteById(id);
         log.info("IN deleteById() - Аудиозапись с ID: {} удалена из базы данных!", id);

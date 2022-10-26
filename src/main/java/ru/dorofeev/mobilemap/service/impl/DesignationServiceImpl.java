@@ -67,8 +67,7 @@ public class DesignationServiceImpl implements DesignationService {
     @Override
     public void deleteById(UUID id) {
         String urlToFile = designationRepository.findById(id).get().getUrl();
-        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
-        AuxiliaryUtils.DeleteFile(directoryToDelete);
+        AuxiliaryUtils.DeleteFile(urlToFile);
 
         designationRepository.deleteById(id);
         log.info("IN deleteById() - Удалено обозначение с ID: {} из базы данных!", id);

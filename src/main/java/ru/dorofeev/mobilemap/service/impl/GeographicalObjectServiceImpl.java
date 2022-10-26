@@ -85,14 +85,20 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
 
     @Override
     public void deleteById(UUID id) {
+        cascadeDeleteByIdGeo(id);
         geographicalObjectRepository.deleteById(id);
         log.info("IN deleteById() - Удален гео-объект с ID: {}", id);
     }
 
     @Override
     public void deleteByName(String name) {
-        geographicalObjectRepository.deleteByName(name);
-        log.info("IN deleteByName() - Удален гео-объект с name: {}", name);
+        List<GeographicalObject> geoListToDelete = geographicalObjectRepository.findAllByName(name);
+        geoListToDelete.forEach(geo -> {
+                    deleteById(geo.getId());
+                    log.info("IN deleteByName() - Удален гео-объект с name: {}", name);
+                }
+        );
+
     }
 
     @Override
@@ -187,5 +193,19 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
         }
 
         log.info("IN update() - Не удалось найти гео-объект с ID: {}", id);
+    }
+
+    /**
+     * Метод удаляет зависимые сущности(фото, видео, аудио), прежде чем удалить гео-объект.
+     *
+     * @param id индетификатор удаляемого объекта
+     */
+    private void cascadeDeleteByIdGeo(UUID id) {
+        photoService.findAllFilesByGeographicalObjectId(id)
+                .forEach(photo -> photoService.deleteById(photo.getId()));
+        videoService.findAllFilesByGeographicalObjectId(id)
+                .forEach(video -> videoService.deleteById(video.getId()));
+        audioService.findAllFilesByGeographicalObjectId(id)
+                .forEach(audio -> audioService.deleteById(audio.getId()));
     }
 }

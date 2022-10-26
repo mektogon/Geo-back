@@ -21,6 +21,7 @@ import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -119,7 +120,7 @@ public class GeographicalObjectController {
         }
     }
 
-    @DeleteMapping("/deleteByName/{name}")
+    @DeleteMapping("/deleteAllByName/{name}")
     public void deleteByName(@PathVariable String name) {
         geographicalObjectService.deleteByName(name);
     }

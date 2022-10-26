@@ -68,8 +68,7 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public void deleteById(UUID id) {
         String urlToFile = videoRepository.findById(id).get().getUrl();
-        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
-        AuxiliaryUtils.DeleteFile(directoryToDelete);
+        AuxiliaryUtils.DeleteFile(urlToFile);
 
         videoRepository.deleteById(id);
         log.info("IN deleteById() - Видео с ID: {} удалено из базы данных!", id);

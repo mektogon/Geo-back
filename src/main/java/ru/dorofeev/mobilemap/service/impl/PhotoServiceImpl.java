@@ -71,8 +71,7 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public void deleteById(UUID id) {
         String urlToFile = photoRepository.findById(id).get().getUrl();
-        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
-        AuxiliaryUtils.DeleteFile(directoryToDelete);
+        AuxiliaryUtils.DeleteFile(urlToFile);
 
         photoRepository.deleteById(id);
         log.info("IN deleteById() - Фотография с ID: {} удалена из базы данных!", id);
