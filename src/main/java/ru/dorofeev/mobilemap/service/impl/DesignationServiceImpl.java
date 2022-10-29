@@ -35,7 +35,7 @@ public class DesignationServiceImpl implements DesignationService {
     private final List<String> EXTENSIONS = List.of("jpeg", "png");
 
     @Override
-    public void upload(MultipartFile[] designation) {
+    public void upload(MultipartFile[] designation, String name) {
         if (designation.length > 1) {
             log.error("IN deleteById() - Превышен допустимый предел загрузки обозначений!");
             throw new RuntimeException("Превышен допустимый предел загрузки обозначений!");
@@ -44,7 +44,8 @@ public class DesignationServiceImpl implements DesignationService {
         Arrays.stream(designation).forEach(
                 currentDesignation -> designationRepository.save(Designation.builder()
                         .url(AuxiliaryUtils.SavingFile(directoryToSave, currentDesignation, EXTENSIONS))
-                        .name(currentDesignation.getOriginalFilename())
+                        .name(name)
+                        .fileName(currentDesignation.getOriginalFilename())
                         .build())
         );
 

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface DesignationService extends AbstractFileService<Designation> {
     Designation getDesignationByName(String name);
-    void upload(MultipartFile[] designation);
+    void upload(MultipartFile[] designation, String name);
 
     void deleteByName(String name);
 

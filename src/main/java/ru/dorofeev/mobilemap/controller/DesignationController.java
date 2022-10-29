@@ -23,23 +23,21 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/designation")
 @RequiredArgsConstructor
-public class DesignationController implements AbstractFileController<Designation> {
+public class DesignationController {
+
     private final DesignationService designationService;
 
     @PostMapping()
-    @Override
-    public void upload(@RequestParam("designation") MultipartFile[] file, @RequestParam(value = "geoId", required = false) UUID id) {
-        designationService.upload(file);
+    public void upload(@RequestParam("designation") MultipartFile[] file, @RequestParam("name") String name) {
+        designationService.upload(file, name);
     }
 
     @PatchMapping()
-    @Override
     public void update(@RequestBody Designation file) {
         designationService.update(file);
     }
 
     @DeleteMapping("/deleteById/{id}")
-    @Override
     public void deleteById(@PathVariable UUID id) {
         designationService.deleteById(id);
     }
@@ -50,25 +48,21 @@ public class DesignationController implements AbstractFileController<Designation
     }
 
     @GetMapping()
-    @Override
     public List<Designation> getAll() {
         return designationService.getAll();
     }
 
     @GetMapping("/getInfoById/{id}")
-    @Override
     public Optional<Designation> getInfoById(@PathVariable UUID id) {
         return designationService.findById(id);
     }
 
     @GetMapping("/getAllInfoByName/{name}")
-    @Override
     public List<Designation> getAllInfoByName(@PathVariable String name) {
         return designationService.findAllInfoByName(name);
     }
 
     @GetMapping("/{id}")
-    @Override
     public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) throws IOException {
         return designationService.getFileById(id);
     }

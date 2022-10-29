@@ -10,9 +10,9 @@ import java.util.UUID;
 
 public interface AbstractFileController<T> {
     /**
-     * Метод осуществляет загрузку файлов.
-     *
-     * @param file загружаемые файлы.
+     * Загрузка файлов
+     * @param file загружаемый файл
+     * @param id идентификатор гео-объекта, к которому осуществляется привязка файла.
      */
     void upload(MultipartFile[] file, UUID id);
 
