@@ -1,5 +1,7 @@
 package ru.dorofeev.mobilemap.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,11 +24,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name="Аутентификация", description="Контроллер для работы с аутентификацией пользователя.")
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UsersService usersService;
 
+    @Operation(
+            summary = "Аутентификация пользователя",
+            description = "Позволяет аутентифицировать пользователя в системе."
+    )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
