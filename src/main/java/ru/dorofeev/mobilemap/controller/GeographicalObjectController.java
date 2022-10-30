@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import ru.dorofeev.mobilemap.exception.address.AddressFieldNotFoundException;
-import ru.dorofeev.mobilemap.model.dto.AddressDto;
 import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoMobile;
 import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoWeb;
 import ru.dorofeev.mobilemap.service.dto.interf.GeographicalObjectDtoService;
@@ -22,10 +20,10 @@ import ru.dorofeev.mobilemap.service.interf.AudioService;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
+import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -117,30 +115,16 @@ public class GeographicalObjectController {
         entity.setDescription(description);
         entity.setNote(note);
         entity.setDesignation(designation);
-
-        if (region == null && typeLocality == null && locality == null && district == null && street == null && houseNumber == null) {
-            entity.setAddressDto(null);
-        } else if (region != null && typeLocality != null && locality != null) {
-            AddressDto addressDto = AddressDto.builder()
-                    .region(region)
-                    .district(Objects.requireNonNullElse(district, "Отсутствует"))
-                    .typeLocality(typeLocality)
-                    .locality(locality)
-                    .street(Objects.requireNonNullElse(street, "Отсутствует"))
-                    .houseNumber(Objects.requireNonNullElse(houseNumber, "Отсутствует"))
-                    .build();
-            entity.setAddressDto(addressDto);
-        } else {
-            if (region == null) {
-                throw new AddressFieldNotFoundException("Ошибка! Без поля \"region\" формирование адреса невозможно!");
-            }
-
-            if (typeLocality == null) {
-                throw new AddressFieldNotFoundException("Ошибка! Без поля \"typeLocality\" формирование адреса невозможно!");
-            }
-
-            throw new AddressFieldNotFoundException("Ошибка! Без поля \"locality\" формирование адреса невозможно!");
-        }
+        entity.setAddressDto(
+                AuxiliaryUtils.ValidationAddress(
+                        region,
+                        typeLocality,
+                        locality,
+                        district,
+                        street,
+                        houseNumber
+                )
+        );
 
         UUID id = geographicalObjectDtoService.saveAndReturnId(entity);
 

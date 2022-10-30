@@ -2,6 +2,9 @@ package ru.dorofeev.mobilemap.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import ru.dorofeev.mobilemap.exception.address.AddressFieldNotFoundException;
+import ru.dorofeev.mobilemap.model.dto.AddressDto;
+import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoMobile;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,14 +16,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Класс, содержащий утилитные методы.
+ */
 @Slf4j
 public class AuxiliaryUtils {
     /**
      * Сохранение файла в директорию.
      * Генерируется случайное имя в целях исключения ошибки одноименности.
+     *
      * @param directoryToSave Путь для сохранения.
-     * @param file Сохраняемые файлы.
-     * @param extension Список разрешенных расширений файлов.
+     * @param file            Сохраняемые файлы.
+     * @param extension       Список разрешенных расширений файлов.
      * @return путь до файла.
      */
     public static String SavingFile(String directoryToSave, MultipartFile file, List<String> extension) {
@@ -46,6 +53,7 @@ public class AuxiliaryUtils {
 
     /**
      * Удаление файла из директории.
+     *
      * @param directoryToDelete путь до удаляемого файла.
      */
     public static void DeleteFile(String directoryToDelete) {
@@ -61,6 +69,73 @@ public class AuxiliaryUtils {
         } catch (IOException e) {
             log.error("IN DeleteFile() - Ошибка при удалении файла из директории!");
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Метод валидации гео-объекта на наличие определенных полей.
+     *
+     * @param geo валидируемый объект.
+     * @return результат валидации - гео-объект.
+     */
+    public static GeographicalObjectDtoMobile ValidationGeoObject(GeographicalObjectDtoMobile geo) {
+        GeographicalObjectDtoMobile entity = new GeographicalObjectDtoMobile();
+        entity.setName(geo.getName());
+        entity.setType(geo.getType());
+        entity.setLatitude(geo.getLatitude());
+        entity.setLongitude(geo.getLongitude());
+        entity.setDescription(geo.getDescription());
+        entity.setNote(geo.getNote());
+        entity.setDesignation(geo.getDesignation());
+
+        if (geo.getAddressDto() != null) {
+            AddressDto address = geo.getAddressDto();
+            geo.setAddressDto(ValidationAddress(
+                    address.getRegion(),
+                    address.getTypeLocality(),
+                    address.getLocality(),
+                    address.getDistrict(),
+                    address.getStreet(),
+                    address.getHouseNumber()
+            ));
+        }
+
+        return entity;
+    }
+
+    /**
+     * Метод валидации адреса на наличие определенных полей.
+     *
+     * @param region       регион.
+     * @param typeLocality тип местности.
+     * @param locality     местность.
+     * @param district     район.
+     * @param street       улица.
+     * @param houseNumber  номер дома.
+     * @return результат валидации - адрес.
+     */
+    public static AddressDto ValidationAddress(String region, String typeLocality, String locality, String district, String street, String houseNumber) {
+        if (region == null && typeLocality == null && locality == null && district == null && street == null && houseNumber == null) {
+            return null;
+        } else if (region != null && typeLocality != null && locality != null) {
+            return AddressDto.builder()
+                    .region(region)
+                    .district(Objects.requireNonNullElse(district, "Отсутствует"))
+                    .typeLocality(typeLocality)
+                    .locality(locality)
+                    .street(Objects.requireNonNullElse(street, "Отсутствует"))
+                    .houseNumber(Objects.requireNonNullElse(houseNumber, "Отсутствует"))
+                    .build();
+        } else {
+            if (region == null) {
+                throw new AddressFieldNotFoundException("Ошибка! Без поля \"region\" формирование адреса невозможно!");
+            }
+
+            if (typeLocality == null) {
+                throw new AddressFieldNotFoundException("Ошибка! Без поля \"typeLocality\" формирование адреса невозможно!");
+            }
+
+            throw new AddressFieldNotFoundException("Ошибка! Без поля \"locality\" формирование адреса невозможно!");
         }
     }
 

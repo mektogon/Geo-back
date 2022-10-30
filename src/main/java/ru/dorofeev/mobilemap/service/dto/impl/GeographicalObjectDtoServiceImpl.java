@@ -11,6 +11,7 @@ import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoMobile;
 import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoWeb;
 import ru.dorofeev.mobilemap.service.dto.interf.GeographicalObjectDtoService;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
+import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +69,12 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
 
     @Override
     public void save(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
-        geographicalObjectService.save(geographicalObjectMapper.toEntity(geographicalObjectDtoMobile));
+        geographicalObjectService.save(
+                geographicalObjectMapper.toEntity(
+                        AuxiliaryUtils.ValidationGeoObject(geographicalObjectDtoMobile
+                        )
+                )
+        );
 
         log.info("IN save() - Преобразование dto в entity.");
     }
