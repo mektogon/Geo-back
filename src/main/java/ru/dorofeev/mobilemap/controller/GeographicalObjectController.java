@@ -1,7 +1,6 @@
 package ru.dorofeev.mobilemap.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +24,6 @@ import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
 
 import javax.transaction.Transactional;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +32,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/geo")
 @RequiredArgsConstructor
-@Tag(name="Географический объект", description="Контроллер для работы с гео-объектами.")
+@Tag(name = "Географический объект", description = "Контроллер для работы с гео-объектами.")
 public class GeographicalObjectController {
     private final GeographicalObjectService geographicalObjectService;
     private final GeographicalObjectDtoService geographicalObjectDtoService;
@@ -80,10 +78,19 @@ public class GeographicalObjectController {
 
     @Operation(
             summary = "Сохранение гео-объекта",
+            description = "Позволяет сохранить гео-объект (текстовые поля)."
+    )
+    @PostMapping()
+    public void save(@RequestBody GeographicalObjectDtoMobile object) {
+        geographicalObjectDtoService.save(object);
+    }
+
+    @Operation(
+            summary = "Сохранение гео-объекта с файлами",
             description = "Позволяет сохранить гео-объект с полным набором полей."
     )
     @Transactional
-    @PostMapping()
+    @PostMapping("/save")
     public void save(
             @RequestParam("name") String name,
             @RequestParam(value = "type", defaultValue = "Отсутствует") String type,
@@ -98,8 +105,8 @@ public class GeographicalObjectController {
             @RequestParam(value = "locality", required = false) String locality,
             @RequestParam(value = "street", required = false) String street,
             @RequestParam(value = "houseNumber", required = false) String houseNumber,
-            @RequestParam("photo") MultipartFile[] photo,
-            @RequestParam("audio") MultipartFile[] audio,
+            @RequestParam(value = "photo", required = false) MultipartFile[] photo,
+            @RequestParam(value = "audio", required = false) MultipartFile[] audio,
             @RequestParam(value = "video", required = false) MultipartFile[] video
     ) {
         GeographicalObjectDtoMobile entity = new GeographicalObjectDtoMobile();
@@ -137,8 +144,13 @@ public class GeographicalObjectController {
 
         UUID id = geographicalObjectDtoService.saveAndReturnId(entity);
 
-        photoService.upload(photo, id);
-        audioService.upload(audio, id);
+        if (audio != null) {
+            photoService.upload(photo, id);
+        }
+
+        if (audio != null) {
+            audioService.upload(audio, id);
+        }
 
         if (video != null) {
             videoService.upload(video, id);
@@ -168,6 +180,15 @@ public class GeographicalObjectController {
             description = "Позволяет обновить переданные поля гео-объекта."
     )
     @PatchMapping()
+    public void update(@RequestBody GeographicalObjectDtoMobile object) {
+        geographicalObjectDtoService.update(object);
+    }
+
+    @Operation(
+            summary = "Обновление гео-объекта с файлами",
+            description = "Позволяет обновить переданные поля гео-объекта."
+    )
+    @PatchMapping("/update")
     public void update(
             @RequestParam("id") UUID id,
             @RequestParam(value = "name", required = false) String name,

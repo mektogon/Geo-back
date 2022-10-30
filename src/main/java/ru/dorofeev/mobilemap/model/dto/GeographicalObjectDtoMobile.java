@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Сущность гео-объекта для мобильного приложения.")
 public class GeographicalObjectDtoMobile extends GeographicalObjectDto {
 
     public GeographicalObjectDtoMobile(GeographicalObjectDto geographicalObjectDto) {

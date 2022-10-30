@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Сущность гео-объекта для панели администратора.")
 public class GeographicalObjectDtoWeb extends GeographicalObjectDto {
 
     public GeographicalObjectDtoWeb(GeographicalObjectDto geographicalObjectDto) {

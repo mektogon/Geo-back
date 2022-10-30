@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Сущность гео-объекта")
+@Schema(description = "Сущность гео-объекта. Служит базовой моделью для модели с полным списком атрибутов.")
 public class GeographicalObjectDto {
     @Schema(description = "Идентификатор", example = "9c03f297-d59e-4c4d-94f6-107db6fe4db4")
     private UUID id;
