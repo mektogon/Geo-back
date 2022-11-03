@@ -78,11 +78,11 @@ public class DesignationServiceImpl implements DesignationService {
     @Transactional
     @Override
     public void deleteByName(String name) {
-        String urlToFile = designationRepository.getDesignationByName(name).getUrl();
+        String urlToFile = designationRepository.getDesignationByNameIsIgnoreCase(name).getUrl();
         String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
         AuxiliaryUtils.DeleteFile(directoryToDelete);
 
-        designationRepository.deleteByName(name);
+        designationRepository.deleteByNameIsIgnoreCase(name);
         log.info("IN deleteByName() - Удалено обозначение с name: {} из базы данных!", name);
     }
 
@@ -111,13 +111,13 @@ public class DesignationServiceImpl implements DesignationService {
 
     @Override
     public Designation getDesignationByName(String name) {
-        Designation designationByName = designationRepository.getDesignationByName(name);
+        Designation designationByName = designationRepository.getDesignationByNameIsIgnoreCase(name);
 
         log.info("IN getDesignationByName() - Найдено обозначение с name: {}", name);
 
         if (designationByName == null) {
             log.info("IN getDesignationByName() - Не найдено обозначение с name: {}", name);
-            return designationRepository.getDesignationByName("Отсутствует");
+            return designationRepository.getDesignationByNameIsIgnoreCase("Отсутствует");
         }
 
         return designationByName;

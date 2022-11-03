@@ -53,7 +53,7 @@ public class LocalityServiceImpl implements LocalityService {
 
     @Override
     public void deleteByName(String name) {
-        localityRepository.deleteByName(name);
+        localityRepository.deleteByNameIsIgnoreCase(name);
         log.info("IN deleteByName() - Местность с name: {} удалена", name);
     }
 }

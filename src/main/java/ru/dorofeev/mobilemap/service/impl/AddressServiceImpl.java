@@ -108,17 +108,17 @@ public class AddressServiceImpl implements AddressService {
 
         if (foundAddress == null) {
             log.info("IN getAddress() - Адрес не найден!");
-            Region region = regionRepository.findByName(regionName);
-            District district = districtRepository.findByName(districtName);
-            TypeLocality typeLocality = typeLocalityRepository.findByName(typeLocalityName);
-            Locality locality = localityRepository.findByName(localityName);
-            Street street = streetRepository.findByName(streetName);
+            Region region = regionRepository.findByNameIsIgnoreCase(regionName);
+            District district = districtRepository.findByNameIsIgnoreCase(districtName);
+            TypeLocality typeLocality = typeLocalityRepository.findByNameIsIgnoreCase(typeLocalityName);
+            Locality locality = localityRepository.findByNameIsIgnoreCase(localityName);
+            Street street = streetRepository.findByNameIsIgnoreCase(streetName);
 
             if (region == null) {
                 region = new Region();
                 region.setName(regionName);
                 regionRepository.save(region);
-                region = regionRepository.findByName(regionName);
+                region = regionRepository.findByNameIsIgnoreCase(regionName);
                 log.info("IN getAddress() - Регион не найден. Создан и сохранен.");
             }
 
@@ -126,7 +126,7 @@ public class AddressServiceImpl implements AddressService {
                 district = new District();
                 district.setName(districtName);
                 districtRepository.save(district);
-                district = districtRepository.findByName(districtName);
+                district = districtRepository.findByNameIsIgnoreCase(districtName);
                 log.info("IN getAddress() - Район не найден. Создан и сохранен.");
             }
 
@@ -134,7 +134,7 @@ public class AddressServiceImpl implements AddressService {
                 typeLocality = new TypeLocality();
                 typeLocality.setName(typeLocalityName);
                 typeLocalityRepository.save(typeLocality);
-                typeLocality = typeLocalityRepository.findByName(typeLocalityName);
+                typeLocality = typeLocalityRepository.findByNameIsIgnoreCase(typeLocalityName);
                 log.info("IN getAddress() - Тип местности не найден. Создан и сохранен.");
             }
 
@@ -142,7 +142,7 @@ public class AddressServiceImpl implements AddressService {
                 locality = new Locality();
                 locality.setName(localityName);
                 localityRepository.save(locality);
-                locality = localityRepository.findByName(localityName);
+                locality = localityRepository.findByNameIsIgnoreCase(localityName);
                 log.info("IN getAddress() - Местность не найдена. Создана и сохранена.");
             }
 
@@ -150,7 +150,7 @@ public class AddressServiceImpl implements AddressService {
                 street = new Street();
                 street.setName(streetName);
                 streetRepository.save(street);
-                street = streetRepository.findByName(streetName);
+                street = streetRepository.findByNameIsIgnoreCase(streetName);
                 log.info("IN getAddress() - Улица не найдена. Создана и сохранена.");
             }
 

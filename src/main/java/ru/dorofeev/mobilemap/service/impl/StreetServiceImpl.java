@@ -3,7 +3,6 @@ package ru.dorofeev.mobilemap.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.dorofeev.mobilemap.model.base.Region;
 import ru.dorofeev.mobilemap.model.base.Street;
 import ru.dorofeev.mobilemap.repository.StreetRepository;
 import ru.dorofeev.mobilemap.service.interf.StreetService;
@@ -54,7 +53,7 @@ public class StreetServiceImpl implements StreetService {
 
     @Override
     public void deleteByName(String name) {
-        streetRepository.deleteByName(name);
+        streetRepository.deleteByNameIsIgnoreCase(name);
         log.info("IN deleteByName() - Улица с name: {} удалена!", name);
     }
 }

@@ -95,7 +95,7 @@ public class AudioServiceImpl implements AudioService {
 
     @Override
     public List<Audio> findAllInfoByName(String name) {
-        return audioRepository.findAllAudioByName(name);
+        return audioRepository.findAllAudioByNameIsIgnoreCase(name);
     }
 
     @Override

@@ -55,7 +55,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             return Collections.emptyList();
         }
 
-        return geographicalObjectRepository.findAllByName(name);
+        return geographicalObjectRepository.findAllByNameIsContainingIgnoreCase(name);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
 
     @Override
     public void deleteByName(String name) {
-        List<GeographicalObject> geoListToDelete = geographicalObjectRepository.findAllByName(name);
+        List<GeographicalObject> geoListToDelete = geographicalObjectRepository.findAllByNameIsIgnoreCase(name);
         geoListToDelete.forEach(geo -> {
                     deleteById(geo.getId());
                     log.info("IN deleteByName() - Удален гео-объект с name: {}", name);

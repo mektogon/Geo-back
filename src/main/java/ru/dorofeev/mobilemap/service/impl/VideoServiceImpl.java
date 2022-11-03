@@ -94,7 +94,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public List<Video> findAllInfoByName(String name) {
-        return videoRepository.findAllVideoByName(name);
+        return videoRepository.findAllVideoByNameIsIgnoreCase(name);
     }
 
     @Override

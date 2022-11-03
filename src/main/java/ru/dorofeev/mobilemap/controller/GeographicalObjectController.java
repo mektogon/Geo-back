@@ -3,6 +3,7 @@ package ru.dorofeev.mobilemap.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -79,8 +80,8 @@ public class GeographicalObjectController {
             description = "Позволяет сохранить гео-объект (текстовые поля)."
     )
     @PostMapping()
-    public void save(@RequestBody GeographicalObjectDtoMobile object) {
-        geographicalObjectDtoService.save(object);
+    public ResponseEntity<String> save(@RequestBody GeographicalObjectDtoMobile object) {
+        return ResponseEntity.ok(String.format("{\"id\": \"%s\"}", geographicalObjectDtoService.saveAndReturnId(object)));
     }
 
     @Operation(

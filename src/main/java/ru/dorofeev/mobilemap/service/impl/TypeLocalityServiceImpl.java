@@ -30,7 +30,7 @@ public class TypeLocalityServiceImpl implements TypeLocalityService {
 
     @Override
     public TypeLocality getByName(String name) {
-        return typeLocalityRepository.findByName(name);
+        return typeLocalityRepository.findByNameIsIgnoreCase(name);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TypeLocalityServiceImpl implements TypeLocalityService {
 
     @Override
     public void deleteByName(String name) {
-        typeLocalityRepository.deleteByName(name);
+        typeLocalityRepository.deleteByNameIsIgnoreCase(name);
         log.info("IN deleteByName() - Тип объекта с name: {} удален!", name);
     }
 }

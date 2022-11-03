@@ -9,7 +9,8 @@ import java.util.UUID;
 
 @Repository
 public interface GeographicalObjectRepository extends JpaRepository<GeographicalObject, UUID> {
-    List<GeographicalObject> findAllByName(String name);
+    List<GeographicalObject> findAllByNameIsContainingIgnoreCase(String name);
+    List<GeographicalObject> findAllByNameIsIgnoreCase(String name);
 
     void deleteByName(String name);
 

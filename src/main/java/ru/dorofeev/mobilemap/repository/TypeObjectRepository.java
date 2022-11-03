@@ -8,10 +8,10 @@ import java.util.UUID;
 
 @Repository
 public interface TypeObjectRepository extends JpaRepository<TypeObject, UUID> {
-    TypeObject findByName(String name);
+    TypeObject findByNameIsIgnoreCase(String name);
 
     @Override
     <S extends TypeObject> S save(S entity);
 
-    void deleteByName(String name);
+    void deleteByNameIsIgnoreCase(String name);
 }

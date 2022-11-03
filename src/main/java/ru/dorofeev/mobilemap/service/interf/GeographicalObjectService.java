@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface GeographicalObjectService extends AbstractService<GeographicalObject> {
     List<GeographicalObject> findAllByName(String name);
+
     UUID saveAndReturnId(GeographicalObject geographicalObject);
 
     void update(

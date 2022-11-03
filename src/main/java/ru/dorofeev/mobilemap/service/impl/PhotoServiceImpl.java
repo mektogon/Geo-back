@@ -97,7 +97,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public List<Photo> findAllInfoByName(String name) {
-        return photoRepository.findAllPhotoByName(name);
+        return photoRepository.findAllPhotoByNameIsIgnoreCase(name);
     }
 
     @Override
