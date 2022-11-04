@@ -35,6 +35,9 @@ public class GeographicalObjectDto {
     @Schema(description = "Заметка", example = "Заметка о гео-объекте")
     private String note;
 
+    @Schema(description = "Автовоспроизведение аудиозаписи", example = "false")
+    private Boolean isPlaying;
+
     @Schema(description = "Адрес")
     private AddressDto addressDto;
 }

@@ -75,6 +75,8 @@ public class GeographicalObject implements Serializable {
 
     private String note;
 
+    private Boolean isPlaying;
+
     @ManyToOne
     private Address address;
 

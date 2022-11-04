@@ -97,6 +97,7 @@ public class GeographicalObjectController {
             @RequestParam("longitude") String longitude,
             @RequestParam("description") String description,
             @RequestParam(value = "note", required = false) String note,
+            @RequestParam(value = "isPlaying", required = false) Boolean isPlaying,
             @RequestParam(value = "designation", defaultValue = "Отсутствует") String designation,
             @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "district", required = false) String district,
@@ -115,6 +116,7 @@ public class GeographicalObjectController {
         entity.setLongitude(longitude);
         entity.setDescription(description);
         entity.setNote(note);
+        entity.setIsPlaying(isPlaying);
         entity.setDesignation(designation);
         entity.setAddressDto(
                 AuxiliaryUtils.ValidationAddress(

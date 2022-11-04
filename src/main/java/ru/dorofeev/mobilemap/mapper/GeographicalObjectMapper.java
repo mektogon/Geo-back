@@ -194,6 +194,9 @@ public class GeographicalObjectMapper {
         geographicalObject.setLongitude(geographicalObjectDtoMobile.getLongitude());
         geographicalObject.setDescription(geographicalObjectDtoMobile.getDescription());
         geographicalObject.setNote(geographicalObjectDtoMobile.getNote());
+        geographicalObject.setIsPlaying(geographicalObjectDtoMobile.getIsPlaying() != null ?
+                geographicalObjectDtoMobile.getIsPlaying() : false
+        );
         geographicalObject.setDesignation(designationService.getDesignationByName(geographicalObjectDtoMobile.getDesignation()));
 
         if (geographicalObjectDtoMobile.getAddressDto() == null) {
@@ -245,6 +248,7 @@ public class GeographicalObjectMapper {
         geographicalObjectDto.setLongitude(geographicalObject.getLongitude());
         geographicalObjectDto.setDescription(geographicalObject.getDescription());
         geographicalObjectDto.setNote(geographicalObject.getNote());
+        geographicalObjectDto.setIsPlaying(geographicalObject.getIsPlaying());
 
 
         if (geographicalObject.getAddress() != null) {
