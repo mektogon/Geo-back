@@ -87,16 +87,16 @@ public class AuxiliaryUtils {
         entity.setDescription(geo.getDescription());
         entity.setNote(geo.getNote());
         entity.setDesignation(geo.getDesignation());
+        entity.setIsPlaying(geo.getIsPlaying());
 
         if (geo.getAddressDto() != null) {
-            AddressDto address = geo.getAddressDto();
-            geo.setAddressDto(ValidationAddress(
-                    address.getRegion(),
-                    address.getTypeLocality(),
-                    address.getLocality(),
-                    address.getDistrict(),
-                    address.getStreet(),
-                    address.getHouseNumber()
+            entity.setAddressDto(ValidationAddress(
+                    geo.getAddressDto().getRegion(),
+                    geo.getAddressDto().getTypeLocality(),
+                    geo.getAddressDto().getLocality(),
+                    geo.getAddressDto().getDistrict(),
+                    geo.getAddressDto().getStreet(),
+                    geo.getAddressDto().getHouseNumber()
             ));
         }
 
@@ -116,6 +116,8 @@ public class AuxiliaryUtils {
      */
     public static AddressDto ValidationAddress(String region, String typeLocality, String locality, String district, String street, String houseNumber) {
         if (region == null && typeLocality == null && locality == null && district == null && street == null && houseNumber == null) {
+            return null;
+        } else if (region.isEmpty() && typeLocality.isEmpty() && locality.isEmpty() && district.isEmpty() && street.isEmpty() && houseNumber.isEmpty()) {
             return null;
         } else if (region != null && typeLocality != null && locality != null) {
             return AddressDto.builder()

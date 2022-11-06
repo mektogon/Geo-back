@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.mapper.GeographicalObjectMapper;
 import ru.dorofeev.mobilemap.model.base.GeographicalObject;
 import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoMobile;
 import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoWeb;
+import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
 import ru.dorofeev.mobilemap.service.dto.interf.GeographicalObjectDtoService;
 import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
@@ -24,8 +24,8 @@ import java.util.UUID;
 public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoService {
 
     private final GeographicalObjectMapper geographicalObjectMapper;
-
     private final GeographicalObjectService geographicalObjectService;
+    private final GeographicalObjectRepository geographicalObjectRepository;
 
     @Override
     public List<GeographicalObjectDtoMobile> getAll() {
@@ -71,8 +71,7 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     public void save(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
         geographicalObjectService.save(
                 geographicalObjectMapper.toEntity(
-                        AuxiliaryUtils.ValidationGeoObject(geographicalObjectDtoMobile
-                        )
+                        AuxiliaryUtils.ValidationGeoObject(geographicalObjectDtoMobile)
                 )
         );
 
@@ -83,39 +82,24 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     public UUID saveAndReturnId(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
         log.info("IN saveAndReturnId() - Преобразование dto в entity.");
 
-        return geographicalObjectService.saveAndReturnId(geographicalObjectMapper.toEntity(geographicalObjectDtoMobile));
-
-    }
-
-    @Override
-    public void update(
-            UUID id,
-            String name,
-            String type,
-            String latitude,
-            String longitude,
-            String description,
-            String note,
-            String designation,
-            String region,
-            String district,
-            String typeLocality,
-            String locality,
-            String street,
-            String houseNumber,
-            MultipartFile[] photo,
-            MultipartFile[] audio,
-            MultipartFile[] video
-    ) {
+        return geographicalObjectService.saveAndReturnId(
+                geographicalObjectMapper.toEntity(
+                        AuxiliaryUtils.ValidationGeoObject(geographicalObjectDtoMobile)
+                )
+        );
 
     }
 
     @Override
     public void update(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
-        log.info("IN update() - Преобразование dto в entity.");
+        Optional<GeographicalObject> byId = geographicalObjectRepository.findById(geographicalObjectDtoMobile.getId());
 
-        geographicalObjectService.update(geographicalObjectMapper.toEntity(geographicalObjectDtoMobile));
+        if (byId.isPresent()) {
+            log.info("IN update() - Преобразование dto в entity.");
+
+            geographicalObjectService.update(
+                    geographicalObjectMapper.toConvertForUpdateEntity(geographicalObjectDtoMobile, byId.get())
+            );
+        }
     }
-
-
 }

@@ -20,6 +20,7 @@ public interface GeographicalObjectService extends AbstractService<GeographicalO
             String description,
             String note,
             String designation,
+            Boolean isPlaying,
             String region,
             String district,
             String typeLocality,

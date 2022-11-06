@@ -70,26 +70,27 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Address getAddress(String regionName, String districtName, String typeLocalityName, String localityName, String streetName, String houseNumber) {
         //Код, на который без слез не взглянешь.
+        //Подлежит рефакторингу.
         if (regionName == null && districtName == null && typeLocalityName == null && localityName == null && streetName == null && houseNumber == null) {
             log.info("IN getAddress() - Адрес отсутствует!");
             return null;
         }
 
         //Необязательное поле в адресе.
-        if (districtName != null && districtName.isEmpty()) {
+        if (districtName == null || districtName.isEmpty()) {
             log.info("IN getAddress() - Район отсутствует!");
             districtName = "Отсутствует";
         }
 
         //Необязательное поле в адресе.
-        if (streetName != null && streetName.isEmpty()) {
+        if (streetName == null || streetName.isEmpty()) {
             log.info("IN getAddress() - Улица отсутствует!");
             streetName = "Отсутствует"; //Если нет улицы => не может быть и номера дома
             houseNumber = "Отсутствует";
         }
 
         //Необязательное поле в адресе.
-        if (houseNumber != null && houseNumber.isEmpty() || Objects.equals(streetName, "Отсутствует")) {
+        if (houseNumber == null || houseNumber.isEmpty() || Objects.equals(streetName, "Отсутствует")) {
             log.info("IN getAddress() - Номер дома отсутствует!");
             houseNumber = "Отсутствует";
         }

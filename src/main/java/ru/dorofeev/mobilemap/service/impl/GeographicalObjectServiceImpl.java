@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.model.base.GeographicalObject;
+import ru.dorofeev.mobilemap.model.dto.AddressDto;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
 import ru.dorofeev.mobilemap.service.interf.AddressService;
 import ru.dorofeev.mobilemap.service.interf.AudioService;
@@ -13,10 +14,10 @@ import ru.dorofeev.mobilemap.service.interf.GeographicalObjectService;
 import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.service.interf.TypeObjectService;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
+import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -80,12 +81,12 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             log.info("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
         }
 
-        log.info("IN update() - Не удалось найти гео-объект с ID: {}", geographicalObject.getId());
+        log.info("IN update() - Не удалось найти и обновить гео-объект с ID: {}", geographicalObject.getId());
     }
 
     @Override
     public void deleteById(UUID id) {
-        cascadeDeleteByIdGeo(id);
+        cascadeDeleteFilesByIdGeo(id);
         geographicalObjectRepository.deleteById(id);
         log.info("IN deleteById() - Удален гео-объект с ID: {}", id);
     }
@@ -111,6 +112,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             String description,
             String note,
             String designation,
+            Boolean isPlaying,
             String region,
             String district,
             String typeLocality,
@@ -154,25 +156,20 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
                 entity.setDesignation(designationService.getDesignationByName(designation));
             }
 
-            if (region != null && typeLocality != null && locality != null) {
-                String currentStreet = "Отсутствует";
-                String currentHouseNumber = "Отсутствует";
+            if (isPlaying != null) {
+                entity.setIsPlaying(isPlaying);
+            }
 
-                if (street != null) {
-                    currentStreet = street;
+            AddressDto addressDto = AuxiliaryUtils.ValidationAddress(region, typeLocality, locality, district, street, houseNumber);
 
-                    if (houseNumber != null) {
-                        currentHouseNumber = houseNumber;
-                    }
-                }
-
+            if (addressDto != null) {
                 entity.setAddress(addressService.getAddress(
-                        region,
-                        Objects.requireNonNullElse(district, "Отсутствует"),
-                        typeLocality,
-                        locality,
-                        currentStreet,
-                        currentHouseNumber
+                        addressDto.getRegion(),
+                        addressDto.getDistrict(),
+                        addressDto.getTypeLocality(),
+                        addressDto.getLocality(),
+                        addressDto.getStreet(),
+                        addressDto.getHouseNumber()
                 ));
             }
 
@@ -192,7 +189,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             log.info("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
         }
 
-        log.info("IN update() - Не удалось найти гео-объект с ID: {}", id);
+        log.info("IN update() - Не удалось найти и обновить гео-объект с ID: {}", id);
     }
 
     /**
@@ -200,7 +197,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
      *
      * @param id индетификатор удаляемого объекта
      */
-    private void cascadeDeleteByIdGeo(UUID id) {
+    private void cascadeDeleteFilesByIdGeo(UUID id) {
         photoService.findAllFilesByGeographicalObjectId(id)
                 .forEach(photo -> photoService.deleteById(photo.getId()));
         videoService.findAllFilesByGeographicalObjectId(id)

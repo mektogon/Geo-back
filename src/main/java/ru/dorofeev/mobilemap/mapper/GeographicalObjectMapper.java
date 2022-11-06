@@ -16,6 +16,7 @@ import ru.dorofeev.mobilemap.service.interf.DesignationService;
 import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.service.interf.TypeObjectService;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
+import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -188,6 +189,7 @@ public class GeographicalObjectMapper {
 
         GeographicalObject geographicalObject = new GeographicalObject();
 
+        geographicalObject.setId(geographicalObjectDtoMobile.getId());
         geographicalObject.setType(typeObjectService.getByName(geographicalObjectDtoMobile.getType()));
         geographicalObject.setName(geographicalObjectDtoMobile.getName());
         geographicalObject.setLatitude(geographicalObjectDtoMobile.getLatitude());
@@ -214,6 +216,74 @@ public class GeographicalObjectMapper {
         }
 
         return geographicalObject;
+    }
+
+    /**
+     * Метод для преобразования DTO в Entity с последующим обновлением сущности.
+     * @param geographicalObjectDtoMobile Обновляющий объект
+     * @param entity Обновляемый объект
+     * @return Обновленный объект.
+     */
+    public GeographicalObject toConvertForUpdateEntity(GeographicalObjectDtoMobile geographicalObjectDtoMobile, GeographicalObject entity) {
+
+        if (geographicalObjectDtoMobile.getName() != null) {
+            entity.setName(geographicalObjectDtoMobile.getName());
+        }
+
+        if (geographicalObjectDtoMobile.getType() != null) {
+            entity.setType(
+                    typeObjectService.getByName(geographicalObjectDtoMobile.getType())
+            );
+        }
+
+        if (geographicalObjectDtoMobile.getLatitude() != null) {
+            entity.setLatitude(geographicalObjectDtoMobile.getLatitude());
+        }
+
+        if (geographicalObjectDtoMobile.getLongitude() != null) {
+            entity.setLongitude(geographicalObjectDtoMobile.getLongitude());
+        }
+
+        if (geographicalObjectDtoMobile.getDescription() != null) {
+            entity.setDescription(geographicalObjectDtoMobile.getDescription());
+        }
+
+        if (geographicalObjectDtoMobile.getNote() != null) {
+            entity.setNote(geographicalObjectDtoMobile.getNote());
+        }
+
+        if (geographicalObjectDtoMobile.getDesignation() != null) {
+            entity.setDesignation(
+                    designationService.getDesignationByName(geographicalObjectDtoMobile.getDesignation())
+            );
+        }
+
+        if (geographicalObjectDtoMobile.getIsPlaying() != null) {
+            entity.setIsPlaying(geographicalObjectDtoMobile.getIsPlaying());
+        }
+
+        if (geographicalObjectDtoMobile.getAddressDto() != null) {
+
+            AddressDto addressDto = AuxiliaryUtils.ValidationAddress(
+                    geographicalObjectDtoMobile.getAddressDto().getRegion(),
+                    geographicalObjectDtoMobile.getAddressDto().getTypeLocality(),
+                    geographicalObjectDtoMobile.getAddressDto().getLocality(),
+                    geographicalObjectDtoMobile.getAddressDto().getDistrict(),
+                    geographicalObjectDtoMobile.getAddressDto().getStreet(),
+                    geographicalObjectDtoMobile.getAddressDto().getHouseNumber()
+            );
+
+            entity.setAddress(addressService.getAddress(
+                    addressDto.getRegion(),
+                    addressDto.getDistrict(),
+                    addressDto.getTypeLocality(),
+                    addressDto.getLocality(),
+                    addressDto.getStreet(),
+                    addressDto.getHouseNumber()
+            ));
+        }
+
+        return entity;
     }
 
     /**
