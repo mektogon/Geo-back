@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.model.base.Designation;
+import ru.dorofeev.mobilemap.model.dto.DesignationDto;
+import ru.dorofeev.mobilemap.service.dto.interf.DesignationDtoService;
 import ru.dorofeev.mobilemap.service.interf.DesignationService;
 
 import java.io.IOException;
@@ -25,10 +27,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/designation")
 @RequiredArgsConstructor
-@Tag(name="Обозначения", description="Контроллер для работы с обозначениями.")
+@Tag(name = "Обозначения", description = "Контроллер для работы с обозначениями.")
 public class DesignationController {
 
     private final DesignationService designationService;
+    private final DesignationDtoService designationDtoService;
 
     @Operation(
             summary = "Загрузка обозначения",
@@ -67,12 +70,21 @@ public class DesignationController {
     }
 
     @Operation(
-            summary = "Получить все обозначения",
+            summary = "Получить все обозначения с системным url",
+            description = "Позволяет получить список сохраненных обозначений с url, где хранится фотография в системе."
+    )
+    @GetMapping("/all")
+    public List<Designation> getAll() {
+        return designationService.getAll();
+    }
+
+    @Operation(
+            summary = "Получить все обозначения с фотографиями",
             description = "Позволяет получить список сохраненных обозначений."
     )
     @GetMapping()
-    public List<Designation> getAll() {
-        return designationService.getAll();
+    public List<DesignationDto> getAllWithPhoto() {
+        return designationDtoService.getAllWithPhoto();
     }
 
     @Operation(
