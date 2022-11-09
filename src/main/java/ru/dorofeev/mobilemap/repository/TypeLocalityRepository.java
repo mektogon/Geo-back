@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface TypeLocalityRepository extends JpaRepository<TypeLocality, UUID> {
-    TypeLocality findByNameIsIgnoreCase(String name);
+    TypeLocality findByName(String name);
 
-    void deleteByNameIsIgnoreCase(String name);
+    void deleteByName(String name);
 }

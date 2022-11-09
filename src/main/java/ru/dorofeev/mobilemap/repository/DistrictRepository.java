@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface DistrictRepository extends JpaRepository<District, UUID> {
-    District findByNameIsIgnoreCase(String name);
+    District findByName(String name);
 
-    void deleteByNameIsIgnoreCase(String name);
+    void deleteByName(String name);
 }

@@ -53,7 +53,7 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public void deleteByName(String name) {
-        regionRepository.deleteByNameIsIgnoreCase(name);
+        regionRepository.deleteByName(name);
         log.info("IN deleteByName() - Регион с name: {} удален!", name);
     }
 }

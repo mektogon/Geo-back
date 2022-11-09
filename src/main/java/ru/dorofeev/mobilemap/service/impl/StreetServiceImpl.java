@@ -53,7 +53,7 @@ public class StreetServiceImpl implements StreetService {
 
     @Override
     public void deleteByName(String name) {
-        streetRepository.deleteByNameIsIgnoreCase(name);
+        streetRepository.deleteByName(name);
         log.info("IN deleteByName() - Улица с name: {} удалена!", name);
     }
 }

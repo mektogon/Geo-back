@@ -53,17 +53,17 @@ public class TypeObjectServiceImpl implements TypeObjectService {
 
     @Override
     public void deleteByName(String name) {
-        typeObjectRepository.deleteByNameIsIgnoreCase(name);
+        typeObjectRepository.deleteByName(name);
         log.info("IN deleteByName() - Тип объекта с name: {} удален!", name);
     }
 
     @Override
     public TypeObject getByName(String typeName) {
-        TypeObject typeObjectByName = typeObjectRepository.findByNameIsIgnoreCase(typeName);
+        TypeObject typeObjectByName = typeObjectRepository.findByName(typeName);
 
         if (typeObjectByName == null) {
             log.error("IN getTypeObjectByName() - Имя отсутствует!");
-            return typeObjectRepository.findByNameIsIgnoreCase("Отсутствует");
+            return typeObjectRepository.findByName("Отсутствует");
         }
 
         log.info("IN getTypeObjectByName() - Тип объекта с name: {} найден!", typeName);
