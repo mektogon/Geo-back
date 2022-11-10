@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -70,9 +71,10 @@ public class GeographicalObject implements Serializable {
     @Pattern(regexp = regexLongitude, message = "Долгота должна быть в диапазоне [-180; 180]")
     private String longitude;
 
-    @Size(max = 1000, message = "Количество символов не должно превышать 1000")
+    @Column(columnDefinition="TEXT")
     private String description;
 
+    @Column(columnDefinition="TEXT")
     private String note;
 
     private Boolean isPlaying;
