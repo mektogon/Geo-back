@@ -34,6 +34,11 @@ public class TypeLocalityServiceImpl implements TypeLocalityService {
     }
 
     @Override
+    public List<TypeLocality> getAllByName(String name) {
+        return typeLocalityRepository.findAllByNameIsContainingIgnoreCase(name);
+    }
+
+    @Override
     public void save(TypeLocality typeLocality) {
         typeLocalityRepository.save(typeLocality);
         log.info("IN save() - Тип местности сохранен!");

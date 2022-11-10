@@ -124,6 +124,11 @@ public class DesignationServiceImpl implements DesignationService {
     }
 
     @Override
+    public List<Designation> getAllByName(String name) {
+        return designationRepository.findAllByNameIsContainingIgnoreCase(name);
+    }
+
+    @Override
     public ResponseEntity<byte[]> getFileById(UUID id) throws IOException {
         Optional<Designation> foundFile = designationRepository.findById(id);
 

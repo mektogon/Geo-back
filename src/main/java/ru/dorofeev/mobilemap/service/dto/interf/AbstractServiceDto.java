@@ -9,7 +9,7 @@ public interface AbstractServiceDto<T> {
 
     Optional<T> findById(UUID id);
 
-    List<T> getByName(String name);
+    List<T> getAllByName(String name);
 
     void save(T t);
 

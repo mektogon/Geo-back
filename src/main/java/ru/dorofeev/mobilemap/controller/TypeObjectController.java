@@ -21,7 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/type-object")
 @RequiredArgsConstructor
-@Tag(name="Тип гео-объекта", description="Контроллер для работы с типами гео-объектов.")
+@Tag(name = "Тип гео-объекта", description = "Контроллер для работы с типами гео-объектов.")
 public class TypeObjectController implements AbstractController<TypeObject> {
 
     private final TypeObjectService typeObjectService;
@@ -54,6 +54,15 @@ public class TypeObjectController implements AbstractController<TypeObject> {
     @Override
     public TypeObject getByName(@PathVariable String name) {
         return typeObjectService.getByName(name);
+    }
+
+    @Operation(
+            summary = "Получить все типы гео-объекта по наименованию",
+            description = "Позволяет получить все типы гео-объекта по переданному имени."
+    )
+    @GetMapping("/getAllByName/{name}")
+    public List<TypeObject> getAllByName(@PathVariable String name) {
+        return typeObjectService.getAllByName(name);
     }
 
     @Operation(

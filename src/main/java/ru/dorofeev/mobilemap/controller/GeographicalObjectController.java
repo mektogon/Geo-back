@@ -71,8 +71,8 @@ public class GeographicalObjectController {
             description = "Позволяет получить все гео-объекты с переданным именем."
     )
     @GetMapping("/{name}")
-    public List<GeographicalObjectDtoMobile> getByName(@PathVariable String name) {
-        return geographicalObjectDtoService.getByName(name);
+    public List<GeographicalObjectDtoMobile> getAllByName(@PathVariable String name) {
+        return geographicalObjectDtoService.getAllByName(name);
     }
 
     @Operation(

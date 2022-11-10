@@ -69,4 +69,9 @@ public class TypeObjectServiceImpl implements TypeObjectService {
         log.info("IN getTypeObjectByName() - Тип объекта с name: {} найден!", typeName);
         return typeObjectByName;
     }
+
+    @Override
+    public List<TypeObject> getAllByName(String name) {
+        return typeObjectRepository.findAllByNameIsContainingIgnoreCase(name);
+    }
 }

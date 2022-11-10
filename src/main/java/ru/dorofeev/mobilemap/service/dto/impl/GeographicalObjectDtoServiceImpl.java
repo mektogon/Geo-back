@@ -51,7 +51,7 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     }
 
     @Override
-    public List<GeographicalObjectDtoMobile> getByName(@PathVariable String name) {
+    public List<GeographicalObjectDtoMobile> getAllByName(@PathVariable String name) {
         log.info("IN getByName() - Преобразование List<Entity> в List<DTO>.");
 
         List<GeographicalObject> allByName = geographicalObjectService.findAllByName(name);

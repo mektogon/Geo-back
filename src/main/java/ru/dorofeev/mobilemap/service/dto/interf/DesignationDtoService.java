@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface DesignationDtoService {
     List<DesignationDto> getAllWithPhoto();
+
+    List<DesignationDto> getAllByNameWithPhoto(String name);
 }

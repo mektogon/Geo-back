@@ -21,7 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/type-locality")
 @RequiredArgsConstructor
-@Tag(name="Тип местности", description="Контроллер для работы с типами местности.")
+@Tag(name = "Тип местности", description = "Контроллер для работы с типами местности.")
 public class TypeLocalityController implements AbstractController<TypeLocality> {
 
     private final TypeLocalityService typeLocalityService;
@@ -54,6 +54,15 @@ public class TypeLocalityController implements AbstractController<TypeLocality> 
     @Override
     public TypeLocality getByName(@PathVariable String name) {
         return typeLocalityService.getByName(name);
+    }
+
+    @Operation(
+            summary = "Получить все типы местности по наименованию",
+            description = "Позволяет получить все типы местности по переданному имени."
+    )
+    @GetMapping("/getAllByName/{name}")
+    public List<TypeLocality> getAllByName(@PathVariable String name) {
+        return typeLocalityService.getAllByName(name);
     }
 
     @Operation(

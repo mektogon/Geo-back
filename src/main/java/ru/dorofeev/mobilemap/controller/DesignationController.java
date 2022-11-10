@@ -88,6 +88,15 @@ public class DesignationController {
     }
 
     @Operation(
+            summary = "Получить все обозначения по имени с фотографиями",
+            description = "Позволяет получить список сохраненных обозначений по имени."
+    )
+    @GetMapping("/getAllByName/{name}")
+    public List<DesignationDto> getAllByNameWithPhoto(@PathVariable String name) {
+        return designationDtoService.getAllByNameWithPhoto(name);
+    }
+
+    @Operation(
             summary = "Получить информацию об обозначение по ID",
             description = "Позволяет получить полную информацию об обозначении по идентификатору."
     )
