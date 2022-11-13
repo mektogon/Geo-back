@@ -42,19 +42,28 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     }
 
     @Override
-    public Optional<GeographicalObjectDtoMobile> findById(UUID id) {
+    public GeographicalObjectDtoWeb getByIdForWeb(UUID id) {
+        log.info("IN getAllForAdminPanel() - Преобразование List<Entity> в List<DTO>.");
+
+        return geographicalObjectService.getById(id)
+                .map(geographicalObjectMapper::toDtoWeb)
+                .or(() -> Optional.of(new GeographicalObjectDtoWeb())).get();
+    }
+
+    @Override
+    public GeographicalObjectDtoMobile findById(UUID id) {
         log.info("IN findById() - Преобразование entity в dto.");
 
-        return geographicalObjectService.findById(id)
+        return geographicalObjectService.getById(id)
                 .map(geographicalObjectMapper::toDtoMobile)
-                .or(() -> Optional.of(new GeographicalObjectDtoMobile()));
+                .or(() -> Optional.of(new GeographicalObjectDtoMobile())).get();
     }
 
     @Override
     public List<GeographicalObjectDtoMobile> getAllByName(@PathVariable String name) {
         log.info("IN getByName() - Преобразование List<Entity> в List<DTO>.");
 
-        List<GeographicalObject> allByName = geographicalObjectService.findAllByName(name);
+        List<GeographicalObject> allByName = geographicalObjectService.getAllByName(name);
 
         if (allByName != null) {
             log.info("IN getByName() - return List<DTO>.");

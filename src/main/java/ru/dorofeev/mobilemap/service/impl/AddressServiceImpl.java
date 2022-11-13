@@ -57,9 +57,9 @@ public class AddressServiceImpl implements AddressService {
         if (byId.isPresent()) {
             addressRepository.save(address);
             log.info("IN update() - Обновлен адрес с ID: {}", byId.get().getId());
+        } else {
+            log.info("IN update() - Не удалось найти адрес с ID: {}", address.getId());
         }
-
-        log.info("IN update() - Не удалось найти адрес с ID: {}", address.getId());
     }
 
     @Override

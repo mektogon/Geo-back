@@ -23,7 +23,7 @@ public class TypeObjectServiceImpl implements TypeObjectService {
     }
 
     @Override
-    public Optional<TypeObject> findById(UUID id) {
+    public Optional<TypeObject> getById(UUID id) {
         return typeObjectRepository.findById(id);
     }
 
@@ -40,9 +40,9 @@ public class TypeObjectServiceImpl implements TypeObjectService {
         if (byId.isPresent()) {
             typeObjectRepository.save(typeObject);
             log.info("IN update() - Тип объекта с ID: {} обновлен!", typeObject.getId());
+        } else {
+            log.info("IN update() - Не удалось найти тип объекта с ID: {}", typeObject.getId());
         }
-
-        log.info("IN update() - Не удалось найти тип объекта с ID: {}", typeObject.getId());
     }
 
     @Override

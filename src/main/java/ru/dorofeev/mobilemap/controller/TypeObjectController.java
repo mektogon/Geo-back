@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/type-object")
 @RequiredArgsConstructor
 @Tag(name = "Тип гео-объекта", description = "Контроллер для работы с типами гео-объектов.")
-public class TypeObjectController implements AbstractController<TypeObject> {
+public class TypeObjectController {
 
     private final TypeObjectService typeObjectService;
 
@@ -31,7 +31,6 @@ public class TypeObjectController implements AbstractController<TypeObject> {
             description = "Позволяет получить список всех типов гео-объектов."
     )
     @GetMapping()
-    @Override
     public List<TypeObject> getAll() {
         return typeObjectService.getAll();
     }
@@ -41,9 +40,8 @@ public class TypeObjectController implements AbstractController<TypeObject> {
             description = "Позволяет получить тип гео-объекта по идентификатору."
     )
     @GetMapping("/getById/{id}")
-    @Override
     public Optional<TypeObject> getById(@PathVariable UUID id) {
-        return typeObjectService.findById(id);
+        return typeObjectService.getById(id);
     }
 
     @Operation(
@@ -51,7 +49,6 @@ public class TypeObjectController implements AbstractController<TypeObject> {
             description = "Позволяет получить тип гео-объекта по переданному имени."
     )
     @GetMapping("/{name}")
-    @Override
     public TypeObject getByName(@PathVariable String name) {
         return typeObjectService.getByName(name);
     }
@@ -70,7 +67,6 @@ public class TypeObjectController implements AbstractController<TypeObject> {
             description = "Позволяет сохранить тип гео-объекта."
     )
     @PostMapping()
-    @Override
     public void save(@RequestBody TypeObject object) {
         typeObjectService.save(object);
     }
@@ -80,7 +76,6 @@ public class TypeObjectController implements AbstractController<TypeObject> {
             description = "Позволяет удалить тип гео-объекта по идентификатору."
     )
     @DeleteMapping("/{id}")
-    @Override
     public void deleteById(@PathVariable UUID id) {
         typeObjectService.deleteById(id);
     }
@@ -90,7 +85,6 @@ public class TypeObjectController implements AbstractController<TypeObject> {
             description = "Позволяет удалить тип гео-объекта по переданному имени."
     )
     @DeleteMapping("/deleteByName/{name}")
-    @Override
     public void deleteByName(@PathVariable String name) {
         typeObjectService.deleteByName(name);
     }
@@ -100,7 +94,6 @@ public class TypeObjectController implements AbstractController<TypeObject> {
             description = "Позволяет обновить переданные поля типа гео-объекта."
     )
     @PatchMapping()
-    @Override
     public void update(@RequestBody TypeObject object) {
         typeObjectService.save(object);
     }

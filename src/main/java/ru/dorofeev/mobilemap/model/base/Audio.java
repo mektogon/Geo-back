@@ -37,7 +37,7 @@ public class Audio implements Serializable {
 
     @NotNull(message = "Поле не должно быть равно null!")
     @NotBlank(message = "Поле не должно быть пустое!")
-    private String name;
+    private String fileName;
 
     @ManyToOne(optional = false)
     private GeographicalObject geographicalObject;

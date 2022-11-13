@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.auth.Users;
 import ru.dorofeev.mobilemap.model.dto.AuthenticationRequestDto;
 import ru.dorofeev.mobilemap.security.jwt.JwtTokenProvider;
-import ru.dorofeev.mobilemap.service.interf.UsersService;
+import ru.dorofeev.mobilemap.service.interf.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ import java.util.Map;
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UsersService usersService;
+    private final UserService usersService;
 
     @Operation(
             summary = "Аутентификация пользователя",
@@ -54,7 +55,7 @@ public class AuthenticationController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Неправильный логин или пароль!");
+            throw new GeneralErrorException("Неправильный логин или пароль!");
         }
     }
 

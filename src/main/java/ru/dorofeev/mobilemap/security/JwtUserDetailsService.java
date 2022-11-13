@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import ru.dorofeev.mobilemap.model.auth.Users;
 import ru.dorofeev.mobilemap.security.jwt.JwtUser;
 import ru.dorofeev.mobilemap.security.jwt.JwtUserFactory;
-import ru.dorofeev.mobilemap.service.interf.UsersService;
+import ru.dorofeev.mobilemap.service.interf.UserService;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
-    private final UsersService usersService;
+    private final UserService usersService;
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {

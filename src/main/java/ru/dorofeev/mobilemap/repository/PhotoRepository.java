@@ -10,6 +10,4 @@ import java.util.UUID;
 @Repository
 public interface PhotoRepository extends JpaRepository<Photo, UUID> {
     List<Photo> findAllPhotoByGeographicalObjectId(UUID id);
-
-    List<Photo> findAllByNameIsContainingIgnoreCase(String name);
 }

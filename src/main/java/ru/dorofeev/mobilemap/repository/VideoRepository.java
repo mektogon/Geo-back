@@ -10,6 +10,4 @@ import java.util.UUID;
 @Repository
 public interface VideoRepository extends JpaRepository<Video, UUID> {
     List<Video> findAllVideoByGeographicalObjectId(UUID id);
-
-    List<Video> findAllByNameIsContainingIgnoreCase(String name);
 }

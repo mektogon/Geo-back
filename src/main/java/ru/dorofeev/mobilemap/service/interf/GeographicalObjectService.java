@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface GeographicalObjectService extends AbstractService<GeographicalObject> {
-    List<GeographicalObject> findAllByName(String name);
+    List<GeographicalObject> getAllByName(String name);
 
     UUID saveAndReturnId(GeographicalObject geographicalObject);
 

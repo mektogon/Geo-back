@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.base.Photo;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
 import ru.dorofeev.mobilemap.repository.PhotoRepository;
@@ -42,14 +43,14 @@ public class PhotoServiceImpl implements PhotoService {
 
         if (images.length > 5) {
             log.error("IN upload() - Превышен допустимый предел загрузки изображений!");
-            throw new RuntimeException("Превышен допустимый предел загрузки изображений!");
+            throw new GeneralErrorException("Превышен допустимый предел загрузки изображений!");
         }
 
         Arrays.stream(images).forEach(
                 img -> photoRepository.save(Photo.builder()
                         .url(AuxiliaryUtils.SavingFile(directoryToSave, img, EXTENSIONS))
-                        .name(img.getOriginalFilename())
-                        .geographicalObject(geographicalObjectRepository.findById(id).get())
+                        .fileName(img.getOriginalFilename())
+                        .geographicalObject(geographicalObjectRepository.getById(id))
                         .build())
         );
 
@@ -57,15 +58,22 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public void update(Photo file) {
-        Optional<Photo> byId = photoRepository.findById(file.getId());
+    public void update(UUID id, MultipartFile file) {
+        Optional<Photo> byId = photoRepository.findById(id);
 
         if (byId.isPresent()) {
-            photoRepository.save(file);
-            log.info("IN update() - Фотография с ID: {} обновлена!", byId.get().getId());
-        }
+            Photo updatedPhoto = byId.get();
 
-        log.info("IN update() - Фотография с ID: {} не найдена!", file.getId());
+            updatedPhoto.setFileName(file.getOriginalFilename());
+            updatedPhoto.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
+            AuxiliaryUtils.DeleteFile(updatedPhoto.getUrl());
+
+            photoRepository.save(updatedPhoto);
+
+            log.info("IN upload() - Обновлена фотография с ID: {}", id);
+        } else {
+            log.info("IN upload() - Не найдена фотография с ID: {}", id);
+        }
     }
 
     @Transactional
@@ -79,9 +87,9 @@ public class PhotoServiceImpl implements PhotoService {
 
             photoRepository.deleteById(id);
             log.info("IN deleteById() - Фотография с ID: {} удалена из базы данных!", id);
+        } else {
+            log.info("IN deleteById() - Не удалось найти и удалить фотографию с ID: {} из базы данных!", id);
         }
-
-        log.info("IN deleteById() - Не удалось найти и удалить фотографию с ID: {} из базы данных!", id);
     }
 
     @Override
@@ -90,25 +98,20 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public Optional<Photo> findById(UUID id) {
+    public Photo getById(UUID id) {
         Optional<Photo> byId = photoRepository.findById(id);
 
         if (byId.isPresent()) {
             log.error("IN findById() - Фотография с ID: {} найдена!", id);
-            return byId;
+            return byId.get();
         } else {
             log.error("IN findById() - Фотография с ID: {} не найдена!", id);
-            return Optional.of(new Photo());
+            return new Photo();
         }
     }
 
     @Override
-    public List<Photo> getAllByName(String name) {
-        return photoRepository.findAllByNameIsContainingIgnoreCase(name);
-    }
-
-    @Override
-    public ResponseEntity<byte[]> getFileById(UUID id) throws IOException {
+    public ResponseEntity<byte[]> getViewFileById(UUID id) throws IOException {
         Optional<Photo> foundFile = photoRepository.findById(id);
 
         if (foundFile.isPresent()) {
@@ -123,7 +126,7 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public List<Photo> findAllFilesByGeographicalObjectId(UUID id) {
+    public List<Photo> getAllFilesByGeographicalObjectId(UUID id) {
         return photoRepository.findAllPhotoByGeographicalObjectId(id);
     }
 }

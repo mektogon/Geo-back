@@ -2,7 +2,7 @@ package ru.dorofeev.mobilemap.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
-import ru.dorofeev.mobilemap.exception.address.AddressFieldNotFoundException;
+import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.dto.AddressDto;
 import ru.dorofeev.mobilemap.model.dto.GeographicalObjectDtoMobile;
 
@@ -53,6 +53,7 @@ public class AuxiliaryUtils {
 
     /**
      * Метод, позволяющий получить расширение файла.
+     *
      * @param file передаваемый файл.
      * @return расширение файла.
      */
@@ -62,6 +63,7 @@ public class AuxiliaryUtils {
 
     /**
      * Метод, позволяющий получить расширение файла.
+     *
      * @param name передаваемое имя файла с расширением.
      * @return расширение файла.
      */
@@ -148,14 +150,14 @@ public class AuxiliaryUtils {
                     .build();
         } else {
             if (region == null) {
-                throw new AddressFieldNotFoundException("Ошибка! Без поля \"region\" формирование адреса невозможно!");
+                throw new GeneralErrorException("Ошибка! Без поля \"region\" формирование адреса невозможно!");
             }
 
             if (typeLocality == null) {
-                throw new AddressFieldNotFoundException("Ошибка! Без поля \"typeLocality\" формирование адреса невозможно!");
+                throw new GeneralErrorException("Ошибка! Без поля \"typeLocality\" формирование адреса невозможно!");
             }
 
-            throw new AddressFieldNotFoundException("Ошибка! Без поля \"locality\" формирование адреса невозможно!");
+            throw new GeneralErrorException("Ошибка! Без поля \"locality\" формирование адреса невозможно!");
         }
     }
 

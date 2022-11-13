@@ -25,19 +25,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] MOBILE_WHITELIST = {
             "/api/v1/geo/getById/{id}",
             "/api/v1/geo/{name}",
+            "/api/v1/geo/web/{id}",
             "/api/v1/geo/web",
             "/api/v1/geo",
 
-            "/api/v1/designation/{id}",
-            "/api/v1/audio/{id}",
-            "/api/v1/video/{id}",
-            "/api/v1/photo/{id}",
-            "/api/v1/tail-map/{id}",
+            "/api/v1/designation/view/{id}",
+            "/api/v1/audio/view/{id}",
+            "/api/v1/video/view/{id}",
+            "/api/v1/photo/view/{id}",
+            "/api/v1/tile-map/download/{id}",
+            "/api/v1/tile-map/downloadByName/{name}",
 
-            "/api/v1/tail-map",
-            "/api/v1/tail-map/getAllByName/{name}"
+            "/api/v1/tile-map",
+            "/api/v1/tile-map/getAllByName/{name}"
 
     };
+    
     private static final String[] SWAGGER_WHITELIST = {
             "/v3/api-docs/**",
             "/swagger-ui/**",

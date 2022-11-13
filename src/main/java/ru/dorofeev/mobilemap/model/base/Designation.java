@@ -41,7 +41,8 @@ public class Designation implements Serializable {
     @NotBlank(message = "Поле не должно быть пустое!")
     @Column(unique = true)
     private String name;
-
+    
+    @NotNull(message = "Поле не должно быть равно null!")
     @NotBlank(message = "Поле не должно быть пустое!")
     private String fileName;
 }

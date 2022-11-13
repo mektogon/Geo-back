@@ -14,5 +14,7 @@ public interface GeographicalObjectDtoService extends AbstractServiceDto<Geograp
     UUID saveAndReturnId(GeographicalObjectDtoMobile geographicalObjectDtoMobile);
 
     List<GeographicalObjectDtoWeb> getAllForWeb();
+
+    GeographicalObjectDtoWeb getByIdForWeb(UUID id);
 }
 

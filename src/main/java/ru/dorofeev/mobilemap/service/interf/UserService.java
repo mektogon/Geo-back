@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-public interface UsersService {
+public interface UserService {
 
     /**
      * Метод возвращает список всех пользователей.

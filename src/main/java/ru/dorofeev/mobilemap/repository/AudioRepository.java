@@ -10,6 +10,4 @@ import java.util.UUID;
 @Repository
 public interface AudioRepository extends JpaRepository<Audio, UUID> {
     List<Audio> findAllAudioByGeographicalObjectId(UUID id);
-
-    List<Audio> findAllByNameIsContainingIgnoreCase(String name);
 }

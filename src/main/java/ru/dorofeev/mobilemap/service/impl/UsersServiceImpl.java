@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.dorofeev.mobilemap.model.auth.Users;
 import ru.dorofeev.mobilemap.repository.UsersRepository;
-import ru.dorofeev.mobilemap.service.interf.UsersService;
+import ru.dorofeev.mobilemap.service.interf.UserService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UsersServiceImpl implements UsersService {
+public class UsersServiceImpl implements UserService {
 
     private final UsersRepository usersRepository;
 

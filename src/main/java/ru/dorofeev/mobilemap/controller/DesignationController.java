@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +37,7 @@ public class DesignationController {
             description = "Позволяет загрузить обозначение."
     )
     @PostMapping()
-    public void upload(@RequestParam("designation") MultipartFile[] file, @RequestParam("name") String name) {
+    public void upload(@RequestParam("designation") MultipartFile file, @RequestParam("name") String name) {
         designationService.upload(file, name);
     }
 
@@ -47,8 +46,11 @@ public class DesignationController {
             description = "Позволяет обновить переданные поля обозначения."
     )
     @PatchMapping()
-    public void update(@RequestBody Designation file) {
-        designationService.update(file);
+    public void update(@RequestParam("id") UUID id,
+                       @RequestParam(value = "name", required = false) String name,
+                       @RequestParam(value = "designation", required = false) MultipartFile file
+    ) {
+        designationService.update(id, name, file);
     }
 
     @Operation(
@@ -91,7 +93,7 @@ public class DesignationController {
             summary = "Получить все обозначения по имени с фотографиями",
             description = "Позволяет получить список сохраненных обозначений по имени."
     )
-    @GetMapping("/getAllByName/{name}")
+    @GetMapping("/{name}")
     public List<DesignationDto> getAllByNameWithPhoto(@PathVariable String name) {
         return designationDtoService.getAllByNameWithPhoto(name);
     }
@@ -101,8 +103,8 @@ public class DesignationController {
             description = "Позволяет получить полную информацию об обозначении по идентификатору."
     )
     @GetMapping("/getInfoById/{id}")
-    public Optional<Designation> getInfoById(@PathVariable UUID id) {
-        return designationService.findById(id);
+    public Designation getInfoById(@PathVariable UUID id) {
+        return designationService.getById(id);
     }
 
     @Operation(
@@ -118,8 +120,8 @@ public class DesignationController {
             summary = "Получить 'представление' обозначения",
             description = "Позволяет отобразить обозначение."
     )
-    @GetMapping("/{id}")
+    @GetMapping("/view/{id}")
     public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) throws IOException {
-        return designationService.getFileById(id);
+        return designationService.getViewFileById(id);
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.base.GeographicalObject;
 import ru.dorofeev.mobilemap.model.dto.AddressDto;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
@@ -45,12 +46,12 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     }
 
     @Override
-    public Optional<GeographicalObject> findById(UUID id) {
+    public Optional<GeographicalObject> getById(UUID id) {
         return geographicalObjectRepository.findById(id);
     }
 
     @Override
-    public List<GeographicalObject> findAllByName(String name) {
+    public List<GeographicalObject> getAllByName(String name) {
         if (name == null) {
             log.error("IN findAllByName() - Имя отсутствует!");
             return Collections.emptyList();
@@ -79,9 +80,9 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
         if (byId.isPresent()) {
             geographicalObjectRepository.save(geographicalObject);
             log.info("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
+        } else {
+            log.info("IN update() - Не удалось найти и обновить гео-объект с ID: {}", geographicalObject.getId());
         }
-
-        log.info("IN update() - Не удалось найти и обновить гео-объект с ID: {}", geographicalObject.getId());
     }
 
     @Override
@@ -153,7 +154,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             }
 
             if (designation != null) {
-                entity.setDesignation(designationService.getDesignationByName(designation));
+                entity.setDesignation(designationService.getByName(designation));
             }
 
             if (isPlaying != null) {
@@ -174,22 +175,50 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             }
 
             if (photo != null) {
+                int totalCount = photoService.getAllFilesByGeographicalObjectId(id).size() + photo.length;
+
+                if (photoService.getAllFilesByGeographicalObjectId(id).size() + photo.length > 5) {
+                    log.error("IN update() - Невозможно загрузить больше фотографий, чем положено иметь гео-объекту.");
+                    throw new GeneralErrorException(String.format("Невозможно загрузить больше фотографий, чем положено иметь гео-объекту. Имеется: %s Передано: %s",
+                            totalCount - photo.length, photo.length)
+                    );
+                }
+
                 photoService.upload(photo, id);
             }
 
             if (video != null) {
+                int totalCount = videoService.getAllFilesByGeographicalObjectId(id).size() + video.length;
+
+                if (totalCount > 1) {
+                    log.error("IN update() - Невозможно загрузить больше видеозаписей, чем положено иметь гео-объекту.");
+                    throw new GeneralErrorException(String.format("Невозможно загрузить больше видеозаписей, чем положено иметь гео-объекту. Имеется: %s Передано: %s",
+                            totalCount - video.length, video.length)
+                    );
+                }
+
                 videoService.upload(video, id);
             }
 
             if (audio != null) {
+                int totalCount = audioService.getAllFilesByGeographicalObjectId(id).size() + audio.length;
+
+                if (audioService.getAllFilesByGeographicalObjectId(id).size() + audio.length > 1) {
+                    log.error("IN update() - Невозможно загрузить больше аудиозаписей, чем положено иметь гео-объекту.");
+                    throw new GeneralErrorException(String.format("Невозможно загрузить больше аудиозаписей, чем положено иметь гео-объекту. Имеется: %s Передано: %s",
+                            totalCount - audio.length, audio.length)
+                    );
+                }
+
                 audioService.upload(audio, id);
             }
 
             geographicalObjectRepository.save(entity);
             log.info("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
+        } else {
+            log.info("IN update() - Не удалось найти и обновить гео-объект с ID: {}", id);
+            throw new GeneralErrorException(String.format("Не удалось найти и обновить гео-объект с ID: %s", id));
         }
-
-        log.info("IN update() - Не удалось найти и обновить гео-объект с ID: {}", id);
     }
 
     /**
@@ -198,11 +227,11 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
      * @param id индетификатор удаляемого объекта
      */
     private void cascadeDeleteFilesByIdGeo(UUID id) {
-        photoService.findAllFilesByGeographicalObjectId(id)
+        photoService.getAllFilesByGeographicalObjectId(id)
                 .forEach(photo -> photoService.deleteById(photo.getId()));
-        videoService.findAllFilesByGeographicalObjectId(id)
+        videoService.getAllFilesByGeographicalObjectId(id)
                 .forEach(video -> videoService.deleteById(video.getId()));
-        audioService.findAllFilesByGeographicalObjectId(id)
+        audioService.getAllFilesByGeographicalObjectId(id)
                 .forEach(audio -> audioService.deleteById(audio.getId()));
     }
 }

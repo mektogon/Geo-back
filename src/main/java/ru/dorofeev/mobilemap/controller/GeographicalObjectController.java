@@ -25,7 +25,6 @@ import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -58,11 +57,20 @@ public class GeographicalObjectController {
     }
 
     @Operation(
+            summary = "Получить гео-объект по ID с идентификаторами файлов",
+            description = "Позволяет получить гео-объект по его идентификатору. Файлы приходят с ID."
+    )
+    @GetMapping("/web/{id}")
+    public GeographicalObjectDtoWeb getByIdForWeb(@PathVariable UUID id) {
+        return geographicalObjectDtoService.getByIdForWeb(id);
+    }
+
+    @Operation(
             summary = "Получить гео-объект по ID",
             description = "Позволяет получить гео-объект по его идентификатору."
     )
     @GetMapping("/getById/{id}")
-    public Optional<GeographicalObjectDtoMobile> getById(@PathVariable UUID id) {
+    public GeographicalObjectDtoMobile getById(@PathVariable UUID id) {
         return geographicalObjectDtoService.findById(id);
     }
 
@@ -90,7 +98,7 @@ public class GeographicalObjectController {
     )
     @Transactional
     @PostMapping("/save")
-    public void save(
+    public ResponseEntity<String> save(
             @RequestParam("name") String name,
             @RequestParam(value = "type", defaultValue = "Отсутствует") String type,
             @RequestParam("latitude") String latitude,
@@ -105,8 +113,8 @@ public class GeographicalObjectController {
             @RequestParam(value = "locality", required = false) String locality,
             @RequestParam(value = "street", required = false) String street,
             @RequestParam(value = "houseNumber", required = false) String houseNumber,
-            @RequestParam(value = "photo", required = false) MultipartFile[] photo,
-            @RequestParam(value = "audio", required = false) MultipartFile[] audio,
+            @RequestParam(value = "photo") MultipartFile[] photo,
+            @RequestParam(value = "audio") MultipartFile[] audio,
             @RequestParam(value = "video", required = false) MultipartFile[] video
     ) {
         GeographicalObjectDtoMobile entity = new GeographicalObjectDtoMobile();
@@ -131,7 +139,7 @@ public class GeographicalObjectController {
 
         UUID id = geographicalObjectDtoService.saveAndReturnId(entity);
 
-        if (audio != null) {
+        if (photo != null) {
             photoService.upload(photo, id);
         }
 
@@ -142,6 +150,8 @@ public class GeographicalObjectController {
         if (video != null) {
             videoService.upload(video, id);
         }
+
+        return ResponseEntity.ok(String.format("{\"id\": \"%s\"}", id));
     }
 
     @Operation(

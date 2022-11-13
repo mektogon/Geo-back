@@ -33,10 +33,10 @@ public class GeographicalObjectMapper {
 
     @Value("${server.url}")
     private String rootUrl;
-    private final String ENDPOINT_GET_PHOTO_BY_ID = "/api/v1/photo/";
-    private final String ENDPOINT_GET_VIDEO_BY_ID = "/api/v1/video/";
-    private final String ENDPOINT_GET_AUDIO_BY_ID = "/api/v1/audio/";
-    private final String ENDPOINT_GET_DESIGNATION_BY_ID = "/api/v1/designation/";
+    private final String ENDPOINT_GET_PHOTO_BY_ID = "/api/v1/photo/view/";
+    private final String ENDPOINT_GET_VIDEO_BY_ID = "/api/v1/video/view/";
+    private final String ENDPOINT_GET_AUDIO_BY_ID = "/api/v1/audio/view/";
+    private final String ENDPOINT_GET_DESIGNATION_BY_ID = "/api/v1/designation/view/";
     private final PhotoService photoService;
     private final VideoService videoService;
     private final AudioService audioService;
@@ -116,17 +116,17 @@ public class GeographicalObjectMapper {
         geographicalObjectDtoMobile.setDesignation(String.format("%s%s%s", rootUrl, ENDPOINT_GET_DESIGNATION_BY_ID, geographicalObject.getDesignation().getId()));
 
         geographicalObjectDtoMobile.setPhotoList(
-                photoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                photoService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
                         .collect(Collectors.toList())
         );
         geographicalObjectDtoMobile.setVideoList(
-                videoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                videoService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_VIDEO_BY_ID, el.getId()))
                         .collect(Collectors.toList())
         );
         geographicalObjectDtoMobile.setAudioList(
-                audioService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                audioService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
                         .collect(Collectors.toList())
         );
@@ -151,7 +151,7 @@ public class GeographicalObjectMapper {
         );
 
         geographicalObjectDtoWeb.setPhotoList(
-                photoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                photoService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .map(el -> FileDto.builder()
                                 .id(el.getId())
                                 .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
@@ -159,7 +159,7 @@ public class GeographicalObjectMapper {
                         .collect(Collectors.toList())
         );
         geographicalObjectDtoWeb.setVideoList(
-                videoService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                videoService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .map(el -> FileDto.builder()
                                 .id(el.getId())
                                 .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_VIDEO_BY_ID, el.getId()))
@@ -167,7 +167,7 @@ public class GeographicalObjectMapper {
                         .collect(Collectors.toList())
         );
         geographicalObjectDtoWeb.setAudioList(
-                audioService.findAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                audioService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .map(el -> FileDto.builder()
                                 .id(el.getId())
                                 .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
@@ -199,7 +199,7 @@ public class GeographicalObjectMapper {
         geographicalObject.setIsPlaying(geographicalObjectDtoMobile.getIsPlaying() != null ?
                 geographicalObjectDtoMobile.getIsPlaying() : false
         );
-        geographicalObject.setDesignation(designationService.getDesignationByName(geographicalObjectDtoMobile.getDesignation()));
+        geographicalObject.setDesignation(designationService.getByName(geographicalObjectDtoMobile.getDesignation()));
 
         if (geographicalObjectDtoMobile.getAddressDto() == null) {
             geographicalObject.setAddress(null);
@@ -220,8 +220,9 @@ public class GeographicalObjectMapper {
 
     /**
      * Метод для преобразования DTO в Entity с последующим обновлением сущности.
+     *
      * @param geographicalObjectDtoMobile Обновляющий объект
-     * @param entity Обновляемый объект
+     * @param entity                      Обновляемый объект
      * @return Обновленный объект.
      */
     public GeographicalObject toConvertForUpdateEntity(GeographicalObjectDtoMobile geographicalObjectDtoMobile, GeographicalObject entity) {
@@ -254,7 +255,7 @@ public class GeographicalObjectMapper {
 
         if (geographicalObjectDtoMobile.getDesignation() != null) {
             entity.setDesignation(
-                    designationService.getDesignationByName(geographicalObjectDtoMobile.getDesignation())
+                    designationService.getByName(geographicalObjectDtoMobile.getDesignation())
             );
         }
 

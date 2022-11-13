@@ -23,7 +23,7 @@ public class LocalityServiceImpl implements LocalityService {
     }
 
     @Override
-    public Optional<Locality> findById(UUID id) {
+    public Optional<Locality> getById(UUID id) {
         return localityRepository.findById(id);
     }
 
@@ -40,9 +40,9 @@ public class LocalityServiceImpl implements LocalityService {
         if (byId.isPresent()) {
             localityRepository.save(locality);
             log.info("IN update() - Обновлена местность с ID: {}", byId.get().getId());
+        } else {
+            log.info("IN update() - Не удалось найти местность с ID: {}", locality.getId());
         }
-
-        log.info("IN update() - Не удалось найти местность с ID: {}", locality.getId());
     }
 
     @Override

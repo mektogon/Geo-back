@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/type-locality")
 @RequiredArgsConstructor
 @Tag(name = "Тип местности", description = "Контроллер для работы с типами местности.")
-public class TypeLocalityController implements AbstractController<TypeLocality> {
+public class TypeLocalityController {
 
     private final TypeLocalityService typeLocalityService;
 
@@ -31,7 +31,6 @@ public class TypeLocalityController implements AbstractController<TypeLocality> 
             description = "Позволяет получить список всех типов местностей."
     )
     @GetMapping()
-    @Override
     public List<TypeLocality> getAll() {
         return typeLocalityService.getAll();
     }
@@ -41,9 +40,8 @@ public class TypeLocalityController implements AbstractController<TypeLocality> 
             description = "Позволяет получить тип местности по идентификатору."
     )
     @GetMapping("/getById/{id}")
-    @Override
     public Optional<TypeLocality> getById(@PathVariable UUID id) {
-        return typeLocalityService.findById(id);
+        return typeLocalityService.getById(id);
     }
 
     @Operation(
@@ -51,7 +49,6 @@ public class TypeLocalityController implements AbstractController<TypeLocality> 
             description = "Позволяет получить тип местности по переданному имени."
     )
     @GetMapping("/{name}")
-    @Override
     public TypeLocality getByName(@PathVariable String name) {
         return typeLocalityService.getByName(name);
     }
@@ -70,7 +67,6 @@ public class TypeLocalityController implements AbstractController<TypeLocality> 
             description = "Позволяет сохранить тип местности."
     )
     @PostMapping()
-    @Override
     public void save(@RequestBody TypeLocality typeLocality) {
         typeLocalityService.save(typeLocality);
     }
@@ -80,7 +76,6 @@ public class TypeLocalityController implements AbstractController<TypeLocality> 
             description = "Позволяет удалить тип местности по идентификатору."
     )
     @DeleteMapping("/{id}")
-    @Override
     public void deleteById(@PathVariable UUID id) {
         typeLocalityService.deleteById(id);
     }
@@ -90,7 +85,6 @@ public class TypeLocalityController implements AbstractController<TypeLocality> 
             description = "Позволяет удалить тип местности по переданному имени."
     )
     @DeleteMapping("/deleteByName/{name}")
-    @Override
     public void deleteByName(@PathVariable String name) {
         typeLocalityService.deleteByName(name);
     }
@@ -100,7 +94,6 @@ public class TypeLocalityController implements AbstractController<TypeLocality> 
             description = "Позволяет обновить переданные поля типа местности."
     )
     @PatchMapping()
-    @Override
     public void update(@RequestBody TypeLocality typeLocality) {
         typeLocalityService.update(typeLocality);
     }

@@ -3,10 +3,10 @@ package ru.dorofeev.mobilemap.service.dto.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.dorofeev.mobilemap.mapper.TailMapMapper;
-import ru.dorofeev.mobilemap.model.dto.TailMapDto;
+import ru.dorofeev.mobilemap.mapper.TileMapMapper;
+import ru.dorofeev.mobilemap.model.dto.TileMapDto;
 import ru.dorofeev.mobilemap.service.dto.interf.TailMapDtoService;
-import ru.dorofeev.mobilemap.service.interf.TailMapService;
+import ru.dorofeev.mobilemap.service.interf.TileMapService;
 
 import java.util.List;
 
@@ -15,20 +15,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TailMapDtoServiceImpl implements TailMapDtoService {
 
-    private final TailMapService tailMapService;
-    private final TailMapMapper tailMapMapper;
+    private final TileMapService tileMapService;
+    private final TileMapMapper tileMapMapper;
 
     @Override
-    public List<TailMapDto> getAllWithLinkDownload() {
+    public List<TileMapDto> getAllWithLinkDownload() {
         log.info("IN getAllWithLinkDownload() - Преобразование List<Entity> в List<DTO>.");
 
-        return tailMapMapper.toDtoList(tailMapService.getAll());
+        return tileMapMapper.toDtoList(tileMapService.getAll());
     }
 
     @Override
-    public List<TailMapDto> getAllByNameWithLinkDownload(String name) {
+    public List<TileMapDto> getAllByNameWithLinkDownload(String name) {
         log.info("IN getAllByNameWithLinkDownload() - Преобразование List<Entity> в List<DTO>.");
 
-        return tailMapMapper.toDtoList(tailMapService.getAllByName(name));
+        return tileMapMapper.toDtoList(tileMapService.getAllByName(name));
     }
 }

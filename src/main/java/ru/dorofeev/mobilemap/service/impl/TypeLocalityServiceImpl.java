@@ -24,7 +24,7 @@ public class TypeLocalityServiceImpl implements TypeLocalityService {
     }
 
     @Override
-    public Optional<TypeLocality> findById(UUID id) {
+    public Optional<TypeLocality> getById(UUID id) {
         return typeLocalityRepository.findById(id);
     }
 
@@ -51,9 +51,9 @@ public class TypeLocalityServiceImpl implements TypeLocalityService {
         if (byId.isPresent()) {
             typeLocalityRepository.save(typeLocality);
             log.info("IN update() - Тип местности с ID: {} обновлен!", typeLocality.getId());
+        } else {
+            log.info("IN update() - Не удалось найти тип местности с ID: {}", typeLocality.getId());
         }
-
-        log.info("IN update() - Не удалось найти тип местности с ID: {}", typeLocality.getId());
     }
 
     @Override

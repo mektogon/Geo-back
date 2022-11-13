@@ -21,7 +21,7 @@ public class DesignationMapper {
 
     @Value("${server.url}")
     private String rootUrl;
-    private final String ENDPOINT_GET_DESIGNATION_BY_ID = "/api/v1/designation/";
+    private final String ENDPOINT_GET_DESIGNATION_BY_ID = "/api/v1/designation/view/";
 
 
     /**

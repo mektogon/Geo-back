@@ -23,7 +23,7 @@ public class StreetServiceImpl implements StreetService {
     }
 
     @Override
-    public Optional<Street> findById(UUID id) {
+    public Optional<Street> getById(UUID id) {
         return streetRepository.findById(id);
     }
 
@@ -40,9 +40,9 @@ public class StreetServiceImpl implements StreetService {
         if (byId.isPresent()) {
             streetRepository.save(street);
             log.info("IN update() - Обновлена улица с ID: {}", byId.get().getId());
+        } else {
+            log.info("IN update() - Не удалось найти улицу с ID: {}", street.getId());
         }
-
-        log.info("IN update() - Не удалось найти улицу с ID: {}", street.getId());
     }
 
     @Override

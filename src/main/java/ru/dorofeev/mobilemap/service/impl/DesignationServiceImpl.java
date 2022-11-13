@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.base.Designation;
 import ru.dorofeev.mobilemap.repository.DesignationRepository;
 import ru.dorofeev.mobilemap.service.interf.DesignationService;
@@ -17,7 +18,6 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,33 +36,39 @@ public class DesignationServiceImpl implements DesignationService {
     private final List<String> EXTENSIONS;
 
     @Override
-    public void upload(MultipartFile[] designation, String name) {
-        if (designation.length > 1) {
-            log.error("IN upload() - Превышен допустимый предел загрузки обозначений!");
-            throw new RuntimeException("Превышен допустимый предел загрузки обозначений!");
-        }
+    public void upload(MultipartFile designation, String name) {
 
-        Arrays.stream(designation).forEach(
-                currentDesignation -> designationRepository.save(Designation.builder()
-                        .url(AuxiliaryUtils.SavingFile(directoryToSave, currentDesignation, EXTENSIONS))
-                        .name(name)
-                        .fileName(currentDesignation.getOriginalFilename())
-                        .build())
-        );
-
-        log.info("IN upload() - Обозначение сохранено!");
+        designationRepository.save(Designation.builder()
+                .url(AuxiliaryUtils.SavingFile(directoryToSave, designation, EXTENSIONS))
+                .name(name)
+                .fileName(designation.getOriginalFilename())
+                .build());
     }
 
     @Override
-    public void update(Designation file) {
-        Optional<Designation> byId = designationRepository.findById(file.getId());
+    public void update(UUID id, String name, MultipartFile file) {
+        Optional<Designation> byId = designationRepository.findById(id);
 
         if (byId.isPresent()) {
-            designationRepository.save(file);
-            log.info("IN upload() - Обновлено обозначение с ID: {}", byId.get().getId());
-        }
+            Designation updatedDesignation = byId.get();
 
-        log.info("IN upload() - Не найдено обозначение с ID: {}", file.getId());
+            if (name != null) {
+                updatedDesignation.setName(name);
+                log.info("IN update() - Обновлено наименование обозначения с ID: {}", id);
+            }
+
+            if (file != null) {
+                updatedDesignation.setFileName(file.getOriginalFilename());
+                AuxiliaryUtils.DeleteFile(updatedDesignation.getUrl());
+                updatedDesignation.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
+                log.info("IN update() - Обновлена фотография обозначения с ID: {}", id);
+            }
+
+            designationRepository.save(updatedDesignation);
+        } else {
+            log.info("IN upload() - Не удалось найти и обновить обозначение с ID: {}", id);
+            throw new GeneralErrorException(String.format("Не удалось найти и обновить обозначение с ID: %s", id));
+        }
     }
 
     @Transactional
@@ -76,9 +82,9 @@ public class DesignationServiceImpl implements DesignationService {
 
             designationRepository.deleteById(id);
             log.info("IN deleteById() - Удалено обозначение с ID: {} из базы данных!", id);
+        } else {
+            log.info("IN deleteById() - Не удалось найти и удалить обозначение с ID: {} из базы данных!", id);
         }
-
-        log.info("IN deleteById() - Не удалось найти и удалить обозначение с ID: {} из базы данных!", id);
     }
 
 
@@ -93,9 +99,9 @@ public class DesignationServiceImpl implements DesignationService {
 
             designationRepository.deleteByName(name);
             log.info("IN deleteByName() - Удалено обозначение с name: {} из базы данных!", name);
+        } else {
+            log.info("IN deleteByName() - Не удалось найти и удалить обозначение с именем: {} из базы данных!", name);
         }
-
-        log.info("IN deleteByName() - Не удалось найти и удалить обозначение с именем: {} из базы данных!", name);
     }
 
     @Override
@@ -104,15 +110,15 @@ public class DesignationServiceImpl implements DesignationService {
     }
 
     @Override
-    public Optional<Designation> findById(UUID id) {
+    public Designation getById(UUID id) {
         Optional<Designation> byId = designationRepository.findById(id);
 
         if (byId.isPresent()) {
             log.info("IN findById() - Найдено обозначение с ID: {}", id);
-            return byId;
+            return byId.get();
         } else {
             log.info("IN findById() - Не найдено обозначение с ID: {}", id);
-            return Optional.of(new Designation());
+            return new Designation();
         }
     }
 
@@ -122,21 +128,21 @@ public class DesignationServiceImpl implements DesignationService {
     }
 
     @Override
-    public Designation getDesignationByName(String name) {
+    public Designation getByName(String name) {
         Designation designationByName = designationRepository.getDesignationsByName(name);
 
-        log.info("IN getDesignationByName() - Найдено обозначение с name: {}", name);
-
         if (designationByName == null) {
-            log.info("IN getDesignationByName() - Не найдено обозначение с name: {}", name);
+            log.info("IN getByName() - Не найдено обозначение с name: {}", name);
             return designationRepository.getDesignationsByName("Отсутствует");
         }
+
+        log.info("IN getByName() - Найдено обозначение с name: {}", name);
 
         return designationByName;
     }
 
     @Override
-    public ResponseEntity<byte[]> getFileById(UUID id) throws IOException {
+    public ResponseEntity<byte[]> getViewFileById(UUID id) throws IOException {
         Optional<Designation> foundFile = designationRepository.findById(id);
 
         if (foundFile.isPresent()) {

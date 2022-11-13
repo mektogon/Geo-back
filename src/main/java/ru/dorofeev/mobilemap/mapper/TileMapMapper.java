@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.dorofeev.mobilemap.model.base.TailMap;
-import ru.dorofeev.mobilemap.model.dto.TailMapDto;
+import ru.dorofeev.mobilemap.model.base.TileMap;
+import ru.dorofeev.mobilemap.model.dto.TileMapDto;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,26 +17,26 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TailMapMapper {
+public class TileMapMapper {
 
     @Value("${server.url}")
     private String rootUrl;
-    private final String ENDPOINT_DOWNLOAD_TAIL_BY_NAME_WITH_EXTENSION = "/api/v1/tail-map/";
+    private final String ENDPOINT_DOWNLOAD_TILE_BY_NAME_WITH_EXTENSION = "/api/v1/tile-map/download/";
 
     /**
      * Метод, преобразующий список Entity в список DTO.
      *
-     * @param tailMapList список, подлежащий преобразованию.
+     * @param tileMapList список, подлежащий преобразованию.
      * @return преобразованный список.
      */
-    public List<TailMapDto> toDtoList(List<TailMap> tailMapList) {
-        if (tailMapList == null) {
+    public List<TileMapDto> toDtoList(List<TileMap> tileMapList) {
+        if (tileMapList == null) {
             return Collections.emptyList();
         }
 
-        List<TailMapDto> result = new ArrayList<>(tailMapList.size());
+        List<TileMapDto> result = new ArrayList<>(tileMapList.size());
 
-        for (var item : tailMapList) {
+        for (var item : tileMapList) {
             result.add(toDto(item));
         }
 
@@ -46,14 +46,14 @@ public class TailMapMapper {
     /**
      * Метод, преобразующий Entity в DTO.
      *
-     * @param tailMap объект, который подлежит преобразованию.
+     * @param tileMap объект, который подлежит преобразованию.
      * @return преобразованный объект.
      */
-    public TailMapDto toDto(TailMap tailMap) {
-        return TailMapDto.builder()
-                .id(tailMap.getId())
-                .url(String.format("%s%s%s", rootUrl, ENDPOINT_DOWNLOAD_TAIL_BY_NAME_WITH_EXTENSION, tailMap.getId()))
-                .name(tailMap.getName())
+    public TileMapDto toDto(TileMap tileMap) {
+        return TileMapDto.builder()
+                .id(tileMap.getId())
+                .url(String.format("%s%s%s", rootUrl, ENDPOINT_DOWNLOAD_TILE_BY_NAME_WITH_EXTENSION, tileMap.getId()))
+                .name(tileMap.getName())
                 .build();
     }
 

@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface AbstractServiceDto<T> {
     List<T> getAll();
 
-    Optional<T> findById(UUID id);
+    T findById(UUID id);
 
     List<T> getAllByName(String name);
 

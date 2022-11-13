@@ -23,7 +23,7 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public Optional<Region> findById(UUID id) {
+    public Optional<Region> getById(UUID id) {
         return regionRepository.findById(id);
     }
 
@@ -40,9 +40,9 @@ public class RegionServiceImpl implements RegionService {
         if (byId.isPresent()) {
             regionRepository.save(region);
             log.info("IN update() - Обновлен регион с ID: {}", byId.get().getId());
+        } else {
+            log.info("IN update() - Не удалось найти регион с ID: {}", region.getId());
         }
-
-        log.info("IN update() - Не удалось найти регион с ID: {}", region.getId());
     }
 
     @Override

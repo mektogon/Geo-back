@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.base.Video;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
 import ru.dorofeev.mobilemap.repository.VideoRepository;
@@ -40,28 +41,35 @@ public class VideoServiceImpl implements VideoService {
     public void upload(MultipartFile[] video, UUID id) {
         if (video.length > 1) {
             log.error("IN upload() - Превышен допустимый предел загрузки видеозаписей!");
-            throw new RuntimeException("Превышен допустимый предел загрузки видеозаписей!");
+            throw new GeneralErrorException("Превышен допустимый предел загрузки видеозаписей!");
         }
 
         Arrays.stream(video).forEach(
                 currentVideo -> videoRepository.save(Video.builder()
                         .url(AuxiliaryUtils.SavingFile(directoryToSave, currentVideo, EXTENSIONS))
-                        .name(currentVideo.getOriginalFilename())
-                        .geographicalObject(geographicalObjectRepository.findById(id).get())
+                        .fileName(currentVideo.getOriginalFilename())
+                        .geographicalObject(geographicalObjectRepository.getById(id))
                         .build())
         );
     }
 
     @Override
-    public void update(Video file) {
-        Optional<Video> byId = videoRepository.findById(file.getId());
+    public void update(UUID id, MultipartFile file) {
+        Optional<Video> byId = videoRepository.findById(id);
 
         if (byId.isPresent()) {
-            videoRepository.save(file);
-            log.info("IN update() - Видео с ID: {} обновлено!", byId.get().getId());
-        }
+            Video updatedVideo = byId.get();
 
-        log.info("IN update() - Видео с ID: {} не найдено!", file.getId());
+            updatedVideo.setFileName(file.getOriginalFilename());
+            updatedVideo.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
+            AuxiliaryUtils.DeleteFile(updatedVideo.getUrl());
+
+            videoRepository.save(updatedVideo);
+
+            log.info("IN upload() - Обновлена видеозапись с ID: {}", id);
+        } else {
+            log.info("IN upload() - Не найдена видеозапись с ID: {}", id);
+        }
     }
 
     @Transactional
@@ -75,9 +83,9 @@ public class VideoServiceImpl implements VideoService {
 
             videoRepository.deleteById(id);
             log.info("IN deleteById() - Видеозапись с ID: {} удалено из базы данных!", id);
+        } else {
+            log.info("IN deleteById() - Не удалось найти и удалить видеозапись с ID: {} из базы данных!", id);
         }
-
-        log.info("IN deleteById() - Не удалось найти и удалить видеозапись с ID: {} из базы данных!", id);
     }
 
     @Override
@@ -86,25 +94,20 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public Optional<Video> findById(UUID id) {
+    public Video getById(UUID id) {
         Optional<Video> byId = videoRepository.findById(id);
 
         if (byId.isPresent()) {
             log.info("IN findById() - Видео с ID: {} найдено!", id);
-            return byId;
+            return byId.get();
         } else {
             log.info("IN findById() - Видео с ID: {} не найдено!", id);
-            return Optional.of(new Video());
+            return new Video();
         }
     }
 
     @Override
-    public List<Video> getAllByName(String name) {
-        return videoRepository.findAllByNameIsContainingIgnoreCase(name);
-    }
-
-    @Override
-    public ResponseEntity<byte[]> getFileById(UUID id) throws IOException {
+    public ResponseEntity<byte[]> getViewFileById(UUID id) throws IOException {
         Optional<Video> foundFile = videoRepository.findById(id);
 
         if (foundFile.isPresent()) {
@@ -121,7 +124,7 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public List<Video> findAllFilesByGeographicalObjectId(UUID id) {
+    public List<Video> getAllFilesByGeographicalObjectId(UUID id) {
         return videoRepository.findAllVideoByGeographicalObjectId(id);
     }
 }

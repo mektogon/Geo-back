@@ -22,7 +22,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TailMap implements Serializable {
+public class TileMap implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

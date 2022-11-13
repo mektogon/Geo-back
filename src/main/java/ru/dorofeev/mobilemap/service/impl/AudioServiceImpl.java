@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.base.Audio;
 import ru.dorofeev.mobilemap.repository.AudioRepository;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
@@ -40,13 +41,13 @@ public class AudioServiceImpl implements AudioService {
     public void upload(MultipartFile[] audio, UUID id) {
         if (audio.length > 1) {
             log.error("IN upload() - Превышен допустимый предел загрузки ауодизаписей!");
-            throw new RuntimeException("Превышен допустимый предел загрузки ауодизаписей!");
+            throw new GeneralErrorException("Превышен допустимый предел загрузки ауодизаписей!");
         }
 
         Arrays.stream(audio).forEach(
                 currentVideo -> audioRepository.save(Audio.builder()
                         .url(AuxiliaryUtils.SavingFile(directoryToSave, currentVideo, EXTENSIONS))
-                        .name(currentVideo.getOriginalFilename())
+                        .fileName(currentVideo.getOriginalFilename())
                         .geographicalObject(geographicalObjectRepository.findById(id).get())
                         .build())
         );
@@ -55,15 +56,22 @@ public class AudioServiceImpl implements AudioService {
     }
 
     @Override
-    public void update(Audio file) {
-        Optional<Audio> byId = audioRepository.findById(file.getId());
+    public void update(UUID id, MultipartFile file) {
+        Optional<Audio> byId = audioRepository.findById(id);
 
         if (byId.isPresent()) {
-            audioRepository.save(file);
-            log.info("IN upload() - Обновлена аудиозапись с ID: {}", byId.get().getId());
-        }
+            Audio updatedAudio = byId.get();
 
-        log.info("IN upload() - Не найдена аудиозапись с ID: {}", file.getId());
+            updatedAudio.setFileName(file.getOriginalFilename());
+            updatedAudio.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
+            AuxiliaryUtils.DeleteFile(updatedAudio.getUrl());
+
+            audioRepository.save(updatedAudio);
+
+            log.info("IN upload() - Обновлена аудиозапись с ID: {}", id);
+        } else {
+            log.info("IN upload() - Не найдено обозначение с ID: {}", id);
+        }
     }
 
     @Transactional
@@ -77,9 +85,9 @@ public class AudioServiceImpl implements AudioService {
 
             audioRepository.deleteById(id);
             log.info("IN deleteById() - Аудиозапись с ID: {} удалена из базы данных!", id);
+        } else {
+            log.info("IN deleteById() - Не удалось найти и удалить аудиозапись с ID: {} из базы данных!", id);
         }
-
-        log.info("IN deleteById() - Не удалось найти и удалить аудиозапись с ID: {} из базы данных!", id);
     }
 
     @Override
@@ -88,25 +96,20 @@ public class AudioServiceImpl implements AudioService {
     }
 
     @Override
-    public Optional<Audio> findById(UUID id) {
+    public Audio getById(UUID id) {
         Optional<Audio> byId = audioRepository.findById(id);
 
         if (byId.isPresent()) {
             log.info("IN findById() - Найдена аудиозапись с ID: {}", id);
-            return byId;
+            return byId.get();
         } else {
             log.info("IN findById() - Не найдена аудиозапись с ID: {}", id);
-            return Optional.of(new Audio());
+            return new Audio();
         }
     }
 
     @Override
-    public List<Audio> getAllByName(String name) {
-        return audioRepository.findAllByNameIsContainingIgnoreCase(name);
-    }
-
-    @Override
-    public ResponseEntity<byte[]> getFileById(UUID id) throws IOException {
+    public ResponseEntity<byte[]> getViewFileById(UUID id) throws IOException {
         Optional<Audio> foundFile = audioRepository.findById(id);
 
         if (foundFile.isPresent()) {
@@ -124,7 +127,7 @@ public class AudioServiceImpl implements AudioService {
     }
 
     @Override
-    public List<Audio> findAllFilesByGeographicalObjectId(UUID id) {
+    public List<Audio> getAllFilesByGeographicalObjectId(UUID id) {
         return audioRepository.findAllAudioByGeographicalObjectId(id);
     }
 }
