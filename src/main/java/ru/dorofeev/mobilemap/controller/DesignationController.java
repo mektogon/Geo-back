@@ -55,7 +55,7 @@ public class DesignationController {
             summary = "Удаление обозначения по ID",
             description = "Позволяет удалить обозначение по идентификатору."
     )
-    @DeleteMapping("/deleteById/{id}")
+    @DeleteMapping("/{id}")
     public void deleteById(@PathVariable UUID id) {
         designationService.deleteById(id);
     }
@@ -64,7 +64,7 @@ public class DesignationController {
             summary = "Удаление обозначения по наименованию",
             description = "Позволяет удалить обозначение по переданному имени."
     )
-    @DeleteMapping("/{name}")
+    @DeleteMapping("/deleteByName/{name}")
     public void deleteByName(@PathVariable String name) {
         designationService.deleteByName(name);
     }
@@ -111,7 +111,7 @@ public class DesignationController {
     )
     @GetMapping("/getAllInfoByName/{name}")
     public List<Designation> getAllInfoByName(@PathVariable String name) {
-        return designationService.findAllInfoByName(name);
+        return designationService.getAllByName(name);
     }
 
     @Operation(

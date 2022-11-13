@@ -67,11 +67,17 @@ public class VideoServiceImpl implements VideoService {
     @Transactional
     @Override
     public void deleteById(UUID id) {
-        String urlToFile = videoRepository.findById(id).get().getUrl();
-        AuxiliaryUtils.DeleteFile(urlToFile);
+        Optional<Video> byId = videoRepository.findById(id);
 
-        videoRepository.deleteById(id);
-        log.info("IN deleteById() - Видео с ID: {} удалено из базы данных!", id);
+        if (byId.isPresent()) {
+            String urlToFile = byId.get().getUrl();
+            AuxiliaryUtils.DeleteFile(urlToFile);
+
+            videoRepository.deleteById(id);
+            log.info("IN deleteById() - Видеозапись с ID: {} удалено из базы данных!", id);
+        }
+
+        log.info("IN deleteById() - Не удалось найти и удалить видеозапись с ID: {} из базы данных!", id);
     }
 
     @Override
@@ -93,8 +99,8 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public List<Video> findAllInfoByName(String name) {
-        return videoRepository.findAllVideoByNameIsIgnoreCase(name);
+    public List<Video> getAllByName(String name) {
+        return videoRepository.findAllByNameIsContainingIgnoreCase(name);
     }
 
     @Override
@@ -110,7 +116,7 @@ public class VideoServiceImpl implements VideoService {
                     .body(Files.readAllBytes(file.toPath()));
         } else {
             log.info("IN getFileById() - Видео с ID: {} не найдено!", id);
-            return ResponseEntity.ok().body(new byte[0]);
+            return ResponseEntity.status(204).body(new byte[0]);
         }
     }
 

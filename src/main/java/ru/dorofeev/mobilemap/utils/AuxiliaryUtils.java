@@ -31,7 +31,7 @@ public class AuxiliaryUtils {
      * @return путь до файла.
      */
     public static String SavingFile(String directoryToSave, MultipartFile file, List<String> extension) {
-        String ext = Objects.requireNonNull(file.getContentType()).split("/")[1];
+        String ext = getExtensionFile(file);
 
         if (!checkExtensionFile(ext, extension)) {
             log.error("IN SavingFile() - Тип загружаемого файла {} не удовлетворяет требованиям!", file.getName());
@@ -49,6 +49,24 @@ public class AuxiliaryUtils {
         }
 
         return fullPathToSave.toString();
+    }
+
+    /**
+     * Метод, позволяющий получить расширение файла.
+     * @param file передаваемый файл.
+     * @return расширение файла.
+     */
+    public static String getExtensionFile(MultipartFile file) {
+        return Objects.requireNonNull(file.getContentType()).split("/")[1];
+    }
+
+    /**
+     * Метод, позволяющий получить расширение файла.
+     * @param name передаваемое имя файла с расширением.
+     * @return расширение файла.
+     */
+    public static String getExtensionFile(String name) {
+        return name.substring(name.lastIndexOf('.'), name.length());
     }
 
     /**

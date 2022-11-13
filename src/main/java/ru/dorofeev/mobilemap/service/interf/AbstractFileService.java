@@ -14,5 +14,5 @@ public interface AbstractFileService<T> {
 
     Optional<T> findById(UUID id);
 
-    List<T> findAllInfoByName(String name);
+    List<T> getAllByName(String name);
 }

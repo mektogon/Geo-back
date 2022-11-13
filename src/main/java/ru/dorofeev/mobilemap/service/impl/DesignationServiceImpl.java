@@ -32,12 +32,13 @@ public class DesignationServiceImpl implements DesignationService {
     @Value("${file.storage.designation.location}")
     private String directoryToSave;
 
-    private final List<String> EXTENSIONS = List.of("jpeg", "png");
+    @Value("${file.extension.designation}")
+    private final List<String> EXTENSIONS;
 
     @Override
     public void upload(MultipartFile[] designation, String name) {
         if (designation.length > 1) {
-            log.error("IN deleteById() - Превышен допустимый предел загрузки обозначений!");
+            log.error("IN upload() - Превышен допустимый предел загрузки обозначений!");
             throw new RuntimeException("Превышен допустимый предел загрузки обозначений!");
         }
 
@@ -67,23 +68,34 @@ public class DesignationServiceImpl implements DesignationService {
     @Transactional
     @Override
     public void deleteById(UUID id) {
-        String urlToFile = designationRepository.findById(id).get().getUrl();
-        AuxiliaryUtils.DeleteFile(urlToFile);
+        Optional<Designation> byId = designationRepository.findById(id);
 
-        designationRepository.deleteById(id);
-        log.info("IN deleteById() - Удалено обозначение с ID: {} из базы данных!", id);
+        if (byId.isPresent()) {
+            String urlToFile = byId.get().getUrl();
+            AuxiliaryUtils.DeleteFile(urlToFile);
+
+            designationRepository.deleteById(id);
+            log.info("IN deleteById() - Удалено обозначение с ID: {} из базы данных!", id);
+        }
+
+        log.info("IN deleteById() - Не удалось найти и удалить обозначение с ID: {} из базы данных!", id);
     }
 
 
     @Transactional
     @Override
     public void deleteByName(String name) {
-        String urlToFile = designationRepository.getDesignationsByName(name).getUrl();
-        String directoryToDelete = String.format("%s%s", directoryToSave, urlToFile.substring(0, directoryToSave.length()));
-        AuxiliaryUtils.DeleteFile(directoryToDelete);
+        Designation byName = designationRepository.getDesignationsByName(name);
 
-        designationRepository.deleteByName(name);
-        log.info("IN deleteByName() - Удалено обозначение с name: {} из базы данных!", name);
+        if (byName != null) {
+            String urlToFile = byName.getUrl();
+            AuxiliaryUtils.DeleteFile(urlToFile);
+
+            designationRepository.deleteByName(name);
+            log.info("IN deleteByName() - Удалено обозначение с name: {} из базы данных!", name);
+        }
+
+        log.info("IN deleteByName() - Не удалось найти и удалить обозначение с именем: {} из базы данных!", name);
     }
 
     @Override
@@ -105,8 +117,8 @@ public class DesignationServiceImpl implements DesignationService {
     }
 
     @Override
-    public List<Designation> findAllInfoByName(String name) {
-        return List.of(getDesignationByName(name));
+    public List<Designation> getAllByName(String name) {
+        return designationRepository.findAllByNameIsContainingIgnoreCase(name);
     }
 
     @Override
@@ -124,11 +136,6 @@ public class DesignationServiceImpl implements DesignationService {
     }
 
     @Override
-    public List<Designation> getAllByName(String name) {
-        return designationRepository.findAllByNameIsContainingIgnoreCase(name);
-    }
-
-    @Override
     public ResponseEntity<byte[]> getFileById(UUID id) throws IOException {
         Optional<Designation> foundFile = designationRepository.findById(id);
 
@@ -139,7 +146,7 @@ public class DesignationServiceImpl implements DesignationService {
                     .body(Files.readAllBytes(file.toPath()));
         } else {
             log.info("IN getFileById() - Не найдено обозначение с ID: {}", id);
-            return ResponseEntity.ok().body(new byte[0]);
+            return ResponseEntity.status(204).body(new byte[0]);
         }
     }
 }

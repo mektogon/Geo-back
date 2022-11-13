@@ -26,7 +26,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/audio")
 @RequiredArgsConstructor
-@Tag(name="Аудиозапись", description="Контроллер для работы с аудиозаписями.")
+@Tag(name = "Аудиозапись", description = "Контроллер для работы с аудиозаписями.")
 public class AudioController implements AbstractFileController<Audio> {
     private final AudioService audioService;
 
@@ -87,7 +87,7 @@ public class AudioController implements AbstractFileController<Audio> {
     @GetMapping("/getAllInfoByName/{name}")
     @Override
     public List<Audio> getAllInfoByName(@PathVariable String name) {
-        return audioService.findAllInfoByName(name);
+        return audioService.getAllByName(name);
     }
 
     @Operation(

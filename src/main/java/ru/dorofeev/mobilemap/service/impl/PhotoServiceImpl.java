@@ -34,7 +34,8 @@ public class PhotoServiceImpl implements PhotoService {
     @Value("${file.storage.photo.location}")
     private String directoryToSave;
 
-    private final List<String> EXTENSIONS = List.of("jpeg", "png");
+    @Value("${file.extension.photo}")
+    private final List<String> EXTENSIONS;
 
     @Override
     public void upload(MultipartFile[] images, UUID id) {
@@ -64,17 +65,23 @@ public class PhotoServiceImpl implements PhotoService {
             log.info("IN update() - Фотография с ID: {} обновлена!", byId.get().getId());
         }
 
-        log.info("IN deleteById() - Фотография с ID: {} не найдена!", file.getId());
+        log.info("IN update() - Фотография с ID: {} не найдена!", file.getId());
     }
 
     @Transactional
     @Override
     public void deleteById(UUID id) {
-        String urlToFile = photoRepository.findById(id).get().getUrl();
-        AuxiliaryUtils.DeleteFile(urlToFile);
+        Optional<Photo> byId = photoRepository.findById(id);
 
-        photoRepository.deleteById(id);
-        log.info("IN deleteById() - Фотография с ID: {} удалена из базы данных!", id);
+        if (byId.isPresent()) {
+            String urlToFile = byId.get().getUrl();
+            AuxiliaryUtils.DeleteFile(urlToFile);
+
+            photoRepository.deleteById(id);
+            log.info("IN deleteById() - Фотография с ID: {} удалена из базы данных!", id);
+        }
+
+        log.info("IN deleteById() - Не удалось найти и удалить фотографию с ID: {} из базы данных!", id);
     }
 
     @Override
@@ -96,8 +103,8 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public List<Photo> findAllInfoByName(String name) {
-        return photoRepository.findAllPhotoByNameIsIgnoreCase(name);
+    public List<Photo> getAllByName(String name) {
+        return photoRepository.findAllByNameIsContainingIgnoreCase(name);
     }
 
     @Override
@@ -111,7 +118,7 @@ public class PhotoServiceImpl implements PhotoService {
                     .body(Files.readAllBytes(file.toPath()));
         } else {
             log.info("IN getFileById() - Фотография с ID: {} не найдена!", id);
-            return ResponseEntity.ok().body(new byte[0]);
+            return ResponseEntity.status(204).body(new byte[0]);
         }
     }
 

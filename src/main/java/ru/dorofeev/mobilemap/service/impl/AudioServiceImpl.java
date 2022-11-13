@@ -33,7 +33,8 @@ public class AudioServiceImpl implements AudioService {
     @Value("${file.storage.audio.location}")
     private String directoryToSave;
 
-    private final List<String> EXTENSIONS = List.of("mp3", "ogg", "wav", "aiff", "ape", "flac", "mpeg", "m4a", "mp4");
+    @Value("${file.extension.audio}")
+    private final List<String> EXTENSIONS;
 
     @Override
     public void upload(MultipartFile[] audio, UUID id) {
@@ -68,11 +69,17 @@ public class AudioServiceImpl implements AudioService {
     @Transactional
     @Override
     public void deleteById(UUID id) {
-        String urlToFile = audioRepository.findById(id).get().getUrl();
-        AuxiliaryUtils.DeleteFile(urlToFile);
+        Optional<Audio> byId = audioRepository.findById(id);
 
-        audioRepository.deleteById(id);
-        log.info("IN deleteById() - Аудиозапись с ID: {} удалена из базы данных!", id);
+        if (byId.isPresent()) {
+            String urlToFile = byId.get().getUrl();
+            AuxiliaryUtils.DeleteFile(urlToFile);
+
+            audioRepository.deleteById(id);
+            log.info("IN deleteById() - Аудиозапись с ID: {} удалена из базы данных!", id);
+        }
+
+        log.info("IN deleteById() - Не удалось найти и удалить аудиозапись с ID: {} из базы данных!", id);
     }
 
     @Override
@@ -94,8 +101,8 @@ public class AudioServiceImpl implements AudioService {
     }
 
     @Override
-    public List<Audio> findAllInfoByName(String name) {
-        return audioRepository.findAllAudioByNameIsIgnoreCase(name);
+    public List<Audio> getAllByName(String name) {
+        return audioRepository.findAllByNameIsContainingIgnoreCase(name);
     }
 
     @Override
@@ -112,7 +119,7 @@ public class AudioServiceImpl implements AudioService {
                     .body(Files.readAllBytes(file.toPath()));
         } else {
             log.info("IN getFileById() - Не найдена аудиозапись с ID: {}", id);
-            return ResponseEntity.ok().body(new byte[0]);
+            return ResponseEntity.status(204).body(new byte[0]);
         }
     }
 

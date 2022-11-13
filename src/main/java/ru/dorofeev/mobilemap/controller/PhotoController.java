@@ -25,7 +25,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/photo")
 @RequiredArgsConstructor
-@Tag(name="Фотография", description="Контроллер для работы с фотографиями.")
+@Tag(name = "Фотография", description = "Контроллер для работы с фотографиями.")
 public class PhotoController implements AbstractFileController<Photo> {
 
     private final PhotoService photoService;
@@ -87,7 +87,7 @@ public class PhotoController implements AbstractFileController<Photo> {
     @GetMapping("/getAllInfoByName/{name}")
     @Override
     public List<Photo> getAllInfoByName(@PathVariable String name) {
-        return photoService.findAllInfoByName(name);
+        return photoService.getAllByName(name);
     }
 
     @Operation(

@@ -87,7 +87,7 @@ public class VideoController implements AbstractFileController<Video> {
     @GetMapping("/getAllInfoByName/{name}")
     @Override
     public List<Video> getAllInfoByName(@PathVariable String name) {
-        return videoService.findAllInfoByName(name);
+        return videoService.getAllByName(name);
     }
 
     @Operation(
