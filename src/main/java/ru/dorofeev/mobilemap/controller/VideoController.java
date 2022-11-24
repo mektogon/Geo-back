@@ -2,7 +2,7 @@ package ru.dorofeev.mobilemap.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.model.base.Video;
+import ru.dorofeev.mobilemap.model.dto.FileDto;
+import ru.dorofeev.mobilemap.service.dto.interf.FileServiceDto;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
 
 import java.io.IOException;
@@ -22,11 +24,16 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/video")
-@RequiredArgsConstructor
 @Tag(name = "Видеозапись", description = "Контроллер для работы с видеозаписями.")
 public class VideoController {
 
     private final VideoService videoService;
+    private final FileServiceDto videoServiceDto;
+
+    public VideoController(VideoService videoService, @Qualifier("VideoServiceDtoImpl") FileServiceDto videoServiceDto) {
+        this.videoService = videoService;
+        this.videoServiceDto = videoServiceDto;
+    }
 
     @Operation(
             summary = "Загрузка видеозаписи",
@@ -63,6 +70,15 @@ public class VideoController {
     @GetMapping()
     public List<Video> getAll() {
         return videoService.getAll();
+    }
+
+    @Operation(
+            summary = "Получить все видеозаписи по ID гео-объекта",
+            description = "Позволяет получить список видеозаписей, привязанных к гео-объекту."
+    )
+    @GetMapping("/getAllByGeoId/{id}")
+    public List<FileDto> getAllByGeoId(@PathVariable UUID id) {
+        return videoServiceDto.getAllByGeoId(id);
     }
 
     @Operation(

@@ -3,7 +3,7 @@ package ru.dorofeev.mobilemap.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.model.base.Audio;
+import ru.dorofeev.mobilemap.model.dto.FileDto;
+import ru.dorofeev.mobilemap.service.dto.interf.FileServiceDto;
 import ru.dorofeev.mobilemap.service.interf.AudioService;
 
 import java.io.IOException;
@@ -23,10 +25,15 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/audio")
-@RequiredArgsConstructor
 @Tag(name = "Аудиозапись", description = "Контроллер для работы с аудиозаписями.")
 public class AudioController {
     private final AudioService audioService;
+    private final FileServiceDto audioServiceDto;
+
+    public AudioController(AudioService audioService, @Qualifier("AudioServiceDtoImpl") FileServiceDto audioServiceDto) {
+        this.audioService = audioService;
+        this.audioServiceDto = audioServiceDto;
+    }
 
     @Operation(
             summary = "Загрузка аудиозаписи",
@@ -63,6 +70,15 @@ public class AudioController {
     @GetMapping()
     public List<Audio> getAll() {
         return audioService.getAll();
+    }
+
+    @Operation(
+            summary = "Получить все аудиозаписи по ID гео-объекта",
+            description = "Позволяет получить список аудиозаписей, привязанных к гео-объекту."
+    )
+    @GetMapping("/getAllByGeoId/{id}")
+    public List<FileDto> getAllByGeoId(@PathVariable UUID id) {
+        return audioServiceDto.getAllByGeoId(id);
     }
 
     @Operation(

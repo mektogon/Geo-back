@@ -34,8 +34,8 @@ public class AuxiliaryUtils {
         String ext = getExtensionFile(file);
 
         if (!checkExtensionFile(ext, extension)) {
-            log.error("IN SavingFile() - Тип загружаемого файла {} не удовлетворяет требованиям!", file.getName());
-            throw new RuntimeException("Тип загружаемого файла " + file.getName() + " не удовлетворяет требованиям!");
+            log.error("IN SavingFile() - Тип загружаемого файла {} не удовлетворяет требованиям! Передаваемое расширение: {} Список доступных расширений: {}", file.getName(), ext, extension);
+            throw new RuntimeException("Тип загружаемого файла " + file.getName() + " не удовлетворяет требованиям! Передаваемое расширение: " + ext + " Список доступных: " + extension);
         }
 
         String name = String.format("%s%s%s", UUID.randomUUID(), ".", ext);
@@ -68,7 +68,7 @@ public class AuxiliaryUtils {
      * @return расширение файла.
      */
     public static String getExtensionFile(String name) {
-        return name.substring(name.lastIndexOf('.'), name.length());
+        return name.substring(name.lastIndexOf('.'));
     }
 
     /**

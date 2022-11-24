@@ -2,7 +2,7 @@ package ru.dorofeev.mobilemap.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.model.base.Photo;
+import ru.dorofeev.mobilemap.model.dto.FileDto;
+import ru.dorofeev.mobilemap.service.dto.interf.FileServiceDto;
 import ru.dorofeev.mobilemap.service.interf.PhotoService;
 
 import java.io.IOException;
@@ -22,11 +24,18 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/photo")
-@RequiredArgsConstructor
 @Tag(name = "Фотография", description = "Контроллер для работы с фотографиями.")
 public class PhotoController {
 
     private final PhotoService photoService;
+
+    private final FileServiceDto photoServiceDto;
+
+    public PhotoController(PhotoService photoService, @Qualifier("PhotoServiceDtoImpl") FileServiceDto photoServiceDto) {
+        this.photoService = photoService;
+        this.photoServiceDto = photoServiceDto;
+    }
+
     @Operation(
             summary = "Загрузка фотографий",
             description = "Загружает фотографии и привязывает к переданному гео-объекту по его ID."
@@ -62,6 +71,15 @@ public class PhotoController {
     @GetMapping()
     public List<Photo> getAll() {
         return photoService.getAll();
+    }
+
+    @Operation(
+            summary = "Получить все фотографии по ID гео-объекта",
+            description = "Позволяет получить список фотографий, привязанных к гео-объекту."
+    )
+    @GetMapping("/getAllByGeoId/{id}")
+    public List<FileDto> getAllByGeoId(@PathVariable UUID id) {
+        return photoServiceDto.getAllByGeoId(id);
     }
 
     @Operation(

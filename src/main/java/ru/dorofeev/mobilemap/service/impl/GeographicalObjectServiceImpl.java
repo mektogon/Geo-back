@@ -165,13 +165,18 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
 
             if (addressDto != null) {
                 entity.setAddress(addressService.getAddress(
-                        addressDto.getRegion(),
-                        addressDto.getDistrict(),
-                        addressDto.getTypeLocality(),
-                        addressDto.getLocality(),
-                        addressDto.getStreet(),
-                        addressDto.getHouseNumber()
-                ));
+                                addressDto.getRegion(),
+                                addressDto.getDistrict(),
+                                addressDto.getTypeLocality(),
+                                addressDto.getLocality(),
+                                addressDto.getStreet(),
+                                addressDto.getHouseNumber()
+                        )
+                );
+            } else {
+                //Учитываем случай, когда пользователь захотел удалить адрес.
+                //Нам приходят пустые строчки, мы возвращаем null и сеттим его в поле адреса.
+                entity.setAddress(null);
             }
 
             if (photo != null) {
