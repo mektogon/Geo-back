@@ -1,0 +1,190 @@
+= Руководство администратора
+
+== База данных:
+В приложение используется база данных - https://www.postgresql.org/[PostgreSQL], ER-модель которой выглядит следующим образом:
+
+image::image/ER-model.png[ER-model]
+
+=== Создание БД:
+Генерацией таблиц БД занимается *Hibernate*.
+Для этого необходимо создать базу данных PostgreSQL и указать данные к ней в application-dev\server.properties,
+в зависимости от "вида" запуска (dev\server).
+
+URL до бд:
+[source, properties]
+spring.datasource.url=jdbc:postgresql://localhost:5432/name_data_base
+
+Указать username и password к БД:
+[source, properties]
+spring.datasource.username=username
+
+[source, properties]
+spring.datasource.password=password
+
+Важным моментом является указания типа DDL, которым Hibernate оперирует для создания таблиц:
+[source, properties]
+spring.jpa.hibernate.ddl-auto=create-drop
+
+* create – Hibernate сначала удаляет существующие таблицы, а затем создает новые таблицы.
+* create-drop – аналогично create, но Hibernate удалит базу данных после завершения всех операций. Обычно используется для модульного тестирования.
+* update - объектная модель, созданная на основе сопоставлений (аннотаций или XML), сравнивается с существующей схемой,
+а затем Hibernate обновляет ее в соответствии с различием. Он никогда не удаляет существующие таблицы или столбцы, даже если они больше не требуются приложению.
+* validate - Hibernate только проверяет, существуют ли таблицы и столбцы; в противном случае он выдает исключение.
+* none – ничего не делает со схемой, не вносит никаких изменений в базу данных.
+
+В приложении *_рекомендуется_* использовать *update*. С этим параметром *необходимо быть осторожным*, чтобы *не* потерять данные в бд.
+В случае дальнейшего развития приложения рекомендуется запретить hibernate авто-генерацию и перевести приложение на *https://www.liquibase.org[liquibase]*.
+
+== Настройка конфигураций сервера Nginx:
+Приложение располагается на HTTP-сервере https://nginx.org/ru/[Nginx]
+
+Для корректной работы приложения необходимо настроить сервер. https://nginx.org/ru/docs/beginners_guide.html[Руководство для начинающих - Nginx]
+Разумеется его сначала нужно *установить*. После установки nginx открываем nginx.conf, который находится в */etc/nginx/* _(путь из linux ubuntu)_
+
+В блочной директиве http и устанавливаем параметр
+
+**_Задаём максимально допустимый размер тела запроса клиента._**
+[source, text]
+client_max_body_size 3000M;
+
+Параметр равный 3 ГБ требуется для тайлов карт, хранимых на сервере.
+
+После настройки файлов конфигурации необходимо перезагрузить сервер командой:
+[source, text]
+nginx -s reload
+
+Далее открываем файл *default* в */etc/nginx/sites-enabled/*
+В блочной директиве server указываем параметры:
+
+[source, text]
+listen 80 default_server;
+listen [::]:80 default_server;
+
+[source, text]
+location /api {
+proxy_set_header Host $host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_pass http://localhost:8080;
+}
+
+Перезагружаем сервер.
+[source, text]
+nginx -s reload
+
+== Настройка application.properties:
+В application.properties находится профиль запуска приложения, установленное значение: *default*
+Таким образом при передаче в параметры запуска приложения dev\server приложение запускается с определенным application-dev\server.properties
+*dev* - _профиль для разработки._
+*server* - _профиль для deploy на сервер._
+
+Рассмотрим  application-dev.properties:
+
+Настройки, которые мы можем\должны отредактировать это:
+[source, text]
+file.storage.audio.location=fileStorage/audio
+file.storage.photo.location=fileStorage/photo
+file.storage.video.location=fileStorage/video
+file.storage.tile-map.location=fileStorage/tile-map
+file.storage.designation.location=fileStorage/designation
+
+Обязательно указываем актуальный путь до хранилища медиа-файлов и тайлов-карт.
+
+[source, text]
+file.extension.audio = mp3, ogg, wav, aiff, flac, mpeg, m4a, x-m4a
+file.extension.photo = jpeg, png
+file.extension.video = avi, mp4, mkv, wmv, asf, mpeg
+file.extension.tile-map = rar, vnd.rar, rar4, zip
+file.extension.designation = jpeg, png
+
+Можем отредактировать расширения, которые пропускаются, при загрузке медиа-файлов.
+
+[source, text]
+jwt.token.secret=secret
+jwt.token.expired=86400000
+
+Обязательно указываем секретное слово, с помощью которого создается JWT-токен.
+
+[source, text]
+server.url=http://localhost:8080
+
+Обязательно указываем адрес сервера. От этого параметра формируется ссылки на скачивания медиа-файлов.
+
+== Подготовка приложения:
+Теперь необходимо подготовить приложение для его корректной работы.
+Подключаемся к базе данных. Это можно сделать командой:
+[source, text]
+----
+sudo -u postgres psql -d name_db
+----
+
+При условии, что БД *пустая*, мы вводим начальные данные:
+[source, postgresql]
+----
+insert into role VALUES ('00000000-0000-0000-0000-000000000000', 'ROLE_ADMIN');
+insert into users VALUES
+('00000000-0000-0000-0000-000000000000',
+'login',
+'name',
+'password',
+'00000000-0000-0000-0000-000000000000');
+----
+
+Далее заполняем таблицу типа местностей:
+
+[source, postgresql]
+----
+insert into type_locality VALUES
+('c763011f-1cc6-4d6b-96ba-78d7db4f60f6', 'Город'),
+('fa8a0020-1a49-4994-bda4-ac38a16eebf3', 'Деревня'),
+('28ca0a50-d2ee-4a21-9146-21ba60b6b800', 'Поселок'),
+('dab829da-2f14-41fb-b96c-776901959454', 'Село'),
+('be36eab4-338d-4594-9be5-97ebf450baf5', 'Станица'),
+('7dfb7642-ab8a-4f8d-be78-36d1d72e4d97', 'Аул'),
+('705e67c5-1edf-4b40-9bd0-d5275edfde62', 'Хутор');
+----
+
+Далее заходим на UI и создаем designation: "Отсутствует"
+
+На этом иниализация начальными данными подходит к концу.
+
+== Deploy приложения на сервер:
+Деплой на сервер осуществляется с помощью скрипта, который находится в `./script/`
+
+Настраиваем скрипт-деплоя и вызываем его через terminal.
+
+[source, text]
+/scripts/deploy.sh
+
+Скрипт собирает приложение и копирует его на сервер. После копирования происходит запуск приложения.
+
+Логи приложения выводятся в файл log.txt. Открыть файл можно командой `tail -f log.txt` на linux.
+
+== Прочее:
+==== Как сделать резервное КОПИРОВАНИЕ?
+Чтобы скопировать ТОЛЬКО данные
+[source, postgresql]
+----
+pg_dump --data-only -U postgres -W db_name > /path-to-save/test-dump.dump
+----
+Если хотите сделать полный дамп БД:
+[source, postgresql]
+----
+pg_dump -U postgres -W db_name > /path-to-save/test-dump.dump
+----
+test-temp.dump - примерное наименование файла. Все индивидуально.
+
+==== Как сделать резервное ВОССТАНОВЛЕНИЕ?
+[source, text]
+----
+psql -U postgres -W geo_data < /path-to-save/test-dump.dump
+----
+Далее выведется сообщение о вставке данных в бд.
+
+==== Что делать, если приложение отключилось? Кидает 502 http-код.
+
+Если случилось такое, что приложение отключилось, вам нужно перезапустить его в ФОНОВОМ режиме.
+Делается так:
+[source, text]
+----
+nohup java -jar Mobile-map-0.0.1-SNAPSHOT.war > log.txt &
+----
