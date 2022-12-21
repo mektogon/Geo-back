@@ -161,6 +161,13 @@ public class AuxiliaryUtils {
         }
     }
 
+    /**
+     * Метод для проверки допустимых расширений файлов.
+     *
+     * @param extCurrentFile текущее расширение
+     * @param extension      список допустим расширений
+     * @return результат проверки (Прошло/Не прошло)
+     */
     private static boolean checkExtensionFile(String extCurrentFile, List<String> extension) {
         for (var ext : extension) {
             if (ext.equals(extCurrentFile.toLowerCase())) {

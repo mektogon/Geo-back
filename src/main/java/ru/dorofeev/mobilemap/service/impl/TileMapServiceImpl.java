@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,8 @@ import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -179,10 +179,11 @@ public class TileMapServiceImpl implements TileMapService {
      */
     private ResponseEntity<Resource> getFile(TileMap foundFile) throws IOException {
         File file = new File(foundFile.getUrl());
-        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file.getAbsoluteFile()));
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s", file.getName()))
+                .contentLength(file.length())
                 .body(resource);
     }
 }
