@@ -53,7 +53,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     @Override
     public List<GeographicalObject> getAllByName(String name) {
         if (name == null) {
-            log.error("IN findAllByName() - Имя отсутствует!");
+            log.info("IN findAllByName() - Имя отсутствует!");
             return Collections.emptyList();
         }
 

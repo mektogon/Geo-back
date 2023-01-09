@@ -43,11 +43,13 @@ public class GeographicalObject implements Serializable {
     @JsonIgnore
     @Transient
     // [-90; 90]
-    private final String regexLatitude = "^(\\+|-)?(?:90(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+    // [-89.(30 знаков); -89.(30 знаков)]
+    private final String regexLatitude = "^(\\+|-)?(?:90(?:(?:\\.0{1,30})?)|(?:[0-9]|[1-8][0-9])(?:(?:\\.[0-9]{1,30})?))$";
     @JsonIgnore
     @Transient
     // [-180; 180]
-    private final String regexLongitude = "^(\\+|-)?(?:180(?:(?:\\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,6})?))$";
+    // [-179.(30 знаков); -179.(30 знаков)]
+    private final String regexLongitude = "^(\\+|-)?(?:180(?:(?:\\.0{1,30})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\\.[0-9]{1,30})?))$";
 
     @Id
     @GeneratedValue(generator = "UUID")

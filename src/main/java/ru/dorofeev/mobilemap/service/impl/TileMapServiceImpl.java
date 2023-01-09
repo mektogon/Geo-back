@@ -144,10 +144,10 @@ public class TileMapServiceImpl implements TileMapService {
         Optional<TileMap> byId = tailMapRepository.findById(id);
 
         if (byId.isPresent()) {
-            log.error("IN getById() - Тайл карты с ID: {} найден!", id);
+            log.info("IN getById() - Тайл карты с ID: {} найден!", id);
             return byId.get();
         } else {
-            log.error("IN getById() - Тайл карты с ID: {} не найден!", id);
+            log.info("IN getById() - Тайл карты с ID: {} не найден!", id);
             return new TileMap();
         }
     }
@@ -157,10 +157,10 @@ public class TileMapServiceImpl implements TileMapService {
         Optional<TileMap> byName = tailMapRepository.getTailMapByName(name);
 
         if (byName.isPresent()) {
-            log.error("IN getByName() - Тайл карты с name: {} найден!", name);
+            log.info("IN getByName() - Тайл карты с name: {} найден!", name);
             return byName.get();
         } else {
-            log.error("IN getByName() - Тайл карты с name: {} не найден!", name);
+            log.info("IN getByName() - Тайл карты с name: {} не найден!", name);
             return new TileMap();
         }
     }

@@ -62,7 +62,7 @@ public class TypeObjectServiceImpl implements TypeObjectService {
         TypeObject typeObjectByName = typeObjectRepository.findByName(typeName);
 
         if (typeObjectByName == null) {
-            log.error("IN getTypeObjectByName() - Имя отсутствует!");
+            log.info("IN getTypeObjectByName() - Имя отсутствует!");
             return typeObjectRepository.findByName("Отсутствует");
         }
 

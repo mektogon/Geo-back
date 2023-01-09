@@ -102,10 +102,10 @@ public class PhotoServiceImpl implements PhotoService {
         Optional<Photo> byId = photoRepository.findById(id);
 
         if (byId.isPresent()) {
-            log.error("IN findById() - Фотография с ID: {} найдена!", id);
+            log.info("IN findById() - Фотография с ID: {} найдена!", id);
             return byId.get();
         } else {
-            log.error("IN findById() - Фотография с ID: {} не найдена!", id);
+            log.info("IN findById() - Фотография с ID: {} не найдена!", id);
             return new Photo();
         }
     }

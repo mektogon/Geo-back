@@ -113,8 +113,8 @@ public class GeographicalObjectController {
             @RequestParam(value = "locality", required = false) String locality,
             @RequestParam(value = "street", required = false) String street,
             @RequestParam(value = "houseNumber", required = false) String houseNumber,
-            @RequestParam(value = "photo") MultipartFile[] photo,
-            @RequestParam(value = "audio") MultipartFile[] audio,
+            @RequestParam(value = "photo", required = false) MultipartFile[] photo,
+            @RequestParam(value = "audio", required = false) MultipartFile[] audio,
             @RequestParam(value = "video", required = false) MultipartFile[] video
     ) {
         GeographicalObjectDtoMobile entity = new GeographicalObjectDtoMobile();
