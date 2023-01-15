@@ -21,7 +21,6 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -34,8 +33,7 @@ import java.util.UUID;
 @ToString
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"name", "type_id", "latitude", "longitude"}),
-        @UniqueConstraint(columnNames = {"name", "type_id", "latitude", "longitude", "description"}),
-        @UniqueConstraint(columnNames = {"name", "type_id", "latitude", "longitude", "description", "note"})
+        @UniqueConstraint(columnNames = {"name", "type_id", "latitude", "longitude", "address_id"}),
 })
 public class GeographicalObject implements Serializable {
 
@@ -65,18 +63,18 @@ public class GeographicalObject implements Serializable {
 
     @NotNull(message = "Поле не должно быть равно null!")
     @NotBlank(message = "Поле не должно быть пустое!")
-    @Pattern(regexp = regexLatitude, message = "Широта должна быть в диапазоне [-90; 90]")
+    @Pattern(regexp = regexLatitude, message = "Широта должна быть в диапазоне [-90; 90]! Не более 30 знаков после запятой!")
     private String latitude;
 
     @NotNull(message = "Поле не должно быть равно null!")
     @NotBlank(message = "Поле не должно быть пустое!")
-    @Pattern(regexp = regexLongitude, message = "Долгота должна быть в диапазоне [-180; 180]")
+    @Pattern(regexp = regexLongitude, message = "Долгота должна быть в диапазоне [-180; 180]! Не более 30 знаков после запятой!")
     private String longitude;
 
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String note;
 
     private Boolean isPlaying;

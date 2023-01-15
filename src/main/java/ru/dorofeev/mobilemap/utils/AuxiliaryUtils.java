@@ -72,6 +72,16 @@ public class AuxiliaryUtils {
     }
 
     /**
+     * Метод, позволяющий получить имя файла без расширения.
+     *
+     * @param name передаваемое имя файла с расширением.
+     * @return имя без расширения.
+     */
+    public static String getOriginalNameWithoutExtension(String name) {
+        return name.substring(0, name.lastIndexOf('.'));
+    }
+
+    /**
      * Удаление файла из директории.
      *
      * @param directoryToDelete путь до удаляемого файла.

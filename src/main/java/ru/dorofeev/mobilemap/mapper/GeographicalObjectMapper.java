@@ -20,6 +20,7 @@ import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,6 +118,7 @@ public class GeographicalObjectMapper {
 
         geographicalObjectDtoMobile.setPhotoList(
                 photoService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                        .sorted((Comparator.comparing(o -> AuxiliaryUtils.getOriginalNameWithoutExtension(o.getFileName()))))
                         .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
                         .collect(Collectors.toList())
         );
@@ -152,6 +154,7 @@ public class GeographicalObjectMapper {
 
         geographicalObjectDtoWeb.setPhotoList(
                 photoService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
+                        .sorted((Comparator.comparing(o -> AuxiliaryUtils.getOriginalNameWithoutExtension(o.getFileName()))))
                         .map(el -> FileDto.builder()
                                 .id(el.getId())
                                 .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))

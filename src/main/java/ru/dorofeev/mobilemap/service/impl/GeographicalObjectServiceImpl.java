@@ -229,7 +229,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     /**
      * Метод удаляет зависимые сущности(фото, видео, аудио), прежде чем удалить гео-объект.
      *
-     * @param id индетификатор удаляемого объекта
+     * @param id идентификатор удаляемого объекта
      */
     private void cascadeDeleteFilesByIdGeo(UUID id) {
         photoService.getAllFilesByGeographicalObjectId(id)
