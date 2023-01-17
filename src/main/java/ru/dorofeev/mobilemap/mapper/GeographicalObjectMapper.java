@@ -35,6 +35,7 @@ public class GeographicalObjectMapper {
     @Value("${server.url}")
     private String rootUrl;
     private final String ENDPOINT_GET_PHOTO_BY_ID = "/api/v1/photo/view/";
+    private final String ENDPOINT_GET_PREVIEW_PHOTO_BY_ID = "/api/v1/photo/preview/view/";
     private final String ENDPOINT_GET_VIDEO_BY_ID = "/api/v1/video/view/";
     private final String ENDPOINT_GET_AUDIO_BY_ID = "/api/v1/audio/view/";
     private final String ENDPOINT_GET_DESIGNATION_BY_ID = "/api/v1/designation/view/";
@@ -119,7 +120,15 @@ public class GeographicalObjectMapper {
         geographicalObjectDtoMobile.setPhotoList(
                 photoService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .sorted((Comparator.comparing(o -> AuxiliaryUtils.getOriginalNameWithoutExtension(o.getFileName()))))
-                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
+                        .map(el -> {
+                                    if (el.getUrlPhotoPreview() != null) {
+                                        geographicalObjectDtoMobile.setPreviewMainPhoto(
+                                                String.format("%s%s%s", rootUrl, ENDPOINT_GET_PREVIEW_PHOTO_BY_ID, el.getId())
+                                        );
+                                    }
+                                    return String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId());
+                                }
+                        )
                         .collect(Collectors.toList())
         );
         geographicalObjectDtoMobile.setVideoList(
@@ -155,10 +164,22 @@ public class GeographicalObjectMapper {
         geographicalObjectDtoWeb.setPhotoList(
                 photoService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .sorted((Comparator.comparing(o -> AuxiliaryUtils.getOriginalNameWithoutExtension(o.getFileName()))))
-                        .map(el -> FileDto.builder()
-                                .id(el.getId())
-                                .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
-                                .build())
+                        .map(el -> {
+                                    if (el.getUrlPhotoPreview() != null) {
+                                        geographicalObjectDtoWeb.setPreviewMainPhoto(
+                                                FileDto.builder()
+                                                        .id(el.getId())
+                                                        .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_PREVIEW_PHOTO_BY_ID, el.getId()))
+                                                        .build()
+                                        );
+                                    }
+
+                                    return FileDto.builder()
+                                            .id(el.getId())
+                                            .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_PHOTO_BY_ID, el.getId()))
+                                            .build();
+                                }
+                        )
                         .collect(Collectors.toList())
         );
         geographicalObjectDtoWeb.setVideoList(
@@ -297,12 +318,12 @@ public class GeographicalObjectMapper {
      * @return
      */
     private GeographicalObjectDto getGeographicalObjectDto(GeographicalObject geographicalObject) {
-        String currentRegion = "Отсуствует";
-        String currentTypeLocality = "Отсуствует";
-        String currentLocality = "Отсуствует";
-        String currentStreet = "Отсуствует";
-        String currentDistrict = "Отсуствует";
-        String currentHouseNumber = "Отсуствует";
+        String currentRegion = "Отсутствует";
+        String currentTypeLocality = "Отсутствует";
+        String currentLocality = "Отсутствует";
+        String currentStreet = "Отсутствует";
+        String currentDistrict = "Отсутствует";
+        String currentHouseNumber = "Отсутствует";
 
 
         if (geographicalObject.getAddress() != null) {
@@ -324,7 +345,6 @@ public class GeographicalObjectMapper {
         geographicalObjectDto.setNote(geographicalObject.getNote());
         geographicalObjectDto.setIsPlaying(geographicalObject.getIsPlaying());
 
-
         if (geographicalObject.getAddress() != null) {
             geographicalObjectDto.setAddressDto(AddressDto.builder()
                     .region(currentRegion)
@@ -344,7 +364,7 @@ public class GeographicalObjectMapper {
                     .build());
         } else {
             //Адрес может быть null, т.к. он не всегда нужен
-            // или в прицнипе есть у географического объекта.
+            // или в принципе есть у географического объекта.
             geographicalObjectDto.setAddressDto(null);
         }
         return geographicalObjectDto;

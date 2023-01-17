@@ -30,7 +30,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void save(Region region) {
         regionRepository.save(region);
-        log.info("IN save() - Регион сохранен!");
+        log.debug("IN save() - Регион сохранен!");
     }
 
     @Override
@@ -39,7 +39,7 @@ public class RegionServiceImpl implements RegionService {
 
         if (byId.isPresent()) {
             regionRepository.save(region);
-            log.info("IN update() - Обновлен регион с ID: {}", byId.get().getId());
+            log.debug("IN update() - Обновлен регион с ID: {}", byId.get().getId());
         } else {
             log.info("IN update() - Не удалось найти регион с ID: {}", region.getId());
         }
@@ -48,12 +48,12 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void deleteById(UUID id) {
         regionRepository.deleteById(id);
-        log.info("IN deleteById() - Регион с ID: {} удален!", id);
+        log.debug("IN deleteById() - Регион с ID: {} удален!", id);
     }
 
     @Override
     public void deleteByName(String name) {
         regionRepository.deleteByName(name);
-        log.info("IN deleteByName() - Регион с name: {} удален!", name);
+        log.debug("IN deleteByName() - Регион с name: {} удален!", name);
     }
 }

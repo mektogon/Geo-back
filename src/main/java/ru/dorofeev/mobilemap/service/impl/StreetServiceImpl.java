@@ -30,7 +30,7 @@ public class StreetServiceImpl implements StreetService {
     @Override
     public void save(Street street) {
         streetRepository.save(street);
-        log.info("IN save() - Улица сохранена!");
+        log.debug("IN save() - Улица сохранена!");
     }
 
     @Override
@@ -39,7 +39,7 @@ public class StreetServiceImpl implements StreetService {
 
         if (byId.isPresent()) {
             streetRepository.save(street);
-            log.info("IN update() - Обновлена улица с ID: {}", byId.get().getId());
+            log.debug("IN update() - Обновлена улица с ID: {}", byId.get().getId());
         } else {
             log.info("IN update() - Не удалось найти улицу с ID: {}", street.getId());
         }
@@ -48,7 +48,7 @@ public class StreetServiceImpl implements StreetService {
     @Override
     public void deleteById(UUID id) {
         streetRepository.deleteById(id);
-        log.info("IN deleteById() - Улица с ID: {} удалена!", id);
+        log.debug("IN deleteById() - Улица с ID: {} удалена!", id);
     }
 
     @Override

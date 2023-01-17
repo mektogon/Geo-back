@@ -65,7 +65,7 @@ public class AuxiliaryUtils {
             InputStream inputImage = file.getInputStream();
 
             if (compressImage) {
-                inputImage = new ByteArrayInputStream(compressedImage(file));
+                inputImage = new ByteArrayInputStream(compressedImage(file, COMPRESSION_QUALITY, MEGABYTE_IN_BYTES, true));
             }
 
             Files.copy(inputImage, fullPathToSave, StandardCopyOption.REPLACE_EXISTING);
@@ -81,34 +81,38 @@ public class AuxiliaryUtils {
      * Метод сжатия изображения.
      * Если изображение <= 1MB сжатие не используется
      *
-     * @param image сжимаемое изображение.
+     * @param file сжимаемое изображение.
      * @return массив байтов (сжатое изображение).
      * @throws IOException
      */
-    private static byte[] compressedImage(MultipartFile image) throws IOException {
+    public static byte[] compressedImage(MultipartFile file, float compressionQuality, float compressionSizeLimit, boolean compressionLimitation) throws IOException {
 
         //Если размер изображения <= 1MB, то мы не используем сжатие.
-        if (image.getSize() <= MEGABYTE_IN_BYTES) {
-            return image.getBytes();
+        if (compressionLimitation && (file.getSize() <= compressionSizeLimit)) {
+            return file.getBytes();
         }
+
+        BufferedImage currentImage = ImageIO.read(file.getInputStream());
+        return compressedImage(
+                resize(currentImage, currentImage.getWidth() / 2, currentImage.getHeight() / 2, true),
+                compressionQuality);
+    }
+
+    public static byte[] compressedImage(BufferedImage image, float compressionQuality) throws IOException {
 
         byte[] compressedImageBytes;
 
-        BufferedImage currentImage = ImageIO.read(image.getInputStream());
-
-        BufferedImage resizeImage = resize(currentImage, currentImage.getWidth() / 2, currentImage.getHeight() / 2);
-
-        ImageWriter jpegWriter = ImageIO.getImageWritersByFormatName(getExtensionFile(image)).next();
+        ImageWriter jpegWriter = ImageIO.getImageWritersByFormatName("jpeg").next();
         ImageWriteParam jpegWriteParam = jpegWriter.getDefaultWriteParam();
         jpegWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-        jpegWriteParam.setCompressionQuality(COMPRESSION_QUALITY);
+        jpegWriteParam.setCompressionQuality(compressionQuality);
 
         try (
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageOutputStream output = new MemoryCacheImageOutputStream(baos)
         ) {
             jpegWriter.setOutput(output);
-            IIOImage outputImage = new IIOImage(resizeImage, null, null);
+            IIOImage outputImage = new IIOImage(image, null, null);
             jpegWriter.write(null, outputImage, jpegWriteParam);
             compressedImageBytes = baos.toByteArray();
         } catch (IOException e) {
@@ -124,16 +128,16 @@ public class AuxiliaryUtils {
 
     /**
      * Метод изменения разрешения изображения.
-     * Если разрешение <= 2К, resize не используется.
      *
-     * @param image  изменяемое изображение.
-     * @param width  требуемая ширина.
-     * @param height требуемая высота.
+     * @param image       изменяемое изображение.
+     * @param width       требуемая ширина.
+     * @param height      требуемая высота.
+     * @param resizeLimit флаг, игнорирующий resize, если разрешение <= 2К.
      * @return измененное изображение.
      */
-    private static BufferedImage resize(BufferedImage image, int width, int height) {
+    public static BufferedImage resize(BufferedImage image, int width, int height, boolean resizeLimit) {
 
-        if (image.getWidth() * image.getHeight() <= TOTAL_COUNT_OF_PIXELS_IN_2K) {
+        if (resizeLimit && (image.getWidth() * image.getHeight() <= TOTAL_COUNT_OF_PIXELS_IN_2K)) {
             return image;
         }
 
@@ -171,7 +175,7 @@ public class AuxiliaryUtils {
      * @return расширение файла.
      */
     public static String getExtensionFile(String name) {
-        return name.substring(name.lastIndexOf('.'));
+        return name.substring(name.lastIndexOf('.') + 1);
     }
 
     /**
@@ -182,6 +186,17 @@ public class AuxiliaryUtils {
      */
     public static String getOriginalNameWithoutExtension(String name) {
         return name.substring(0, name.lastIndexOf('.'));
+    }
+
+    /**
+     * Удаление списка файлов из директории.
+     *
+     * @param listCandidatesForDelete список с путями удаляемых файлов.
+     */
+    public static void deleteFile(List<String> listCandidatesForDelete) {
+        for (var file : listCandidatesForDelete) {
+            new Thread(() -> deleteFile(file)).start();
+        }
     }
 
     /**

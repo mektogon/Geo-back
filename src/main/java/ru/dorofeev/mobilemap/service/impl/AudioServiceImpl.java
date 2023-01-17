@@ -52,7 +52,7 @@ public class AudioServiceImpl implements AudioService {
                         .build())
         );
 
-        log.info("IN upload() - Аудиозапись сохранена!");
+        log.debug("IN upload() - Аудиозапись сохранена!");
     }
 
     @Override
@@ -68,7 +68,7 @@ public class AudioServiceImpl implements AudioService {
 
             audioRepository.save(updatedAudio);
 
-            log.info("IN upload() - Обновлена аудиозапись с ID: {}", id);
+            log.debug("IN upload() - Обновлена аудиозапись с ID: {}", id);
         } else {
             log.info("IN upload() - Не найдено обозначение с ID: {}", id);
         }
@@ -84,7 +84,7 @@ public class AudioServiceImpl implements AudioService {
             AuxiliaryUtils.deleteFile(urlToFile);
 
             audioRepository.deleteById(id);
-            log.info("IN deleteById() - Аудиозапись с ID: {} удалена из базы данных!", id);
+            log.debug("IN deleteById() - Аудиозапись с ID: {} удалена из базы данных!", id);
         } else {
             log.info("IN deleteById() - Не удалось найти и удалить аудиозапись с ID: {} из базы данных!", id);
         }
@@ -100,7 +100,7 @@ public class AudioServiceImpl implements AudioService {
         Optional<Audio> byId = audioRepository.findById(id);
 
         if (byId.isPresent()) {
-            log.info("IN findById() - Найдена аудиозапись с ID: {}", id);
+            log.debug("IN findById() - Найдена аудиозапись с ID: {}", id);
             return byId.get();
         } else {
             log.info("IN findById() - Не найдена аудиозапись с ID: {}", id);
@@ -109,17 +109,21 @@ public class AudioServiceImpl implements AudioService {
     }
 
     @Override
-    public ResponseEntity<byte[]> getViewFileById(UUID id) throws IOException {
+    public ResponseEntity<byte[]> getViewFileById(UUID id) {
         Optional<Audio> foundFile = audioRepository.findById(id);
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
             String fileExtension = file.getName().split("\\.")[1];
 
-            log.info("IN getFileById() - Найдена аудиозапись с ID: {}", id);
+            log.debug("IN getFileById() - Найдена аудиозапись с ID: {}", id);
 
-            return ResponseEntity.ok().contentType((MediaType.parseMediaType("audio/" + fileExtension)))
-                    .body(Files.readAllBytes(file.toPath()));
+            try {
+                return ResponseEntity.ok().contentType((MediaType.parseMediaType("audio/" + fileExtension)))
+                        .body(Files.readAllBytes(file.toPath()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             log.info("IN getFileById() - Не найдена аудиозапись с ID: {}", id);
             return ResponseEntity.status(204).body(new byte[0]);

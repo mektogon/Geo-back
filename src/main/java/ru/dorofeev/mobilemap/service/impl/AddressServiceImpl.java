@@ -56,7 +56,7 @@ public class AddressServiceImpl implements AddressService {
 
         if (byId.isPresent()) {
             addressRepository.save(address);
-            log.info("IN update() - Обновлен адрес с ID: {}", byId.get().getId());
+            log.debug("IN update() - Обновлен адрес с ID: {}", byId.get().getId());
         } else {
             log.info("IN update() - Не удалось найти адрес с ID: {}", address.getId());
         }
@@ -72,26 +72,26 @@ public class AddressServiceImpl implements AddressService {
         //Код, на который без слез не взглянешь.
         //Подлежит рефакторингу.
         if (regionName == null && districtName == null && typeLocalityName == null && localityName == null && streetName == null && houseNumber == null) {
-            log.info("IN getAddress() - Адрес отсутствует!");
+            log.debug("IN getAddress() - Адрес отсутствует!");
             return null;
         }
 
         //Необязательное поле в адресе.
         if (districtName == null || districtName.isEmpty()) {
-            log.info("IN getAddress() - Район отсутствует!");
+            log.debug("IN getAddress() - Район отсутствует!");
             districtName = "Отсутствует";
         }
 
         //Необязательное поле в адресе.
         if (streetName == null || streetName.isEmpty()) {
-            log.info("IN getAddress() - Улица отсутствует!");
+            log.debug("IN getAddress() - Улица отсутствует!");
             streetName = "Отсутствует"; //Если нет улицы => не может быть и номера дома
             houseNumber = "Отсутствует";
         }
 
         //Необязательное поле в адресе.
         if (houseNumber == null || houseNumber.isEmpty() || Objects.equals(streetName, "Отсутствует")) {
-            log.info("IN getAddress() - Номер дома отсутствует!");
+            log.debug("IN getAddress() - Номер дома отсутствует!");
             houseNumber = "Отсутствует";
         }
 
@@ -108,7 +108,7 @@ public class AddressServiceImpl implements AddressService {
 
 
         if (foundAddress == null) {
-            log.info("IN getAddress() - Адрес не найден!");
+            log.debug("IN getAddress() - Адрес не найден!");
             Region region = regionRepository.findByName(regionName);
             District district = districtRepository.findByName(districtName);
             TypeLocality typeLocality = typeLocalityRepository.findByName(typeLocalityName);
@@ -120,7 +120,7 @@ public class AddressServiceImpl implements AddressService {
                 region.setName(regionName);
                 regionRepository.save(region);
                 region = regionRepository.findByName(regionName);
-                log.info("IN getAddress() - Регион не найден. Создан и сохранен.");
+                log.debug("IN getAddress() - Регион не найден. Создан и сохранен.");
             }
 
             if (district == null) {
@@ -128,7 +128,7 @@ public class AddressServiceImpl implements AddressService {
                 district.setName(districtName);
                 districtRepository.save(district);
                 district = districtRepository.findByName(districtName);
-                log.info("IN getAddress() - Район не найден. Создан и сохранен.");
+                log.debug("IN getAddress() - Район не найден. Создан и сохранен.");
             }
 
             if (typeLocality == null) {
@@ -136,7 +136,7 @@ public class AddressServiceImpl implements AddressService {
                 typeLocality.setName(typeLocalityName);
                 typeLocalityRepository.save(typeLocality);
                 typeLocality = typeLocalityRepository.findByName(typeLocalityName);
-                log.info("IN getAddress() - Тип местности не найден. Создан и сохранен.");
+                log.debug("IN getAddress() - Тип местности не найден. Создан и сохранен.");
             }
 
             if (locality == null) {
@@ -144,7 +144,7 @@ public class AddressServiceImpl implements AddressService {
                 locality.setName(localityName);
                 localityRepository.save(locality);
                 locality = localityRepository.findByName(localityName);
-                log.info("IN getAddress() - Местность не найдена. Создана и сохранена.");
+                log.debug("IN getAddress() - Местность не найдена. Создана и сохранена.");
             }
 
             if (street == null) {
@@ -152,7 +152,7 @@ public class AddressServiceImpl implements AddressService {
                 street.setName(streetName);
                 streetRepository.save(street);
                 street = streetRepository.findByName(streetName);
-                log.info("IN getAddress() - Улица не найдена. Создана и сохранена.");
+                log.debug("IN getAddress() - Улица не найдена. Создана и сохранена.");
             }
 
             addressRepository.save(
@@ -175,7 +175,7 @@ public class AddressServiceImpl implements AddressService {
             );
         }
 
-        log.info("IN getAddress() - Адрес сохранен!");
+        log.debug("IN getAddress() - Адрес сохранен!");
         return foundAddress;
     }
 }

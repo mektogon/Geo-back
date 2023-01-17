@@ -54,14 +54,14 @@ public class DesignationServiceImpl implements DesignationService {
 
             if (name != null) {
                 updatedDesignation.setName(name);
-                log.info("IN update() - Обновлено наименование обозначения с ID: {}", id);
+                log.debug("IN update() - Обновлено наименование обозначения с ID: {}", id);
             }
 
             if (file != null) {
                 updatedDesignation.setFileName(file.getOriginalFilename());
                 AuxiliaryUtils.deleteFile(updatedDesignation.getUrl());
                 updatedDesignation.setUrl(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, false));
-                log.info("IN update() - Обновлена фотография обозначения с ID: {}", id);
+                log.debug("IN update() - Обновлена фотография обозначения с ID: {}", id);
             }
 
             designationRepository.save(updatedDesignation);
@@ -81,7 +81,7 @@ public class DesignationServiceImpl implements DesignationService {
             AuxiliaryUtils.deleteFile(urlToFile);
 
             designationRepository.deleteById(id);
-            log.info("IN deleteById() - Удалено обозначение с ID: {} из базы данных!", id);
+            log.debug("IN deleteById() - Удалено обозначение с ID: {} из базы данных!", id);
         } else {
             log.info("IN deleteById() - Не удалось найти и удалить обозначение с ID: {} из базы данных!", id);
         }
@@ -98,7 +98,7 @@ public class DesignationServiceImpl implements DesignationService {
             AuxiliaryUtils.deleteFile(urlToFile);
 
             designationRepository.deleteByName(name);
-            log.info("IN deleteByName() - Удалено обозначение с name: {} из базы данных!", name);
+            log.debug("IN deleteByName() - Удалено обозначение с name: {} из базы данных!", name);
         } else {
             log.info("IN deleteByName() - Не удалось найти и удалить обозначение с именем: {} из базы данных!", name);
         }
@@ -114,7 +114,7 @@ public class DesignationServiceImpl implements DesignationService {
         Optional<Designation> byId = designationRepository.findById(id);
 
         if (byId.isPresent()) {
-            log.info("IN findById() - Найдено обозначение с ID: {}", id);
+            log.debug("IN findById() - Найдено обозначение с ID: {}", id);
             return byId.get();
         } else {
             log.info("IN findById() - Не найдено обозначение с ID: {}", id);
@@ -136,7 +136,7 @@ public class DesignationServiceImpl implements DesignationService {
             return designationRepository.getDesignationsByName("Отсутствует");
         }
 
-        log.info("IN getByName() - Найдено обозначение с name: {}", name);
+        log.debug("IN getByName() - Найдено обозначение с name: {}", name);
 
         return designationByName;
     }
@@ -147,7 +147,7 @@ public class DesignationServiceImpl implements DesignationService {
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
-            log.info("IN getFileById() - Найдено обозначение с ID: {}", id);
+            log.debug("IN getFileById() - Найдено обозначение с ID: {}", id);
             return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file)))
                     .body(Files.readAllBytes(file.toPath()));
         } else {

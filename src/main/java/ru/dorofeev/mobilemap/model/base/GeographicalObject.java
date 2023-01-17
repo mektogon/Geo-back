@@ -54,23 +54,25 @@ public class GeographicalObject implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @NotNull(message = "Поле не должно быть равно null!")
-    @NotBlank(message = "Поле не должно быть пустое!")
+    @NotNull
+    @NotBlank(message = "Поле 'Наименование гео-объекта' не должно быть пустое!")
     private String name;
 
     @ManyToOne(optional = false)
     private TypeObject type;
 
-    @NotNull(message = "Поле не должно быть равно null!")
-    @NotBlank(message = "Поле не должно быть пустое!")
+    @NotNull
+    @NotBlank(message = "Поле 'Широта' не должно быть пустое!")
     @Pattern(regexp = regexLatitude, message = "Широта должна быть в диапазоне [-90; 90]! Не более 30 знаков после запятой!")
     private String latitude;
 
-    @NotNull(message = "Поле не должно быть равно null!")
-    @NotBlank(message = "Поле не должно быть пустое!")
+    @NotNull
+    @NotBlank(message = "Поле 'Долгота' не должно быть пустое!")
     @Pattern(regexp = regexLongitude, message = "Долгота должна быть в диапазоне [-180; 180]! Не более 30 знаков после запятой!")
     private String longitude;
 
+    @NotNull
+    @NotBlank(message = "Поле 'Описание' не должно быть пустое!")
     @Column(columnDefinition = "TEXT")
     private String description;
 

@@ -27,17 +27,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GeographicalObjectServiceImpl implements GeographicalObjectService {
     private final GeographicalObjectRepository geographicalObjectRepository;
-
     private final TypeObjectService typeObjectService;
-
     private final DesignationService designationService;
-
     private final AddressService addressService;
-
     private final PhotoService photoService;
-
     private final VideoService videoService;
-
     private final AudioService audioService;
 
     @Override
@@ -53,7 +47,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     @Override
     public List<GeographicalObject> getAllByName(String name) {
         if (name == null) {
-            log.info("IN findAllByName() - Имя отсутствует!");
+            log.debug("IN findAllByName() - Имя отсутствует!");
             return Collections.emptyList();
         }
 
@@ -63,13 +57,13 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     @Override
     public void save(GeographicalObject geographicalObject) {
         geographicalObjectRepository.save(geographicalObject);
-        log.info("IN save() - Сохранен гео-объект");
+        log.debug("IN save() - Сохранен гео-объект");
     }
 
     @Override
     public UUID saveAndReturnId(GeographicalObject geographicalObject) {
         GeographicalObject savedEntity = geographicalObjectRepository.save(geographicalObject);
-        log.info("IN saveAndReturnId() - Сохранен гео-объект");
+        log.debug("IN saveAndReturnId() - Сохранен гео-объект");
         return savedEntity.getId();
     }
 
@@ -79,7 +73,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
 
         if (byId.isPresent()) {
             geographicalObjectRepository.save(geographicalObject);
-            log.info("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
+            log.debug("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
         } else {
             log.info("IN update() - Не удалось найти и обновить гео-объект с ID: {}", geographicalObject.getId());
         }
@@ -89,7 +83,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
     public void deleteById(UUID id) {
         cascadeDeleteFilesByIdGeo(id);
         geographicalObjectRepository.deleteById(id);
-        log.info("IN deleteById() - Удален гео-объект с ID: {}", id);
+        log.debug("IN deleteById() - Удален гео-объект с ID: {}", id);
     }
 
     @Override
@@ -97,7 +91,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
         List<GeographicalObject> geoListToDelete = geographicalObjectRepository.findAllByName(name);
         geoListToDelete.forEach(geo -> {
                     deleteById(geo.getId());
-                    log.info("IN deleteByName() - Удален гео-объект с name: {}", name);
+                    log.debug("IN deleteByName() - Удален гео-объект с name: {}", name);
                 }
         );
 
@@ -190,6 +184,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
                 }
 
                 photoService.upload(photo, id);
+                photoService.initializePreviewPhoto(id);
             }
 
             if (video != null) {
@@ -219,7 +214,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             }
 
             geographicalObjectRepository.save(entity);
-            log.info("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
+            log.debug("IN update() - Обновлен гео-объект с ID: {}", byId.get().getId());
         } else {
             log.info("IN update() - Не удалось найти и обновить гео-объект с ID: {}", id);
             throw new GeneralErrorException(String.format("Не удалось найти и обновить гео-объект с ID: %s", id));

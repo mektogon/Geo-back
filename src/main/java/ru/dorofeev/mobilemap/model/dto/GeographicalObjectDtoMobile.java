@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Сущность гео-объекта для мобильного приложения.")
+@Schema(description = "Сущность гео-объекта для мобильного приложения. Входящая DTO-сущность.")
 public class GeographicalObjectDtoMobile extends GeographicalObjectDto {
 
     public GeographicalObjectDtoMobile(GeographicalObjectDto geographicalObjectDto) {
@@ -28,6 +28,9 @@ public class GeographicalObjectDtoMobile extends GeographicalObjectDto {
         setIsPlaying(geographicalObjectDto.getIsPlaying());
         setAddressDto(geographicalObjectDto.getAddressDto());
     }
+
+    @Schema(description = "Ссылка на превью главной фотографии")
+    private String previewMainPhoto;
 
     @Schema(description = "Обозначение", example = "Кемпинг")
     private String designation;

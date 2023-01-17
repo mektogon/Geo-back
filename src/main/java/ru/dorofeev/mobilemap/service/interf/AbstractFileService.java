@@ -60,6 +60,6 @@ public interface AbstractFileService<T> {
      * @return 'отображение' файла.
      * @throws IOException
      */
-    ResponseEntity<byte[]> getViewFileById(UUID id) throws IOException;
+    ResponseEntity<byte[]> getViewFileById(UUID id);
 }
 

@@ -34,8 +34,8 @@ public class Region implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @NotNull(message = "Поле не должно быть равно null!")
-    @NotBlank(message = "Поле не должно быть пустое!")
+    @NotNull
+    @NotBlank(message = "Поле 'Регион' не должно быть пустое!")
     @Column(unique = true)
     private String name;
 }

@@ -18,7 +18,6 @@ import ru.dorofeev.mobilemap.model.dto.FileDto;
 import ru.dorofeev.mobilemap.service.dto.interf.FileServiceDto;
 import ru.dorofeev.mobilemap.service.interf.PhotoService;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,8 +95,17 @@ public class PhotoController {
             description = "Позволяет отобразить фотографию."
     )
     @GetMapping("/view/{id}")
-    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) throws IOException {
+    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) {
         return photoService.getViewFileById(id);
+    }
+
+    @Operation(
+            summary = "Получить 'представление' превью главной фотографии",
+            description = "Позволяет отобразить фотографию."
+    )
+    @GetMapping("/preview/view/{id}")
+    public ResponseEntity<byte[]> getPreviewPhotoById(@PathVariable UUID id) {
+        return photoService.getPreviewPhotoById(id);
     }
 
 }

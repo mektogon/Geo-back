@@ -35,7 +35,7 @@ public class TypeObject implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @NotNull(message = "Поле не должно быть равно null!")
+    @NotNull
     @NotBlank(message = "Поле не должно быть пустое!")
     @Column(unique = true)
     private String name;

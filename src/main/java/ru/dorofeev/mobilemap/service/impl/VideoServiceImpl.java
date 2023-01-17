@@ -67,7 +67,7 @@ public class VideoServiceImpl implements VideoService {
 
             videoRepository.save(updatedVideo);
 
-            log.info("IN upload() - Обновлена видеозапись с ID: {}", id);
+            log.debug("IN upload() - Обновлена видеозапись с ID: {}", id);
         } else {
             log.info("IN upload() - Не найдена видеозапись с ID: {}", id);
         }
@@ -83,7 +83,7 @@ public class VideoServiceImpl implements VideoService {
             AuxiliaryUtils.deleteFile(urlToFile);
 
             videoRepository.deleteById(id);
-            log.info("IN deleteById() - Видеозапись с ID: {} удалено из базы данных!", id);
+            log.debug("IN deleteById() - Видеозапись с ID: {} удалена из базы данных!", id);
         } else {
             log.info("IN deleteById() - Не удалось найти и удалить видеозапись с ID: {} из базы данных!", id);
         }
@@ -99,7 +99,7 @@ public class VideoServiceImpl implements VideoService {
         Optional<Video> byId = videoRepository.findById(id);
 
         if (byId.isPresent()) {
-            log.info("IN findById() - Видео с ID: {} найдено!", id);
+            log.debug("IN findById() - Видео с ID: {} найдено!", id);
             return byId.get();
         } else {
             log.info("IN findById() - Видео с ID: {} не найдено!", id);
@@ -108,16 +108,20 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public ResponseEntity<byte[]> getViewFileById(UUID id) throws IOException {
+    public ResponseEntity<byte[]> getViewFileById(UUID id) {
         Optional<Video> foundFile = videoRepository.findById(id);
 
         if (foundFile.isPresent()) {
             File file = new File(foundFile.get().getUrl());
-            log.info("IN getFileById() - Видео с ID: {} найдено!", id);
+            log.debug("IN getFileById() - Видео с ID: {} найдено!", id);
             String fileExtension = file.getName().split("\\.")[1];
 
-            return ResponseEntity.ok().contentType((MediaType.parseMediaType("video/" + fileExtension)))
-                    .body(Files.readAllBytes(file.toPath()));
+            try {
+                return ResponseEntity.ok().contentType((MediaType.parseMediaType("video/" + fileExtension)))
+                        .body(Files.readAllBytes(file.toPath()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             log.info("IN getFileById() - Видео с ID: {} не найдено!", id);
             return ResponseEntity.status(204).body(new byte[0]);

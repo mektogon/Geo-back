@@ -29,6 +29,9 @@ public class GeographicalObjectDtoWeb extends GeographicalObjectDto {
         setAddressDto(geographicalObjectDto.getAddressDto());
     }
 
+    @Schema(description = "Ссылка на превью главной фотографии")
+    private FileDto previewMainPhoto;
+
     @Schema(description = "Обозначение")
     private FileDto designation;
 

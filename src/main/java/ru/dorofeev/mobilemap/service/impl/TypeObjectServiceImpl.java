@@ -30,7 +30,7 @@ public class TypeObjectServiceImpl implements TypeObjectService {
     @Override
     public void save(TypeObject typeObject) {
         typeObjectRepository.save(typeObject);
-        log.info("IN save() - Тип объекта сохранен!");
+        log.debug("IN save() - Тип объекта сохранен!");
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TypeObjectServiceImpl implements TypeObjectService {
 
         if (byId.isPresent()) {
             typeObjectRepository.save(typeObject);
-            log.info("IN update() - Тип объекта с ID: {} обновлен!", typeObject.getId());
+            log.debug("IN update() - Тип объекта с ID: {} обновлен!", typeObject.getId());
         } else {
             log.info("IN update() - Не удалось найти тип объекта с ID: {}", typeObject.getId());
         }
@@ -48,13 +48,13 @@ public class TypeObjectServiceImpl implements TypeObjectService {
     @Override
     public void deleteById(UUID id) {
         typeObjectRepository.deleteById(id);
-        log.info("IN deleteById() - Тип объекта с ID: {} удален!", id);
+        log.debug("IN deleteById() - Тип объекта с ID: {} удален!", id);
     }
 
     @Override
     public void deleteByName(String name) {
         typeObjectRepository.deleteByName(name);
-        log.info("IN deleteByName() - Тип объекта с name: {} удален!", name);
+        log.debug("IN deleteByName() - Тип объекта с name: {} удален!", name);
     }
 
     @Override
@@ -62,11 +62,11 @@ public class TypeObjectServiceImpl implements TypeObjectService {
         TypeObject typeObjectByName = typeObjectRepository.findByName(typeName);
 
         if (typeObjectByName == null) {
-            log.info("IN getTypeObjectByName() - Имя отсутствует!");
+            log.debug("IN getTypeObjectByName() - Имя отсутствует!");
             return typeObjectRepository.findByName("Отсутствует");
         }
 
-        log.info("IN getTypeObjectByName() - Тип объекта с name: {} найден!", typeName);
+        log.debug("IN getTypeObjectByName() - Тип объекта с name: {} найден!", typeName);
         return typeObjectByName;
     }
 

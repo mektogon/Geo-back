@@ -41,7 +41,7 @@ public class TypeLocalityServiceImpl implements TypeLocalityService {
     @Override
     public void save(TypeLocality typeLocality) {
         typeLocalityRepository.save(typeLocality);
-        log.info("IN save() - Тип местности сохранен!");
+        log.debug("IN save() - Тип местности сохранен!");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TypeLocalityServiceImpl implements TypeLocalityService {
 
         if (byId.isPresent()) {
             typeLocalityRepository.save(typeLocality);
-            log.info("IN update() - Тип местности с ID: {} обновлен!", typeLocality.getId());
+            log.debug("IN update() - Тип местности с ID: {} обновлен!", typeLocality.getId());
         } else {
             log.info("IN update() - Не удалось найти тип местности с ID: {}", typeLocality.getId());
         }
@@ -59,12 +59,12 @@ public class TypeLocalityServiceImpl implements TypeLocalityService {
     @Override
     public void deleteById(UUID id) {
         typeLocalityRepository.deleteById(id);
-        log.info("IN deleteById() - Тип объекта с ID: {} удален!", id);
+        log.debug("IN deleteById() - Тип объекта с ID: {} удален!", id);
     }
 
     @Override
     public void deleteByName(String name) {
         typeLocalityRepository.deleteByName(name);
-        log.info("IN deleteByName() - Тип объекта с name: {} удален!", name);
+        log.debug("IN deleteByName() - Тип объекта с name: {} удален!", name);
     }
 }

@@ -83,6 +83,7 @@ nginx -s reload
 [source, text]
 file.storage.audio.location=fileStorage/audio
 file.storage.photo.location=fileStorage/photo
+file.storage.photoPreview.location=fileStorage/photoPreview
 file.storage.video.location=fileStorage/video
 file.storage.tile-map.location=fileStorage/tile-map
 file.storage.designation.location=fileStorage/designation
@@ -91,7 +92,7 @@ file.storage.designation.location=fileStorage/designation
 
 [source, text]
 file.extension.audio = mp3, ogg, wav, aiff, flac, mpeg, m4a, x-m4a
-file.extension.photo = jpeg, png
+file.extension.photo = jpeg //С учетом сжатия допускается только jpeg формат.
 file.extension.video = avi, mp4, mkv, wmv, asf, mpeg
 file.extension.tile-map = rar, vnd.rar, rar4, zip
 file.extension.designation = jpeg, png

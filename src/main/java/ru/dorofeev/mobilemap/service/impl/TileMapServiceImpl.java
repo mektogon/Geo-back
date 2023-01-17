@@ -56,7 +56,7 @@ public class TileMapServiceImpl implements TileMapService {
 
             if (name != null) {
                 updatedTileMap.setName(name);
-                log.info("IN update() - Обновлено наименование тайлов карты с ID: {}", id);
+                log.debug("IN update() - Обновлено наименование тайлов карты с ID: {}", id);
             }
 
             if (file != null) {
@@ -64,7 +64,7 @@ public class TileMapServiceImpl implements TileMapService {
                 AuxiliaryUtils.deleteFile(updatedTileMap.getUrl());
                 updatedTileMap.setUrl(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, false));
 
-                log.info("IN update() - Обновлен архив тайлов карты с ID: {}", id);
+                log.debug("IN update() - Обновлен архив тайлов карты с ID: {}", id);
 
             }
 
@@ -86,7 +86,7 @@ public class TileMapServiceImpl implements TileMapService {
             AuxiliaryUtils.deleteFile(urlToFile);
 
             tailMapRepository.deleteById(id);
-            log.info("IN deleteById() - Тайл карты с ID: {} удален из базы данных!", id);
+            log.debug("IN deleteById() - Тайл карты с ID: {} удален из базы данных!", id);
         } else {
             log.info("IN deleteById() - Не удалось найти и удалить тайлы карты с ID: {} из базы данных!", id);
         }
@@ -102,7 +102,7 @@ public class TileMapServiceImpl implements TileMapService {
             AuxiliaryUtils.deleteFile(urlToFile);
 
             tailMapRepository.deleteByName(name);
-            log.info("IN deleteByName() - Удалены тайлы карт с name: {} из базы данных!", name);
+            log.debug("IN deleteByName() - Удалены тайлы карт с name: {} из базы данных!", name);
         } else {
             log.info("IN deleteByName() - Не удалось найти и удалить тайлы карты с именем: {} из базы данных!", name);
         }

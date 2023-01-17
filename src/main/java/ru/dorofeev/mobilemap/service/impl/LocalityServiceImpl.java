@@ -30,7 +30,7 @@ public class LocalityServiceImpl implements LocalityService {
     @Override
     public void save(Locality locality) {
         localityRepository.save(locality);
-        log.info("IN save() - Местность с ID: {} сохранена", locality.getId());
+        log.debug("IN save() - Местность с ID: {} сохранена", locality.getId());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class LocalityServiceImpl implements LocalityService {
 
         if (byId.isPresent()) {
             localityRepository.save(locality);
-            log.info("IN update() - Обновлена местность с ID: {}", byId.get().getId());
+            log.debug("IN update() - Обновлена местность с ID: {}", byId.get().getId());
         } else {
             log.info("IN update() - Не удалось найти местность с ID: {}", locality.getId());
         }
@@ -48,12 +48,12 @@ public class LocalityServiceImpl implements LocalityService {
     @Override
     public void deleteById(UUID id) {
         localityRepository.deleteById(id);
-        log.info("IN deleteById() - Местность с ID: {} удалена", id);
+        log.debug("IN deleteById() - Местность с ID: {} удалена", id);
     }
 
     @Override
     public void deleteByName(String name) {
         localityRepository.deleteByName(name);
-        log.info("IN deleteByName() - Местность с name: {} удалена", name);
+        log.debug("IN deleteByName() - Местность с name: {} удалена", name);
     }
 }

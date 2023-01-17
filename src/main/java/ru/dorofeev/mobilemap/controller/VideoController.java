@@ -95,7 +95,7 @@ public class VideoController {
             description = "Позволяет отобразить видеозапись."
     )
     @GetMapping("/view/{id}")
-    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) throws IOException {
+    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) {
         return videoService.getViewFileById(id);
     }
 

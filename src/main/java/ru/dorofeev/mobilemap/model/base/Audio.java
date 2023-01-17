@@ -31,11 +31,11 @@ public class Audio implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @NotNull(message = "Поле не должно быть равно null!")
+    @NotNull
     @NotBlank(message = "Поле не должно быть пустое!")
     private String url;
 
-    @NotNull(message = "Поле не должно быть равно null!")
+    @NotNull
     @NotBlank(message = "Поле не должно быть пустое!")
     private String fileName;
 

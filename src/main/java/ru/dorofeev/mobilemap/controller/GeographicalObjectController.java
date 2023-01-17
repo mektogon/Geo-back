@@ -23,7 +23,6 @@ import ru.dorofeev.mobilemap.service.interf.PhotoService;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
 import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,7 +95,6 @@ public class GeographicalObjectController {
             summary = "Сохранение гео-объекта с файлами",
             description = "Позволяет сохранить гео-объект с полным набором полей."
     )
-    @Transactional
     @PostMapping("/save")
     public ResponseEntity<String> save(
             @RequestParam("name") String name,
@@ -141,6 +139,7 @@ public class GeographicalObjectController {
 
         if (photo != null) {
             photoService.upload(photo, id);
+            photoService.initializePreviewPhoto(id);
         }
 
         if (audio != null) {

@@ -33,16 +33,16 @@ public class Designation implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    @NotNull(message = "Поле не должно быть равно null!")
+    @NotNull
     @NotBlank(message = "Поле не должно быть пустое!")
     private String url;
 
-    @NotNull(message = "Поле не должно быть равно null!")
+    @NotNull
     @NotBlank(message = "Поле не должно быть пустое!")
     @Column(unique = true)
     private String name;
     
-    @NotNull(message = "Поле не должно быть равно null!")
+    @NotNull
     @NotBlank(message = "Поле не должно быть пустое!")
     private String fileName;
 }

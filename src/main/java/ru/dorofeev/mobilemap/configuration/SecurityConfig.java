@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/v1/audio/view/{id}",
             "/api/v1/video/view/{id}",
             "/api/v1/photo/view/{id}",
+            "/api/v1/photo/preview/view/{id}",
             "/api/v1/tile-map/download/{id}",
             "/api/v1/tile-map/downloadByName/{name}",
 

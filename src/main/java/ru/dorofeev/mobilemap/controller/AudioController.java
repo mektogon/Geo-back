@@ -95,7 +95,7 @@ public class AudioController {
             description = "Позволяет отобразить аудиозапись."
     )
     @GetMapping("/view/{id}")
-    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) throws IOException {
+    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) {
         return audioService.getViewFileById(id);
     }
 
