@@ -41,7 +41,7 @@ public class TileMapServiceImpl implements TileMapService {
     public void upload(MultipartFile file, String name) {
 
         tailMapRepository.save(TileMap.builder()
-                .url(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS))
+                .url(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, false))
                 .name(name)
                 .fileName(file.getOriginalFilename())
                 .build());
@@ -61,8 +61,8 @@ public class TileMapServiceImpl implements TileMapService {
 
             if (file != null) {
                 updatedTileMap.setFileName(file.getOriginalFilename());
-                AuxiliaryUtils.DeleteFile(updatedTileMap.getUrl());
-                updatedTileMap.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
+                AuxiliaryUtils.deleteFile(updatedTileMap.getUrl());
+                updatedTileMap.setUrl(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, false));
 
                 log.info("IN update() - Обновлен архив тайлов карты с ID: {}", id);
 
@@ -83,7 +83,7 @@ public class TileMapServiceImpl implements TileMapService {
 
         if (byId.isPresent()) {
             String urlToFile = byId.get().getUrl();
-            AuxiliaryUtils.DeleteFile(urlToFile);
+            AuxiliaryUtils.deleteFile(urlToFile);
 
             tailMapRepository.deleteById(id);
             log.info("IN deleteById() - Тайл карты с ID: {} удален из базы данных!", id);
@@ -99,7 +99,7 @@ public class TileMapServiceImpl implements TileMapService {
 
         if (byName.isPresent()) {
             String urlToFile = byName.get().getUrl();
-            AuxiliaryUtils.DeleteFile(urlToFile);
+            AuxiliaryUtils.deleteFile(urlToFile);
 
             tailMapRepository.deleteByName(name);
             log.info("IN deleteByName() - Удалены тайлы карт с name: {} из базы данных!", name);

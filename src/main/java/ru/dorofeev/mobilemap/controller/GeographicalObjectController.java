@@ -127,7 +127,7 @@ public class GeographicalObjectController {
         entity.setIsPlaying(isPlaying);
         entity.setDesignation(designation);
         entity.setAddressDto(
-                AuxiliaryUtils.ValidationAddress(
+                AuxiliaryUtils.validationAddress(
                         region,
                         typeLocality,
                         locality,

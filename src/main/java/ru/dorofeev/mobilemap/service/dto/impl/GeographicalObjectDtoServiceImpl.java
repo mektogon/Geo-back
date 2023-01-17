@@ -80,7 +80,7 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
     public void save(GeographicalObjectDtoMobile geographicalObjectDtoMobile) {
         geographicalObjectService.save(
                 geographicalObjectMapper.toEntity(
-                        AuxiliaryUtils.ValidationGeoObject(geographicalObjectDtoMobile)
+                        AuxiliaryUtils.validationGeoObject(geographicalObjectDtoMobile)
                 )
         );
 
@@ -93,7 +93,7 @@ public class GeographicalObjectDtoServiceImpl implements GeographicalObjectDtoSe
 
         return geographicalObjectService.saveAndReturnId(
                 geographicalObjectMapper.toEntity(
-                        AuxiliaryUtils.ValidationGeoObject(geographicalObjectDtoMobile)
+                        AuxiliaryUtils.validationGeoObject(geographicalObjectDtoMobile)
                 )
         );
 

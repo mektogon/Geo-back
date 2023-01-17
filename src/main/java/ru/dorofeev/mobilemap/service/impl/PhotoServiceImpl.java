@@ -48,7 +48,7 @@ public class PhotoServiceImpl implements PhotoService {
 
         Arrays.stream(images).forEach(
                 img -> photoRepository.save(Photo.builder()
-                        .url(AuxiliaryUtils.SavingFile(directoryToSave, img, EXTENSIONS))
+                        .url(AuxiliaryUtils.savingFile(directoryToSave, img, EXTENSIONS, true))
                         .fileName(img.getOriginalFilename())
                         .geographicalObject(geographicalObjectRepository.getById(id))
                         .build())
@@ -65,8 +65,8 @@ public class PhotoServiceImpl implements PhotoService {
             Photo updatedPhoto = byId.get();
 
             updatedPhoto.setFileName(file.getOriginalFilename());
-            updatedPhoto.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
-            AuxiliaryUtils.DeleteFile(updatedPhoto.getUrl());
+            updatedPhoto.setUrl(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, true));
+            AuxiliaryUtils.deleteFile(updatedPhoto.getUrl());
 
             photoRepository.save(updatedPhoto);
 
@@ -83,7 +83,7 @@ public class PhotoServiceImpl implements PhotoService {
 
         if (byId.isPresent()) {
             String urlToFile = byId.get().getUrl();
-            AuxiliaryUtils.DeleteFile(urlToFile);
+            AuxiliaryUtils.deleteFile(urlToFile);
 
             photoRepository.deleteById(id);
             log.info("IN deleteById() - Фотография с ID: {} удалена из базы данных!", id);

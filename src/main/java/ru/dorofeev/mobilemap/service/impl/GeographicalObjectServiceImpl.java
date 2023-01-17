@@ -161,7 +161,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
                 entity.setIsPlaying(isPlaying);
             }
 
-            AddressDto addressDto = AuxiliaryUtils.ValidationAddress(region, typeLocality, locality, district, street, houseNumber);
+            AddressDto addressDto = AuxiliaryUtils.validationAddress(region, typeLocality, locality, district, street, houseNumber);
 
             if (addressDto != null) {
                 entity.setAddress(addressService.getAddress(

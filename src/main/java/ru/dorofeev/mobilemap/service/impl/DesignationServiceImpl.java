@@ -39,7 +39,7 @@ public class DesignationServiceImpl implements DesignationService {
     public void upload(MultipartFile designation, String name) {
 
         designationRepository.save(Designation.builder()
-                .url(AuxiliaryUtils.SavingFile(directoryToSave, designation, EXTENSIONS))
+                .url(AuxiliaryUtils.savingFile(directoryToSave, designation, EXTENSIONS, false))
                 .name(name)
                 .fileName(designation.getOriginalFilename())
                 .build());
@@ -59,8 +59,8 @@ public class DesignationServiceImpl implements DesignationService {
 
             if (file != null) {
                 updatedDesignation.setFileName(file.getOriginalFilename());
-                AuxiliaryUtils.DeleteFile(updatedDesignation.getUrl());
-                updatedDesignation.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
+                AuxiliaryUtils.deleteFile(updatedDesignation.getUrl());
+                updatedDesignation.setUrl(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, false));
                 log.info("IN update() - Обновлена фотография обозначения с ID: {}", id);
             }
 
@@ -78,7 +78,7 @@ public class DesignationServiceImpl implements DesignationService {
 
         if (byId.isPresent()) {
             String urlToFile = byId.get().getUrl();
-            AuxiliaryUtils.DeleteFile(urlToFile);
+            AuxiliaryUtils.deleteFile(urlToFile);
 
             designationRepository.deleteById(id);
             log.info("IN deleteById() - Удалено обозначение с ID: {} из базы данных!", id);
@@ -95,7 +95,7 @@ public class DesignationServiceImpl implements DesignationService {
 
         if (byName != null) {
             String urlToFile = byName.getUrl();
-            AuxiliaryUtils.DeleteFile(urlToFile);
+            AuxiliaryUtils.deleteFile(urlToFile);
 
             designationRepository.deleteByName(name);
             log.info("IN deleteByName() - Удалено обозначение с name: {} из базы данных!", name);

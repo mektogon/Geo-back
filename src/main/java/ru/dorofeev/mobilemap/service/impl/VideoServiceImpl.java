@@ -35,7 +35,8 @@ public class VideoServiceImpl implements VideoService {
     @Value("${file.storage.video.location}")
     private String directoryToSave;
 
-    private final List<String> EXTENSIONS = List.of("avi", "mp4", "mkv", "wmv", "asf", "mpeg");
+    @Value("${file.extension.video}")
+    private final List<String> EXTENSIONS;
 
     @Override
     public void upload(MultipartFile[] video, UUID id) {
@@ -46,7 +47,7 @@ public class VideoServiceImpl implements VideoService {
 
         Arrays.stream(video).forEach(
                 currentVideo -> videoRepository.save(Video.builder()
-                        .url(AuxiliaryUtils.SavingFile(directoryToSave, currentVideo, EXTENSIONS))
+                        .url(AuxiliaryUtils.savingFile(directoryToSave, currentVideo, EXTENSIONS, false))
                         .fileName(currentVideo.getOriginalFilename())
                         .geographicalObject(geographicalObjectRepository.getById(id))
                         .build())
@@ -61,8 +62,8 @@ public class VideoServiceImpl implements VideoService {
             Video updatedVideo = byId.get();
 
             updatedVideo.setFileName(file.getOriginalFilename());
-            updatedVideo.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
-            AuxiliaryUtils.DeleteFile(updatedVideo.getUrl());
+            updatedVideo.setUrl(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, false));
+            AuxiliaryUtils.deleteFile(updatedVideo.getUrl());
 
             videoRepository.save(updatedVideo);
 
@@ -79,7 +80,7 @@ public class VideoServiceImpl implements VideoService {
 
         if (byId.isPresent()) {
             String urlToFile = byId.get().getUrl();
-            AuxiliaryUtils.DeleteFile(urlToFile);
+            AuxiliaryUtils.deleteFile(urlToFile);
 
             videoRepository.deleteById(id);
             log.info("IN deleteById() - Видеозапись с ID: {} удалено из базы данных!", id);

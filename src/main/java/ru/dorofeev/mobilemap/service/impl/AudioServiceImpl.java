@@ -46,7 +46,7 @@ public class AudioServiceImpl implements AudioService {
 
         Arrays.stream(audio).forEach(
                 currentVideo -> audioRepository.save(Audio.builder()
-                        .url(AuxiliaryUtils.SavingFile(directoryToSave, currentVideo, EXTENSIONS))
+                        .url(AuxiliaryUtils.savingFile(directoryToSave, currentVideo, EXTENSIONS, false))
                         .fileName(currentVideo.getOriginalFilename())
                         .geographicalObject(geographicalObjectRepository.findById(id).get())
                         .build())
@@ -63,8 +63,8 @@ public class AudioServiceImpl implements AudioService {
             Audio updatedAudio = byId.get();
 
             updatedAudio.setFileName(file.getOriginalFilename());
-            updatedAudio.setUrl(AuxiliaryUtils.SavingFile(directoryToSave, file, EXTENSIONS));
-            AuxiliaryUtils.DeleteFile(updatedAudio.getUrl());
+            updatedAudio.setUrl(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, false));
+            AuxiliaryUtils.deleteFile(updatedAudio.getUrl());
 
             audioRepository.save(updatedAudio);
 
@@ -81,7 +81,7 @@ public class AudioServiceImpl implements AudioService {
 
         if (byId.isPresent()) {
             String urlToFile = byId.get().getUrl();
-            AuxiliaryUtils.DeleteFile(urlToFile);
+            AuxiliaryUtils.deleteFile(urlToFile);
 
             audioRepository.deleteById(id);
             log.info("IN deleteById() - Аудиозапись с ID: {} удалена из базы данных!", id);

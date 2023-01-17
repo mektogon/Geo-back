@@ -268,7 +268,7 @@ public class GeographicalObjectMapper {
 
         if (geographicalObjectDtoMobile.getAddressDto() != null) {
 
-            AddressDto addressDto = AuxiliaryUtils.ValidationAddress(
+            AddressDto addressDto = AuxiliaryUtils.validationAddress(
                     geographicalObjectDtoMobile.getAddressDto().getRegion(),
                     geographicalObjectDtoMobile.getAddressDto().getTypeLocality(),
                     geographicalObjectDtoMobile.getAddressDto().getLocality(),
