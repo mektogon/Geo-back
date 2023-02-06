@@ -18,6 +18,7 @@ import ru.dorofeev.mobilemap.model.base.Audio;
 import ru.dorofeev.mobilemap.model.dto.FileDto;
 import ru.dorofeev.mobilemap.service.dto.interf.FileServiceDto;
 import ru.dorofeev.mobilemap.service.interf.AudioService;
+import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -95,8 +96,8 @@ public class AudioController {
             description = "Позволяет отобразить аудиозапись."
     )
     @GetMapping("/view/{id}")
-    public ResponseEntity<byte[]> getFileById(@PathVariable UUID id) {
-        return audioService.getViewFileById(id);
+    public ResponseEntity<byte[]> getFileById(@PathVariable String id) {
+        return audioService.getViewFileById(UUID.fromString(AuxiliaryUtils.getOriginalNameWithoutExtension(id)));
     }
 
 }

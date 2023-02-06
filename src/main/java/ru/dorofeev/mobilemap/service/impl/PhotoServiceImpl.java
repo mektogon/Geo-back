@@ -18,6 +18,7 @@ import javax.activation.FileTypeMap;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class PhotoServiceImpl implements PhotoService {
     private final GeographicalObjectRepository geographicalObjectRepository;
 
     @Value("${file.storage.photo.location}")
-    private String directoryToSave;
+    private String directoryToSavePhoto;
 
     @Value("${file.storage.photoPreview.location}")
     private String directoryToSavePhotoPreview;
@@ -58,7 +59,7 @@ public class PhotoServiceImpl implements PhotoService {
 
         Arrays.stream(images).forEach(
                 img -> photoRepository.save(Photo.builder()
-                        .url(AuxiliaryUtils.savingFile(directoryToSave, img, EXTENSIONS, true))
+                        .url(AuxiliaryUtils.savingFile(directoryToSavePhoto, img, EXTENSIONS, true))
                         .fileName(img.getOriginalFilename())
                         .geographicalObject(geographicalObjectRepository.getById(id))
                         .build())
@@ -75,7 +76,7 @@ public class PhotoServiceImpl implements PhotoService {
             Photo updatedPhoto = byId.get();
             candidatesForDelete.add(updatedPhoto.getUrl());
             updatedPhoto.setFileName(file.getOriginalFilename());
-            updatedPhoto.setUrl(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, true));
+            updatedPhoto.setUrl(AuxiliaryUtils.savingFile(directoryToSavePhoto, file, EXTENSIONS, true));
 
             if (updatedPhoto.getUrlPhotoPreview() != null) {
                 candidatesForDelete.add(updatedPhoto.getUrlPhotoPreview());
@@ -199,6 +200,51 @@ public class PhotoServiceImpl implements PhotoService {
 
         //Генерируем новое превью
         createPreviewMainPhoto(getMainPhoto(id));
+    }
+
+    @Override
+    public void rotatePhoto(UUID photoId, int rotationAngle, boolean isPreview) {
+        Optional<Photo> byId = photoRepository.findById(photoId);
+
+        if (byId.isPresent()) {
+
+            BufferedImage destination;
+            String originalName;
+            String directoryToSave;
+
+            if (byId.get().getUrlPhotoPreview() != null && isPreview) {
+                destination = AuxiliaryUtils.rotateImageByDegrees(byId.get().getUrlPhotoPreview(), rotationAngle);
+                originalName = AuxiliaryUtils.getDirectoryNameWithExtension(byId.get().getUrlPhotoPreview());
+                directoryToSave = directoryToSavePhotoPreview;
+            } else {
+                destination = AuxiliaryUtils.rotateImageByDegrees(byId.get().getUrl(), rotationAngle);
+                originalName = AuxiliaryUtils.getDirectoryNameWithExtension(byId.get().getUrl());
+                directoryToSave = directoryToSavePhoto;
+            }
+
+            saveRotatedPhoto(destination, directoryToSave, originalName);
+        }
+    }
+
+    /**
+     * Метод позволяет заменить существующую фотографию повернутым изображением.
+     *
+     * @param currentImage сохраняемое изображение.
+     * @param directoryToSave путь для сохранения.
+     * @param originalName текущее имя в директории.
+     */
+    private void saveRotatedPhoto(BufferedImage currentImage, String directoryToSave, String originalName) {
+        try {
+            Path fullPathToSave = Paths.get(directoryToSave + File.separator + originalName);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+            ImageIO.write(currentImage, AuxiliaryUtils.getExtensionFile(originalName), os);
+            //TODO: Рассмотреть вариант сохранения в отдельном потоке. В данный момент уязвимое место.
+            Files.copy(new ByteArrayInputStream(os.toByteArray()), fullPathToSave, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            log.error("IN saveRotatedPhoto() - Ошибка при сохранении фотографии при повороте: {}", e.toString());
+            throw new GeneralErrorException("Ошибка! Не удалось сохранить фотографию после поворота!");
+        }
     }
 
     /**

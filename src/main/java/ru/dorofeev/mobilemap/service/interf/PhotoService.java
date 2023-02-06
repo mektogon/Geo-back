@@ -3,6 +3,7 @@ package ru.dorofeev.mobilemap.service.interf;
 import org.springframework.http.ResponseEntity;
 import ru.dorofeev.mobilemap.model.base.Photo;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface PhotoService extends AbstractFileService<Photo> {
@@ -29,4 +30,12 @@ public interface PhotoService extends AbstractFileService<Photo> {
      * @param id идентификатор гео-объекта.
      */
     void initializePreviewPhoto(UUID id);
+
+    /**
+     * Метод позволяет повернуть изображение на заданный целочисленный градус.
+     * @param photo поворачиваемое изображение.
+     * @param rotationAngle угол поворота.
+     * @param isPreview признак, указывающий, что поворачиваем превью фотографии.
+     */
+    void rotatePhoto(UUID photo, int rotationAngle, boolean isPreview);
 }

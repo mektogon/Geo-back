@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -159,6 +160,56 @@ public class AuxiliaryUtils {
     }
 
     /**
+     * Метод поворота изображения на заданный целочисленный градус.
+     *
+     * @param pathToPhoto   путь до поворачиваемого изображения.
+     * @param rotationAngle угол поворота.
+     * @return
+     */
+    public static BufferedImage rotateImageByDegrees(String pathToPhoto, int rotationAngle) {
+        try {
+            BufferedImage image = ImageIO.read(new FileInputStream(pathToPhoto));
+
+            if (rotationAngle < 0) {
+                rotationAngle = 360 + rotationAngle;
+            }
+
+            double theta = (Math.PI * 2) / 360 * rotationAngle;
+            int width = image.getWidth();
+            int height = image.getHeight();
+
+            BufferedImage dest;
+
+            if (rotationAngle == 90 || rotationAngle == 270) {
+                dest = new BufferedImage(image.getHeight(), image.getWidth(), image.getType());
+            } else {
+                dest = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+            }
+
+            Graphics2D graphics2D = dest.createGraphics();
+
+            if (rotationAngle == 90) {
+                graphics2D.translate((height - width) / 2, (height - width) / 2);
+                graphics2D.rotate(theta, height / 2, width / 2);
+            } else if (rotationAngle == 270) {
+                graphics2D.translate((width - height) / 2, (width - height) / 2);
+                graphics2D.rotate(theta, height / 2, width / 2);
+            } else {
+                graphics2D.translate(0, 0);
+                graphics2D.rotate(theta, width / 2, height / 2);
+            }
+            graphics2D.drawRenderedImage(image, null);
+            graphics2D.dispose();
+
+            return dest;
+        } catch (Exception e) {
+            log.error("IN rotateImageByDegrees() - Ошибка при повороте изображения!");
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    /**
      * Метод, позволяющий получить расширение файла.
      *
      * @param file передаваемый файл.
@@ -187,6 +238,17 @@ public class AuxiliaryUtils {
     public static String getOriginalNameWithoutExtension(String name) {
         return name.substring(0, name.lastIndexOf('.'));
     }
+
+    /**
+     * Метод, позволяющий получить наименование файла в директории.
+     *
+     * @param path полный путь до файла.
+     * @return наименование файла.
+     */
+    public static String getDirectoryNameWithExtension(String path) {
+        return path.substring(path.length() - (UUID.randomUUID().toString().length() + getExtensionFile(path).length() + 1));
+    }
+
 
     /**
      * Удаление списка файлов из директории.

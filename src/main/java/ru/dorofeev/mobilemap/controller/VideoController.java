@@ -17,6 +17,7 @@ import ru.dorofeev.mobilemap.model.base.Video;
 import ru.dorofeev.mobilemap.model.dto.FileDto;
 import ru.dorofeev.mobilemap.service.dto.interf.FileServiceDto;
 import ru.dorofeev.mobilemap.service.interf.VideoService;
+import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
 
 import java.io.IOException;
 import java.util.List;

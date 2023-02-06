@@ -1,6 +1,7 @@
 package ru.dorofeev.mobilemap.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -106,6 +107,20 @@ public class PhotoController {
     @GetMapping("/preview/view/{id}")
     public ResponseEntity<byte[]> getPreviewPhotoById(@PathVariable UUID id) {
         return photoService.getPreviewPhotoById(id);
+    }
+
+    @Operation(
+            summary = "Позволяет повернуть изображение",
+            description = "Позволяет повернуть изображение на целочисленный градус."
+    )
+    @PostMapping("/rotate")
+    public void rotatePhoto(@RequestParam("photoId") UUID photoId,
+                            @RequestParam("angle") int rotationAngle,
+                            @RequestParam(required = false)
+                            @Parameter(description = "Флаг, указывающий что поворачиваем превью у фотографии.")
+                            boolean isPreview
+    ) {
+        photoService.rotatePhoto(photoId, rotationAngle, isPreview);
     }
 
 }

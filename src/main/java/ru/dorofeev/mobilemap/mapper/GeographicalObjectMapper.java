@@ -138,7 +138,7 @@ public class GeographicalObjectMapper {
         );
         geographicalObjectDtoMobile.setAudioList(
                 audioService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
-                        .map(el -> String.format("%s%s%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
+                        .map(el -> String.format("%s%s%s.%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId(), AuxiliaryUtils.getExtensionFile(el.getFileName())))
                         .collect(Collectors.toList())
         );
 
@@ -194,7 +194,7 @@ public class GeographicalObjectMapper {
                 audioService.getAllFilesByGeographicalObjectId(geographicalObject.getId()).stream()
                         .map(el -> FileDto.builder()
                                 .id(el.getId())
-                                .url(String.format("%s%s%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId()))
+                                .url(String.format("%s%s%s.%s", rootUrl, ENDPOINT_GET_AUDIO_BY_ID, el.getId(), AuxiliaryUtils.getExtensionFile(el.getFileName())))
                                 .build())
                         .collect(Collectors.toList())
         );
