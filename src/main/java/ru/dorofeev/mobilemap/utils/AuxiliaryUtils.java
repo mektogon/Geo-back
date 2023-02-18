@@ -298,6 +298,7 @@ public class AuxiliaryUtils {
         entity.setNote(geo.getNote());
         entity.setDesignation(geo.getDesignation());
         entity.setIsPlaying(geo.getIsPlaying());
+        entity.setDistanceToPlayback(geo.getDistanceToPlayback());
 
         if (geo.getAddressDto() != null) {
             entity.setAddressDto(validationAddress(

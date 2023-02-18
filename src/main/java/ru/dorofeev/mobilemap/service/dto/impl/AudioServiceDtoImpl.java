@@ -21,8 +21,6 @@ public class AudioServiceDtoImpl implements FileServiceDto {
 
     @Override
     public List<FileDto> getAllByGeoId(UUID id) {
-        log.info("IN getAllByGeoId() - Преобразование List<Entity> в List<DTO>.");
-
         return audioMapper.toDtoList(audioService.getAllFilesByGeographicalObjectId(id));
     }
 

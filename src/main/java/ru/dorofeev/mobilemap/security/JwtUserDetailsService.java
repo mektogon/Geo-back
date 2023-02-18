@@ -23,7 +23,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         JwtUser jwtUser = JwtUserFactory.create(user);
 
-        log.info("IN loadUserByUsername() - Пользователь с логином: {} успешно загружен", login);
+        log.debug("IN loadUserByUsername() - Пользователь с логином: {} успешно загружен", login);
 
         return jwtUser;
     }

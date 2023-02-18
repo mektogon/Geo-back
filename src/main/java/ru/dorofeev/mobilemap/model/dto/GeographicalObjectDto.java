@@ -38,6 +38,9 @@ public class GeographicalObjectDto {
     @Schema(description = "Автовоспроизведение аудиозаписи", example = "false")
     private Boolean isPlaying;
 
+    @Schema(description = "Дистанция, с которой начинается воспроизведение аудио", example = "1500")
+    private Integer distanceToPlayback;
+
     @Schema(description = "Адрес")
     private AddressDto addressDto;
 }

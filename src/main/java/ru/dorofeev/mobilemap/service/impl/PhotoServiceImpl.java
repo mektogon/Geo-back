@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.base.Photo;
+import ru.dorofeev.mobilemap.model.dto.PhotoRotateDto;
 import ru.dorofeev.mobilemap.repository.GeographicalObjectRepository;
 import ru.dorofeev.mobilemap.repository.PhotoRepository;
 import ru.dorofeev.mobilemap.service.interf.PhotoService;
@@ -226,12 +227,22 @@ public class PhotoServiceImpl implements PhotoService {
         }
     }
 
+    @Override
+    public void rotatePhoto(PhotoRotateDto photoRotateDto) {
+        rotatePhoto(
+                photoRotateDto.getPhotoId(),
+                photoRotateDto.getRotationAngle(),
+                photoRotateDto.isPreview()
+        );
+    }
+
+
     /**
      * Метод позволяет заменить существующую фотографию повернутым изображением.
      *
-     * @param currentImage сохраняемое изображение.
+     * @param currentImage    сохраняемое изображение.
      * @param directoryToSave путь для сохранения.
-     * @param originalName текущее имя в директории.
+     * @param originalName    текущее имя в директории.
      */
     private void saveRotatedPhoto(BufferedImage currentImage, String directoryToSave, String originalName) {
         try {

@@ -20,15 +20,11 @@ public class TailMapDtoServiceImpl implements TailMapDtoService {
 
     @Override
     public List<TileMapDto> getAllWithLinkDownload() {
-        log.info("IN getAllWithLinkDownload() - Преобразование List<Entity> в List<DTO>.");
-
         return tileMapMapper.toDtoList(tileMapService.getAll());
     }
 
     @Override
     public List<TileMapDto> getAllByNameWithLinkDownload(String name) {
-        log.info("IN getAllByNameWithLinkDownload() - Преобразование List<Entity> в List<DTO>.");
-
         return tileMapMapper.toDtoList(tileMapService.getAllByName(name));
     }
 }

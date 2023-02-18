@@ -26,6 +26,7 @@ public class GeographicalObjectDtoMobile extends GeographicalObjectDto {
         setDescription(geographicalObjectDto.getDescription());
         setNote(geographicalObjectDto.getNote());
         setIsPlaying(geographicalObjectDto.getIsPlaying());
+        setDistanceToPlayback(geographicalObjectDto.getDistanceToPlayback());
         setAddressDto(geographicalObjectDto.getAddressDto());
     }
 

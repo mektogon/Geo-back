@@ -21,8 +21,6 @@ public class VideoServiceDtoImpl implements FileServiceDto {
 
     @Override
     public List<FileDto> getAllByGeoId(UUID id) {
-        log.info("IN getAllByGeoId() - Преобразование List<Entity> в List<DTO>.");
-
         return videoMapper.toDtoList(videoService.getAllFilesByGeographicalObjectId(id));
     }
 

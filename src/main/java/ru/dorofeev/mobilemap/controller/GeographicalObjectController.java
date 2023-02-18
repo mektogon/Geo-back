@@ -104,6 +104,7 @@ public class GeographicalObjectController {
             @RequestParam("description") String description,
             @RequestParam(value = "note", required = false) String note,
             @RequestParam(value = "isPlaying", required = false) Boolean isPlaying,
+            @RequestParam(value = "distanceToPlayback", required = false, defaultValue = "1500") Integer distanceToPlayback,
             @RequestParam(value = "designation", defaultValue = "Отсутствует") String designation,
             @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "district", required = false) String district,
@@ -123,6 +124,7 @@ public class GeographicalObjectController {
         entity.setDescription(description);
         entity.setNote(note);
         entity.setIsPlaying(isPlaying);
+        entity.setDistanceToPlayback(distanceToPlayback);
         entity.setDesignation(designation);
         entity.setAddressDto(
                 AuxiliaryUtils.validationAddress(
@@ -195,6 +197,7 @@ public class GeographicalObjectController {
             @RequestParam(value = "note", required = false) String note,
             @RequestParam(value = "designation", required = false) String designation,
             @RequestParam(value = "isPlaying", required = false) Boolean isPlaying,
+            @RequestParam(value = "distanceToPlayback", required = false) Integer distanceToPlayback,
             @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "district", required = false) String district,
             @RequestParam(value = "typeLocality", required = false) String typeLocality,
@@ -215,6 +218,7 @@ public class GeographicalObjectController {
                 note,
                 designation,
                 isPlaying,
+                distanceToPlayback,
                 region,
                 district,
                 typeLocality,

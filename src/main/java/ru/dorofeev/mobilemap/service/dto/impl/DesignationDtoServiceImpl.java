@@ -21,15 +21,11 @@ public class DesignationDtoServiceImpl implements DesignationDtoService {
 
     @Override
     public List<DesignationDto> getAllWithPhoto() {
-        log.info("IN getAllWithPhoto() - Преобразование List<Entity> в List<DTO>.");
-
         return designationMapper.toDtoList(designationService.getAll());
     }
 
     @Override
     public List<DesignationDto> getAllByNameWithPhoto(String name) {
-        log.info("IN getAllByNameWithPhoto() - Преобразование List<Entity> в List<DTO>.");
-
         return designationMapper.toDtoList(designationService.getAllByName(name));
     }
 

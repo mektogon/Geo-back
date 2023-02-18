@@ -108,6 +108,7 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
             String note,
             String designation,
             Boolean isPlaying,
+            Integer distanceToPlayback,
             String region,
             String district,
             String typeLocality,
@@ -153,6 +154,10 @@ public class GeographicalObjectServiceImpl implements GeographicalObjectService 
 
             if (isPlaying != null) {
                 entity.setIsPlaying(isPlaying);
+            }
+
+            if (distanceToPlayback != null) {
+                entity.setDistanceToPlayback(distanceToPlayback);
             }
 
             AddressDto addressDto = AuxiliaryUtils.validationAddress(region, typeLocality, locality, district, street, houseNumber);

@@ -79,6 +79,8 @@ public class GeographicalObject implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String note;
 
+    private Integer distanceToPlayback = 1500;
+
     private Boolean isPlaying;
 
     @ManyToOne
