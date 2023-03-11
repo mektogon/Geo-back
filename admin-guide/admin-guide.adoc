@@ -45,9 +45,9 @@ spring.jpa.hibernate.ddl-auto=create-drop
 
 **_Задаём максимально допустимый размер тела запроса клиента._**
 [source, text]
-client_max_body_size 3000M;
+client_max_body_size 6000M;
 
-Параметр равный 3 ГБ требуется для тайлов карт, хранимых на сервере.
+Параметр равный 6 ГБ требуется для тайлов карт, хранимых на сервере.
 
 После настройки файлов конфигурации необходимо перезагрузить сервер командой:
 [source, text]
@@ -62,9 +62,17 @@ listen [::]:80 default_server;
 
 [source, text]
 location /api {
-proxy_set_header Host $host;
-proxy_set_header X-Real-IP $remote_addr;
-proxy_pass http://localhost:8080;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_pass http://localhost:8080;
+}
+
+[source, text]
+location /api/v1/tile-map {
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_pass http://localhost:8080;
+    proxy_read_timeout 5h;
 }
 
 Перезагружаем сервер.
@@ -100,6 +108,13 @@ file.extension.designation = jpeg, png
 Можем отредактировать расширения, которые пропускаются, при загрузке медиа-файлов.
 
 [source, text]
+spring.servlet.multipart.max-file-size=6000MB
+spring.servlet.multipart.max-request-size=6000MB
+
+Указываем максимальный размер пропускаемого файла и запроса.
+Параметр в 6ГБ требуется для тайлов карт.
+
+[source, text]
 jwt.token.secret=secret
 jwt.token.expired=86400000
 
@@ -121,13 +136,22 @@ sudo -u postgres psql -d name_db
 При условии, что БД *пустая*, мы вводим начальные данные:
 [source, postgresql]
 ----
-insert into role VALUES ('00000000-0000-0000-0000-000000000000', 'ROLE_ADMIN');
+insert into role VALUES
+('00000000-0000-0000-0000-000000000000', 'ROLE_ADMIN'),
+('00000000-0000-0000-0000-000000000001', 'ROLE_TILE_EDITOR');
+
 insert into users VALUES
 ('00000000-0000-0000-0000-000000000000',
 'login',
 'name',
-'password',
-'00000000-0000-0000-0000-000000000000');
+'bcrypt(password)',
+'00000000-0000-0000-0000-000000000000'),
+
+('00000000-0000-0000-0000-000000000001',
+'tile_editor',
+'tile_editor',
+'bcrypt(password)',
+'00000000-0000-0000-0000-000000000001');
 ----
 
 Далее заполняем таблицу типа местностей:

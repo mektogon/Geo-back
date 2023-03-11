@@ -43,4 +43,6 @@ public class TileMap implements Serializable {
     @NotNull
     @NotBlank(message = "Поле не должно быть пустое!")
     private String fileName;
+
+    private Boolean isMain;
 }

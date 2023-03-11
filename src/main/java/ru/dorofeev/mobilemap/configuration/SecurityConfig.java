@@ -20,6 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
 
     private static final String ADMIN_ENDPOINT = "/api/v1/**";
+    private static final String TILE_EDITOR_ENDPOINT = "/api/v1/tile-map/**";
     private static final String LOGIN_ENDPOINT = "/api/v1/auth/login";
 
     private static final String[] MOBILE_WHITELIST = {
@@ -34,10 +35,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/v1/video/view/{id}",
             "/api/v1/photo/view/{id}",
             "/api/v1/photo/preview/view/{id}",
-            "/api/v1/tile-map/download/{id}",
-            "/api/v1/tile-map/downloadByName/{name}",
 
             "/api/v1/tile-map",
+            "/api/v1/tile-map/download",
+            "/api/v1/tile-map/download/{id}",
+            "/api/v1/tile-map/downloadByName/{name}",
             "/api/v1/tile-map/getAllByName/{name}"
 
     };
@@ -68,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(LOGIN_ENDPOINT).permitAll()
                 .mvcMatchers(HttpMethod.GET, MOBILE_WHITELIST).permitAll()
                 .mvcMatchers(SWAGGER_WHITELIST).permitAll()
+                .mvcMatchers(TILE_EDITOR_ENDPOINT).hasAnyRole("TILE_EDITOR", "ADMIN")
                 .antMatchers(ADMIN_ENDPOINT).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()

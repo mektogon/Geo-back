@@ -54,6 +54,7 @@ public class TileMapMapper {
                 .id(tileMap.getId())
                 .url(String.format("%s%s%s", rootUrl, ENDPOINT_DOWNLOAD_TILE_BY_NAME_WITH_EXTENSION, tileMap.getId()))
                 .name(tileMap.getName())
+                .isMain(tileMap.getIsMain())
                 .build();
     }
 

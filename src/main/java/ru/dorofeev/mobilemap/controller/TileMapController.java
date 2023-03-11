@@ -10,16 +10,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dorofeev.mobilemap.model.base.TileMap;
+import ru.dorofeev.mobilemap.model.dto.TileCoordinateDto;
 import ru.dorofeev.mobilemap.model.dto.TileMapDto;
+import ru.dorofeev.mobilemap.model.dto.TilePointDto;
 import ru.dorofeev.mobilemap.service.dto.interf.TailMapDtoService;
 import ru.dorofeev.mobilemap.service.interf.TileMapService;
 
-import java.io.IOException;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +31,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Tag(name = "Тайлы карт", description = "Контроллер для работы с тайлами карт.")
 public class TileMapController {
-
     private final TileMapService tileMapService;
     private final TailMapDtoService tailMapDtoService;
 
@@ -116,11 +118,20 @@ public class TileMapController {
     }
 
     @Operation(
+            summary = "Скачать главный архив с тайлами карт",
+            description = "Позволяет скачать главный архив с тайлами карт."
+    )
+    @GetMapping("/download")
+    public ResponseEntity<Resource> downloadMainTileMap() {
+        return tileMapService.downloadMainTileMap();
+    }
+
+    @Operation(
             summary = "Скачать тайл карты по ID",
             description = "Позволяет скачать тайлы карты по идентифкатору."
     )
     @GetMapping("/download/{id}")
-    public ResponseEntity<Resource> downloadFileById(@PathVariable UUID id) throws IOException {
+    public ResponseEntity<Resource> downloadFileById(@PathVariable UUID id) {
         return tileMapService.downloadFileById(id);
     }
 
@@ -129,8 +140,34 @@ public class TileMapController {
             description = "Позволяет скачать тайлы карты по наименованию файла."
     )
     @GetMapping("/downloadByName/{name}")
-    public ResponseEntity<Resource> downloadFileByName(@PathVariable String name) throws IOException {
+    public ResponseEntity<Resource> downloadFileByName(@PathVariable String name) {
         return tileMapService.downloadFileByName(name);
+    }
+
+    @Operation(
+            summary = "Создать архив тайлов по списку точек (Z X Y)",
+            description = "Позволяет создать архив с тайлами карты по списку точек."
+    )
+    @PostMapping("/createTilesByPoints")
+    public ResponseEntity<String> createTilesByPoints(@RequestBody List<TilePointDto> points) {
+        return tileMapService.createTilesByPoints(points);
+    }
+
+    @Operation(
+            summary = "Создать архив тайлов по крайним координатам",
+            description = "Позволяет создать архив с тайлами карты по крайним координатам (широта и долгота)."
+    )
+    @PostMapping("/createTilesByCoordinates")
+    public ResponseEntity<String> createTilesByCoordinates(@Valid @RequestBody TileCoordinateDto coordinates) {
+        return tileMapService.createTilesByCoordinates(coordinates);
+    }
+
+    @Operation(
+            summary = "Позволяет обозначить архив, как главный на текущий момент"
+    )
+    @GetMapping("/makeTileIsMain/{id}")
+    public boolean makeTileIsMain(@PathVariable UUID id) {
+        return tileMapService.makeTilesIsMain(id);
     }
 
 }

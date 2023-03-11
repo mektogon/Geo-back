@@ -24,4 +24,7 @@ public class TileMapDto {
 
     @Schema(description = "Название", example = "Тайл карты")
     private String name;
+
+    @Schema(description = "Главный архив", example = "true")
+    private Boolean isMain;
 }

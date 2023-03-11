@@ -17,4 +17,5 @@ public interface TailMapRepository extends JpaRepository<TileMap, UUID> {
 
     List<TileMap> findAllByNameIsContainingIgnoreCase(String name);
 
+    List<TileMap> findAllByIsMainIsTrue();
 }

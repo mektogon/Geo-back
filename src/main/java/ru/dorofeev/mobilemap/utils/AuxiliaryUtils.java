@@ -27,6 +27,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Класс, содержащий утилитные методы.
@@ -76,6 +78,96 @@ public class AuxiliaryUtils {
         }
 
         return fullPathToSave.toString();
+    }
+
+    /**
+     * Метод позволяет создать архив и сохранить файл (или каталог) в него.
+     *
+     * @param fileToZip сохраняемый файл (или каталог)
+     * @param fileName  наименование сохраняемого файла
+     * @param zipOut    выходной поток (архив)
+     */
+    public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) {
+        if (fileToZip.isHidden()) {
+            return;
+        }
+
+        if (fileToZip.isDirectory()) {
+            File[] files = fileToZip.listFiles();
+
+            if (files == null) {
+                log.debug("IN zipFile() - Пустой каталог!");
+                return;
+            }
+
+            for (File file : files) {
+                zipFile(file, file.getName(), zipOut);
+            }
+
+            return;
+        }
+
+        try (FileInputStream fis = new FileInputStream(fileToZip)) {
+            ZipEntry zipEntry = new ZipEntry(fileName);
+            zipOut.putNextEntry(zipEntry);
+
+            byte[] bytes = new byte[2048];
+            int length;
+
+            while ((length = fis.read(bytes)) >= 0) {
+                zipOut.write(bytes, 0, length);
+            }
+
+        } catch (IOException e) {
+            log.error("IN zipFile() - Ошибка при сохранение элемента: {} в архив!", fileName);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Метод перевода координат (широты и долготы) в точки (X Y)
+     * <br>
+     * X изменяется от 0 (левый край = -180) до 2 ^ zoom − 1 (правый край = 180)
+     * <br>
+     * Y изменяется от 0 (верхний край = 85.0511) до 2 zoom − 1 (нижний край равен -85.0511) в проекции Меркатора
+     * <br>
+     * Число 85.0511 является результатом arctan(sinh(π)).
+     * При использовании этой привязки вся карта становится (очень большим) квадратом.
+     * <br>
+     * Преобразуем координаты сферическую проекцию Меркатора (из EPSG: 4326 в EPSG: 3857), далее
+     * переводим диапазон значений x и y в 0 - 1 и сдвигаем начало координат в верхний левый угол.
+     * Вычисляем количество плиток на карте tileCount = 2 ^ zoom, после умножаем x и y на tileCount.
+     * <br>
+     * Количество тайлов вычисляется по формуле 2 ^ m, где m = (2 * zoom)
+     *
+     * @param zoom      масштаб [0;19]
+     * @param latitude  широта.
+     * @param longitude долгота.
+     * @return zoom/x/y
+     * @see <a href="https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Lon./lat._to_tile_numbers">Документация OSM</a>
+     */
+    public static String convertCoordinateToPoint(int zoom, double latitude, double longitude) {
+        int tileCount = 1 << zoom; //Получаем степень m (см. JavaDoc)
+        int x = (int) Math.floor((longitude + 180) / 360 * tileCount);
+        int y = (int) Math.floor((1 - Math.log(Math.tan(Math.toRadians(latitude)) + 1 / Math.cos(Math.toRadians(latitude))) / Math.PI) / 2 * tileCount);
+
+        if (x < 0) {
+            x = 0;
+        }
+
+        if (x >= tileCount) {
+            x = (tileCount - 1);
+        }
+
+        if (y < 0) {
+            y = 0;
+        }
+
+        if (y >= tileCount) {
+            y = (tileCount - 1);
+        }
+
+        return String.format("%s/%s/%s", zoom, x, y);
     }
 
     /**
