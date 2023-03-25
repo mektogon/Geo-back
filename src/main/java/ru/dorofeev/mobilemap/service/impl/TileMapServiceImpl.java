@@ -15,7 +15,7 @@ import ru.dorofeev.mobilemap.exception.generalerror.GeneralErrorException;
 import ru.dorofeev.mobilemap.model.base.TileMap;
 import ru.dorofeev.mobilemap.model.dto.TileCoordinateDto;
 import ru.dorofeev.mobilemap.model.dto.TilePointDto;
-import ru.dorofeev.mobilemap.repository.TailMapRepository;
+import ru.dorofeev.mobilemap.repository.TileMapRepository;
 import ru.dorofeev.mobilemap.service.interf.OpenStreetMapAdapter;
 import ru.dorofeev.mobilemap.service.interf.TileMapService;
 import ru.dorofeev.mobilemap.utils.AuxiliaryUtils;
@@ -37,7 +37,7 @@ import java.util.zip.ZipOutputStream;
 @RequiredArgsConstructor
 public class TileMapServiceImpl implements TileMapService {
 
-    private final TailMapRepository tailMapRepository;
+    private final TileMapRepository tileMapRepository;
     private final OpenStreetMapAdapter adapter;
 
     @Value("${file.storage.tile-map.location}")
@@ -49,7 +49,7 @@ public class TileMapServiceImpl implements TileMapService {
     @Override
     public void upload(MultipartFile file, String name) {
 
-        tailMapRepository.save(TileMap.builder()
+        tileMapRepository.save(TileMap.builder()
                 .url(AuxiliaryUtils.savingFile(directoryToSave, file, EXTENSIONS, false))
                 .name(name)
                 .fileName(file.getOriginalFilename())
@@ -59,7 +59,7 @@ public class TileMapServiceImpl implements TileMapService {
 
     @Override
     public void update(UUID id, String name, MultipartFile file) {
-        Optional<TileMap> byId = tailMapRepository.findById(id);
+        Optional<TileMap> byId = tileMapRepository.findById(id);
 
         if (byId.isPresent()) {
             TileMap updatedTileMap = byId.get();
@@ -78,7 +78,7 @@ public class TileMapServiceImpl implements TileMapService {
 
             }
 
-            tailMapRepository.save(updatedTileMap);
+            tileMapRepository.save(updatedTileMap);
         } else {
             log.warn("IN upload() - Не найден архив тайлов карты с ID: {}", id);
             throw new GeneralErrorException(String.format("Не найден архив тайлов карты с ID: %s", id));
@@ -89,13 +89,13 @@ public class TileMapServiceImpl implements TileMapService {
     @Transactional
     @Override
     public void deleteById(UUID id) {
-        Optional<TileMap> byId = tailMapRepository.findById(id);
+        Optional<TileMap> byId = tileMapRepository.findById(id);
 
         if (byId.isPresent()) {
             String urlToFile = byId.get().getUrl();
             AuxiliaryUtils.deleteFile(urlToFile);
 
-            tailMapRepository.deleteById(id);
+            tileMapRepository.deleteById(id);
             log.debug("IN deleteById() - Тайл карты с ID: {} удален из базы данных!", id);
         } else {
             log.warn("IN deleteById() - Не удалось найти и удалить тайлы карты с ID: {} из базы данных!", id);
@@ -105,13 +105,13 @@ public class TileMapServiceImpl implements TileMapService {
     @Transactional
     @Override
     public void deleteByName(String name) {
-        Optional<TileMap> byName = tailMapRepository.getTailMapByName(name);
+        Optional<TileMap> byName = tileMapRepository.getTailMapByName(name);
 
         if (byName.isPresent()) {
             String urlToFile = byName.get().getUrl();
             AuxiliaryUtils.deleteFile(urlToFile);
 
-            tailMapRepository.deleteByName(name);
+            tileMapRepository.deleteByName(name);
             log.debug("IN deleteByName() - Удалены тайлы карт с name: {} из базы данных!", name);
         } else {
             log.warn("IN deleteByName() - Не удалось найти и удалить тайлы карты с именем: {} из базы данных!", name);
@@ -120,7 +120,7 @@ public class TileMapServiceImpl implements TileMapService {
 
     @Override
     public ResponseEntity<Resource> downloadFileById(UUID id) {
-        Optional<TileMap> foundFile = tailMapRepository.findById(id);
+        Optional<TileMap> foundFile = tileMapRepository.findById(id);
 
         if (foundFile.isPresent()) {
             return getFile(foundFile.get());
@@ -132,7 +132,7 @@ public class TileMapServiceImpl implements TileMapService {
 
     @Override
     public ResponseEntity<Resource> downloadFileByName(String name) {
-        Optional<TileMap> foundFile = tailMapRepository.getTailMapByName(name);
+        Optional<TileMap> foundFile = tileMapRepository.getTailMapByName(name);
 
         if (foundFile.isPresent()) {
             return getFile(foundFile.get());
@@ -144,7 +144,7 @@ public class TileMapServiceImpl implements TileMapService {
 
     @Override
     public ResponseEntity<Resource> downloadMainTileMap() {
-        List<TileMap> mainTileMapList = tailMapRepository.findAllByIsMainIsTrue();
+        List<TileMap> mainTileMapList = tileMapRepository.findAllByIsMainIsTrue();
 
         if (mainTileMapList.size() > 0) {
             return getFile(mainTileMapList.get(0));
@@ -216,7 +216,7 @@ public class TileMapServiceImpl implements TileMapService {
                 }
             }
 
-            UUID id = tailMapRepository.save(TileMap.builder()
+            UUID id = tileMapRepository.save(TileMap.builder()
                     .url(archivePath)
                     .name(String.valueOf(nameCurrentArchive))
                     .fileName(String.format("%s.zip", nameCurrentArchive))
@@ -265,17 +265,17 @@ public class TileMapServiceImpl implements TileMapService {
 
     @Override
     public boolean makeTilesIsMain(UUID id) {
-        Optional<TileMap> byId = tailMapRepository.findById(id);
+        Optional<TileMap> byId = tileMapRepository.findById(id);
 
         if (byId.isPresent()) {
-            List<TileMap> list = tailMapRepository.findAllByIsMainIsTrue();
+            List<TileMap> list = tileMapRepository.findAllByIsMainIsTrue();
             list.forEach(tile -> tile.setIsMain(Boolean.FALSE));
 
             TileMap tileMap = byId.get();
             tileMap.setIsMain(Boolean.TRUE);
 
             list.add(tileMap);
-            tailMapRepository.saveAll(list);
+            tileMapRepository.saveAll(list);
             return true;
         } else {
             log.warn("IN makeArchiveMain() - Не удалось найти тайлы карты с id: {}", id);
@@ -285,12 +285,12 @@ public class TileMapServiceImpl implements TileMapService {
 
     @Override
     public List<TileMap> getAll() {
-        return tailMapRepository.findAll();
+        return tileMapRepository.findAll();
     }
 
     @Override
     public TileMap getById(UUID id) {
-        Optional<TileMap> byId = tailMapRepository.findById(id);
+        Optional<TileMap> byId = tileMapRepository.findById(id);
 
         if (byId.isPresent()) {
             log.debug("IN getById() - Тайл карты с ID: {} найден!", id);
@@ -303,7 +303,7 @@ public class TileMapServiceImpl implements TileMapService {
 
     @Override
     public TileMap getByName(String name) {
-        Optional<TileMap> byName = tailMapRepository.getTailMapByName(name);
+        Optional<TileMap> byName = tileMapRepository.getTailMapByName(name);
 
         if (byName.isPresent()) {
             log.debug("IN getByName() - Тайл карты с name: {} найден!", name);
@@ -316,7 +316,7 @@ public class TileMapServiceImpl implements TileMapService {
 
     @Override
     public List<TileMap> getAllByName(String name) {
-        return tailMapRepository.findAllByNameIsContainingIgnoreCase(name);
+        return tileMapRepository.findAllByNameIsContainingIgnoreCase(name);
     }
 
     /**

@@ -30,7 +30,6 @@ public class StreetServiceImpl implements StreetService {
     @Override
     public void save(Street street) {
         streetRepository.save(street);
-        log.debug("IN save() - Улица сохранена!");
     }
 
     @Override
@@ -48,12 +47,10 @@ public class StreetServiceImpl implements StreetService {
     @Override
     public void deleteById(UUID id) {
         streetRepository.deleteById(id);
-        log.debug("IN deleteById() - Улица с ID: {} удалена!", id);
     }
 
     @Override
     public void deleteByName(String name) {
         streetRepository.deleteByName(name);
-        log.info("IN deleteByName() - Улица с name: {} удалена!", name);
     }
 }

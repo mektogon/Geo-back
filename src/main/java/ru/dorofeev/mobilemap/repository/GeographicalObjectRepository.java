@@ -13,6 +13,4 @@ public interface GeographicalObjectRepository extends JpaRepository<Geographical
     List<GeographicalObject> findAllByNameIsIgnoreCase(String name);
     List<GeographicalObject> findAllByName(String name);
     void deleteByName(String name);
-    @Override
-    <S extends GeographicalObject> S save(S entity);
 }

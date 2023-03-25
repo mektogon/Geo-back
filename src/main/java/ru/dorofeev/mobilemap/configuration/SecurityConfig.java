@@ -20,28 +20,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
 
     private static final String ADMIN_ENDPOINT = "/api/v1/**";
-    private static final String TILE_EDITOR_ENDPOINT = "/api/v1/tile-map/**";
+    private static final String[] TILE_EDITOR_ENDPOINT = {
+            "/api/v1/tile-map/**",
+            "/api/v1/road/**",
+            "/api/v1/manifesto/**",
+    };
     private static final String LOGIN_ENDPOINT = "/api/v1/auth/login";
 
     private static final String[] MOBILE_WHITELIST = {
-            "/api/v1/geo/getById/{id}",
-            "/api/v1/geo/{name}",
-            "/api/v1/geo/web/{id}",
-            "/api/v1/geo/web",
-            "/api/v1/geo",
-
-            "/api/v1/designation/view/{id}",
-            "/api/v1/audio/view/{id}",
-            "/api/v1/video/view/{id}",
-            "/api/v1/photo/view/{id}",
-            "/api/v1/photo/preview/view/{id}",
-
-            "/api/v1/tile-map",
-            "/api/v1/tile-map/download",
-            "/api/v1/tile-map/download/{id}",
-            "/api/v1/tile-map/downloadByName/{name}",
-            "/api/v1/tile-map/getAllByName/{name}"
-
+            "/api/v1/geo/**",
+            "/api/v1/designation/**",
+            "/api/v1/audio/view/**",
+            "/api/v1/video/view/**",
+            "/api/v1/photo/view/**",
+            "/api/v1/photo/**",
+            "/api/v1/tile-map/**",
+            "/api/v1/road/**",
+            "/api/v1/manifesto/**",
     };
     
     private static final String[] SWAGGER_WHITELIST = {
