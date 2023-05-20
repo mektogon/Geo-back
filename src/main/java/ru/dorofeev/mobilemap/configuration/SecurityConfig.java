@@ -20,6 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
 
     private static final String ADMIN_ENDPOINT = "/api/v1/**";
+    private static final String HEALTH_ENDPOINT = "/actuator/health";
     private static final String[] TILE_EDITOR_ENDPOINT = {
             "/api/v1/tile-map/**",
             "/api/v1/road/**",
@@ -65,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(LOGIN_ENDPOINT).permitAll()
                 .mvcMatchers(HttpMethod.GET, MOBILE_WHITELIST).permitAll()
                 .mvcMatchers(SWAGGER_WHITELIST).permitAll()
+                .mvcMatchers(HEALTH_ENDPOINT).permitAll()
                 .mvcMatchers(TILE_EDITOR_ENDPOINT).hasAnyRole("TILE_EDITOR", "ADMIN")
                 .antMatchers(ADMIN_ENDPOINT).hasRole("ADMIN")
                 .anyRequest().authenticated()
